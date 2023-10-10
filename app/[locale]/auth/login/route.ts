@@ -24,6 +24,7 @@ export async function POST(
   if (error) {
     if (error.status === 400) {
       const url = new URL('/login', request.url);
+      url.searchParams.set('email', email);
       url.searchParams.set('error', t('invalidEmailOrPassword'));
       return NextResponse.redirect(url, {
         status: 301,

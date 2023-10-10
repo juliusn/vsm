@@ -66,6 +66,12 @@
       "passwordAgain": "Salasanat eivät täsmää"
     }
   },
+  "ResetPasswordPage": {
+    "title": "Resetoi salasana",
+    "email": "Sähköposti",
+    "invalidEmail": "Virheellinen sähköposti",
+    "submit": "Lähetä linkki sähköpostiin"
+  },
   "auth/register": {
     "checkEmail": "Tarkista sähköpostisi vahvistaaksesi käyttäjätunnuksesi."
   },

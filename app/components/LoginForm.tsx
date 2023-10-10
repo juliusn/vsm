@@ -13,6 +13,8 @@ import {
 import { IconLogin2 } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
+import { useRouter } from 'next-intl/client';
+import { useSearchParams } from 'next/navigation';
 
 export function LoginForm({
   title,
@@ -33,6 +35,8 @@ export function LoginForm({
   forgotPassword: string;
   textNoAccount: React.ReactNode;
 }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, { open: openLoading }] = useDisclosure(false);
   interface FormValues {
     email: string;
@@ -40,7 +44,7 @@ export function LoginForm({
   }
   const form = useForm<FormValues>({
     initialValues: {
-      email: '',
+      email: searchParams.get('email') || '',
       password: '',
     },
     validate: {
@@ -81,7 +85,15 @@ export function LoginForm({
           className="mt-2">
           {submit}
         </Button>
-        <Anchor href="/reset-password">{forgotPassword}</Anchor>
+        <Anchor
+          onClick={() => {
+            const email = form.getInputProps('email').value;
+            router.push(
+              email ? `/reset-password?email=${email}` : '/reset-password'
+            );
+          }}>
+          {forgotPassword}
+        </Anchor>
         <Text>{textNoAccount}</Text>
       </Stack>
     </form>

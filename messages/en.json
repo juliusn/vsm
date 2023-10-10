@@ -66,6 +66,12 @@
       "passwordAgain": "Passwords don't match"
     }
   },
+  "ResetPasswordPage": {
+    "title": "Reset Password",
+    "email": "Email",
+    "invalidEmail": "Invalid email",
+    "submit": "Send link to my email"
+  },
   "auth/register": {
     "checkEmail": "Check your email to confirm your account."
   },
