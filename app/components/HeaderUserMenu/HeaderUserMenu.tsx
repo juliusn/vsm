@@ -33,7 +33,6 @@ export function HeaderUserMenu({
     <div>
       <Menu
         position="bottom-end"
-        transitionProps={{ transition: 'pop-top-right' }}
         onClose={() => setUserMenuOpened(false)}
         onOpen={() => setUserMenuOpened(true)}
         withinPortal>

@@ -94,8 +94,8 @@ function RootLayoutContent({ session }: { session: Session | null }) {
         />
       ) : (
         <HeaderLoginContent
-          loginButtonLabel={translationsHeaderLoginContent('login')}
-          registerButtonLabel={translationsHeaderLoginContent('register')}
+          labelLoginButton={translationsHeaderLoginContent('login')}
+          labelRegisterButton={translationsHeaderLoginContent('register')}
         />
       )}
     </Header>
