@@ -23,13 +23,21 @@
     "roles": "Roolit",
     "logout": "Kirjaudu Ulos"
   },
+  "Modals": {
+    "titleMessage": "Valmis!",
+    "titleError": "Virhe!"
+  },
   "LoginPage": {
     "title": "Kirjaudu sisään",
     "email": "Sähköposti",
     "password": "Salasana",
     "submit": "Kirjaudu",
     "forgot": "Unohtuiko salasana?",
-    "noAccount": "Ei tunnuksia? <link>Rekisteröidy tästä!</link>"
+    "noAccount": "Ei tunnuksia? <link>Rekisteröidy tästä!</link>",
+    "validate": {
+      "email": "Virheellinen sähköpostiosoite",
+      "password": "Virheellinen salasana"
+    }
   },
   "RegisterPage": {
     "title": "Luo uusi käyttäjätunnus",
@@ -50,8 +58,6 @@
     "passwordAgain": "Salasana uudelleen",
     "submit": "Luo tunnus",
     "alreadyHaveAccount": "Jos sinulla on jo käyttäjätunnus, <link>voit kirjautua sisään tästä.</link>",
-    "success": "Käyttäjätunnus on luotu.",
-    "error": "Virhe",
     "validate": {
       "tos": "Sinun tulee hyväksyä palvelun käyttöehdot",
       "userName": "Käyttäjänimi on virheellinen",
@@ -62,6 +68,10 @@
   },
   "auth/register": {
     "checkEmail": "Tarkista sähköpostisi vahvistaaksesi käyttäjätunnuksesi."
+  },
+  "auth/login": {
+    "invalidEmailOrPassword": "Väärä sähköposti tai salasana.",
+    "serverError": "Palvelinvirhe."
   },
   "auth/check-username": {
     "available": "Käyttäjänimi on vapaa.",

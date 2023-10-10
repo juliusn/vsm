@@ -23,13 +23,21 @@
     "roles": "Roles",
     "logout": "Logout"
   },
+  "Modals": {
+    "titleMessage": "Done!",
+    "titleError": "Error!"
+  },
   "LoginPage": {
     "title": "Log In",
     "email": "Email",
     "password": "Password",
     "submit": "Log In",
     "forgot": "Forgot password?",
-    "noAccount": "Don't have an account? <link>Register here!</link>"
+    "noAccount": "Don't have an account? <link>Register here!</link>",
+    "validate": {
+      "email": "Invalid email address",
+      "password": "Invalid password"
+    }
   },
   "RegisterPage": {
     "title": "Create a New Account",
@@ -50,8 +58,6 @@
     "passwordAgain": "Re-enter password",
     "submit": "Register",
     "alreadyHaveAccount": "If you already have an account, <link>you can log in here.</link>",
-    "success": "User account has been created.",
-    "error": "Error",
     "validate": {
       "tos": "You must agree to the terms of use",
       "userName": "Invalid user name",
@@ -62,6 +68,10 @@
   },
   "auth/register": {
     "checkEmail": "Check your email to confirm your account."
+  },
+  "auth/login": {
+    "invalidEmailOrPassword": "Invalid email or password.",
+    "serverError": "Server error."
   },
   "auth/check-username": {
     "available": "User name is available.",
