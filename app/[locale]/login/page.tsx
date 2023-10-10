@@ -15,7 +15,7 @@ export default function LoginPage() {
   const t = useTranslations('LoginPage');
   return (
     <Container size="20rem">
-      <form action="/auth/sign-in" method="post">
+      <form action="/auth/login" method="post">
         <Stack>
           <Title size="h4">{t('title')}</Title>
           <TextInput name="email" label={t('email')} placeholder={t('email')} />
