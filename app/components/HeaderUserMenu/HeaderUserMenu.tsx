@@ -11,25 +11,22 @@ import {
   IconUserCircle,
 } from '@tabler/icons-react';
 import { useRouter } from 'next-intl/client';
+import { useProfileStore } from '@/app/store';
 
 export function HeaderUserMenu({
-  profile: { userName, image },
   labelAccount,
   labelSettings,
   labelProfile,
   labelRoles,
   labelLogout,
 }: {
-  profile: {
-    userName: string;
-    image: string;
-  };
   labelAccount: string;
   labelSettings: string;
   labelProfile: string;
   labelRoles: string;
   labelLogout: string;
 }) {
+  const { profile } = useProfileStore();
   const router = useRouter();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   return (
@@ -46,10 +43,17 @@ export function HeaderUserMenu({
               [classes.userActive]: userMenuOpened,
             })}>
             <Group gap={7}>
-              <Avatar src={image} alt={`${userName}`} radius="xl" size={20} />
+              <Avatar
+                src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
+                alt={`${profile?.user_name}`}
+                radius="xl"
+                size={20}
+              />
               <Text fw={500} size="sm" lh={1} mr={3}>
-                <span className="hidden sm:inline">{userName}</span>
-                <span className="sm:hidden">{userName.split(' ')[0]}</span>
+                <span className="hidden sm:inline">{profile?.user_name}</span>
+                <span className="sm:hidden">
+                  {profile?.user_name.split(' ')[0]}
+                </span>
               </Text>
               <IconChevronDown
                 style={{ width: rem(12), height: rem(12) }}
@@ -91,6 +95,7 @@ export function HeaderUserMenu({
             {labelRoles}
           </Menu.Item>
           <Menu.Item
+            onClick={handleLogout}
             leftSection={
               <IconLogout
                 style={{ width: rem(16), height: rem(16) }}
@@ -103,4 +108,12 @@ export function HeaderUserMenu({
       </Menu>
     </div>
   );
+
+  async function handleLogout() {
+    await fetch('/auth/logout', {
+      method: 'POST',
+    });
+    router.refresh();
+    router.push('/login');
+  }
 }

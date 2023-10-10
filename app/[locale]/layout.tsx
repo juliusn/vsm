@@ -14,17 +14,11 @@ import { cookies } from 'next/headers';
 import { LanguageSelect } from '../components/LanguageSelect';
 import { LogoVanaheim } from '../components/LogoVanaheim';
 import { HeaderLoginContent } from '../components/HeaderLoginContent';
+import { ProfileStoreInitializer } from '../components/ProfileStoreInitializer';
 
 export const metadata: Metadata = {
   title: 'VSM',
   description: 'Vanaheim Service Management',
-};
-
-const profile = {
-  userName: 'Julius Niiniranta',
-  email: 'julius@niiniranta.net',
-  image:
-    'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80',
 };
 
 export default async function RootLayout({
@@ -32,13 +26,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerComponentClient<Database>({ cookies });
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const { session, profile } = await initializeSessionAndProfile();
 
   return (
     <html>
+      <ProfileStoreInitializer profile={profile} />
       <head>
         <link rel="shortcut icon" href="/favicon.svg" />
         <meta
@@ -56,6 +48,29 @@ export default async function RootLayout({
       </body>
     </html>
   );
+
+  async function initializeSessionAndProfile() {
+    const supabase = createServerComponentClient<Database>({ cookies });
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.user) {
+      return { session, profile: null };
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select()
+      .eq('id', session.user.id)
+      .single();
+
+    if (profileError) {
+      throw profileError;
+    }
+
+    return { session, profile };
+  }
 }
 
 function RootLayoutContent({ session }: { session: Session | null }) {
@@ -71,7 +86,6 @@ function RootLayoutContent({ session }: { session: Session | null }) {
       <LogoVanaheim className="h-7 fill-gray-900 dark:fill-gray-300 hidden xs:block absolute left-1/2 -translate-x-1/2 top-4 md:top-12" />
       {session?.user ? (
         <HeaderUserMenu
-          profile={profile}
           labelAccount={translationsMenu('account')}
           labelSettings={translationsMenu('settings')}
           labelProfile={translationsMenu('profile')}
