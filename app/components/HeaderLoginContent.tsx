@@ -2,7 +2,7 @@
 
 import { ActionIcon, Button, Group, Menu } from '@mantine/core';
 import { IconKey, IconLogin2, IconUserPlus } from '@tabler/icons-react';
-import { useRouter } from 'next-intl/client';
+import { usePathname, useRouter } from 'next-intl/client';
 
 export function HeaderLoginContent({
   labelLoginButton,
@@ -12,6 +12,19 @@ export function HeaderLoginContent({
   labelRegisterButton: string;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const items = [
+    {
+      path: '/login',
+      icon: <IconLogin2 size={20} stroke={1} />,
+      label: labelLoginButton,
+    },
+    {
+      path: '/register',
+      icon: <IconUserPlus size={20} stroke={1} />,
+      label: labelRegisterButton,
+    },
+  ];
   return (
     <>
       <Group>
@@ -23,46 +36,46 @@ export function HeaderLoginContent({
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item
-                onClick={() => router.push('/login')}
-                leftSection={<IconLogin2 size={20} stroke={1} />}>
-                {labelLoginButton}
-              </Menu.Item>
-              <Menu.Item
-                onClick={() => router.push('/register')}
-                leftSection={<IconUserPlus size={20} stroke={1} />}>
-                {labelRegisterButton}
-              </Menu.Item>
+              {items.map(({ path, icon, label }, i) => {
+                return (
+                  <Menu.Item
+                    key={i}
+                    onClick={() => router.push(path)}
+                    disabled={pathname === path}
+                    leftSection={icon}>
+                    {label}
+                  </Menu.Item>
+                );
+              })}
             </Menu.Dropdown>
           </Menu>
         </Group>
         <Group gap={8} visibleFrom="xs" hiddenFrom="md">
-          <Button
-            onClick={() => router.push('/login')}
-            size="xs"
-            variant="outline">
-            {labelLoginButton}
-          </Button>
-          <Button
-            onClick={() => router.push('/register')}
-            size="xs"
-            variant="outline">
-            {labelRegisterButton}
-          </Button>
+          {items.map(({ path, label }, i) => {
+            return (
+              <Button
+                key={i}
+                onClick={() => router.push(path)}
+                disabled={pathname === path}
+                size="xs"
+                variant="outline">
+                {label}
+              </Button>
+            );
+          })}
         </Group>
         <Group visibleFrom="md">
-          <Button
-            onClick={() => router.push('/login')}
-            visibleFrom="xs"
-            variant="outline">
-            {labelLoginButton}
-          </Button>
-          <Button
-            onClick={() => router.push('/register')}
-            visibleFrom="xs"
-            variant="outline">
-            {labelRegisterButton}
-          </Button>
+          {items.map(({ path, label }, i) => {
+            return (
+              <Button
+                key={i}
+                onClick={() => router.push(path)}
+                disabled={pathname === path}
+                variant="outline">
+                {label}
+              </Button>
+            );
+          })}
         </Group>
       </Group>
     </>
