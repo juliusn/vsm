@@ -9,7 +9,9 @@ export default function LoginPage() {
       <LoginForm
         title={t('title')}
         labelEmail={t('email')}
+        labelValidateEmail={t('validate.email')}
         labelPassword={t('password')}
+        labelValidatePassword={t('validate.password')}
         submit={t('submit')}
         forgotPassword={t('forgot')}
         textNoAccount={t.rich('noAccount', {
