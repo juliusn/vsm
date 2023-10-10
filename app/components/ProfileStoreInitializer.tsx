@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useProfileStore } from '../store';
 
 export function ProfileStoreInitializer({
@@ -9,9 +9,11 @@ export function ProfileStoreInitializer({
   profile: Profile | null;
 }) {
   const initialized = useRef(false);
-  if (!initialized.current) {
-    useProfileStore.setState({ profile });
-    initialized.current = true;
-  }
+  useEffect(() => {
+    if (!initialized.current) {
+      useProfileStore.setState({ profile });
+      initialized.current = true;
+    }
+  }, []);
   return null;
 }
