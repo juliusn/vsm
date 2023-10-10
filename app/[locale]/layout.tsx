@@ -15,6 +15,7 @@ import { LanguageSelect } from '../components/LanguageSelect';
 import { LogoVanaheim } from '../components/LogoVanaheim';
 import { HeaderLoginContent } from '../components/HeaderLoginContent';
 import { ProfileStoreInitializer } from '../components/ProfileStoreInitializer';
+import { Modals } from '../components/Modals';
 
 export const metadata: Metadata = {
   title: 'VSM',
@@ -78,26 +79,36 @@ function RootLayoutContent({ session }: { session: Session | null }) {
   const translationsMenu = useTranslations('HeaderUserMenu');
   const translationsHeaderLoginContent = useTranslations('HeaderLoginContent');
   return (
-    <Header
-      labelHome={translationsHeader('home')}
-      labelOrders={translationsHeader('orders')}
-      labelMessages={translationsHeader('messages')}>
-      <LanguageSelect />
-      <LogoVanaheim className="h-7 fill-gray-900 dark:fill-gray-300 hidden xs:block absolute left-1/2 -translate-x-1/2 top-4 md:top-12" />
-      {session?.user ? (
-        <HeaderUserMenu
-          labelAccount={translationsMenu('account')}
-          labelSettings={translationsMenu('settings')}
-          labelProfile={translationsMenu('profile')}
-          labelRoles={translationsMenu('roles')}
-          labelLogout={translationsMenu('logout')}
-        />
-      ) : (
-        <HeaderLoginContent
-          labelLoginButton={translationsHeaderLoginContent('login')}
-          labelRegisterButton={translationsHeaderLoginContent('register')}
-        />
-      )}
-    </Header>
+    <>
+      <Header
+        labelHome={translationsHeader('home')}
+        labelOrders={translationsHeader('orders')}
+        labelMessages={translationsHeader('messages')}>
+        <LanguageSelect />
+        <LogoVanaheim className="h-7 fill-gray-900 dark:fill-gray-300 hidden xs:block absolute left-1/2 -translate-x-1/2 top-4 md:top-12" />
+        {session?.user ? (
+          <HeaderUserMenu
+            labelAccount={translationsMenu('account')}
+            labelSettings={translationsMenu('settings')}
+            labelProfile={translationsMenu('profile')}
+            labelRoles={translationsMenu('roles')}
+            labelLogout={translationsMenu('logout')}
+          />
+        ) : (
+          <HeaderLoginContent
+            labelLoginButton={translationsHeaderLoginContent('login')}
+            labelRegisterButton={translationsHeaderLoginContent('register')}
+          />
+        )}
+      </Header>
+      <ModalsContent />
+    </>
+  );
+}
+
+function ModalsContent() {
+  const t = useTranslations('Modals');
+  return (
+    <Modals titleMessage={t('titleMessage')} titleError={t('titleError')} />
   );
 }

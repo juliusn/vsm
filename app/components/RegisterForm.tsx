@@ -15,14 +15,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
-import {
-  IconCheck,
-  IconExclamationCircle,
-  IconSquareCheck,
-  IconUserPlus,
-} from '@tabler/icons-react';
-import { usePathname, useRouter } from 'next-intl/client';
-import { useSearchParams } from 'next/navigation';
+import { IconSquareCheck, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export function RegisterForm({
@@ -42,8 +35,6 @@ export function RegisterForm({
   labelPassword,
   labelPasswordAgain,
   labelSubmit,
-  labelSuccess,
-  labelError,
   labelValidateUserName,
   labelValidateEmail,
   labelValidatePassword,
@@ -66,8 +57,6 @@ export function RegisterForm({
   labelPassword: string;
   labelPasswordAgain: string;
   labelSubmit: string;
-  labelSuccess: string;
-  labelError: string;
   labelValidateUserName: string;
   labelValidateEmail: string;
   labelValidatePassword: string;
@@ -117,12 +106,6 @@ export function RegisterForm({
     },
     validateInputOnBlur: true,
   });
-
-  const searchParams = useSearchParams();
-  const message = searchParams.get('message');
-  const error = searchParams.get('error');
-  const router = useRouter();
-  const pathname = usePathname();
   return (
     <>
       <form action="/auth/register" method="post" onSubmit={openLoading}>
@@ -247,38 +230,6 @@ export function RegisterForm({
           </Button>
         </Stack>
       </Modal>
-      <Modal
-        opened={message !== null}
-        onClose={() => deleteParam('message')}
-        centered
-        styles={{
-          title: {
-            color: 'var(--mantine-color-green-outline)',
-          },
-        }}
-        title={
-          <div className="flex gap-4">
-            <IconCheck stroke={1.5} />
-            <Text>{labelSuccess}</Text>
-          </div>
-        }>
-        {message}
-      </Modal>
-      <Modal
-        opened={error !== null}
-        onClose={() => deleteParam('error')}
-        centered
-        styles={{
-          title: { color: 'var(--mantine-color-red-outline)' },
-        }}
-        title={
-          <div className="flex gap-4">
-            <IconExclamationCircle stroke={1.5} />
-            <Text>{labelError}</Text>
-          </div>
-        }>
-        <Stack>{error}</Stack>
-      </Modal>
     </>
   );
 
@@ -301,12 +252,5 @@ export function RegisterForm({
       setUserNameAvailibilityMessage(error);
     }
     closeUserNameAvailibilityLoading();
-  }
-
-  function deleteParam(param: string) {
-    const params = new URLSearchParams(searchParams);
-    params.delete(param);
-    const newUrl = `${pathname}?${params.toString()}`;
-    router.replace(newUrl);
   }
 }

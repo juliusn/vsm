@@ -25,8 +25,6 @@ export default function RegisterPage() {
           labelPassword={t('password')}
           labelPasswordAgain={t('passwordAgain')}
           labelSubmit={t('submit')}
-          labelSuccess={t('success')}
-          labelError={t('error')}
           labelValidateUserName={t('validate.userName')}
           labelValidateEmail={t('validate.email')}
           labelValidatePassword={t('validate.password')}
