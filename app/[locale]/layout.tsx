@@ -16,6 +16,7 @@ import { LogoVanaheim } from '../components/LogoVanaheim';
 import { HeaderLoginContent } from '../components/HeaderLoginContent';
 import { ProfileStoreInitializer } from '../components/ProfileStoreInitializer';
 import { Modals } from '../components/Modals';
+import { useProfileStore } from '../store';
 
 export const metadata: Metadata = {
   title: 'VSM',
@@ -28,6 +29,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { session, profile } = await initializeSessionAndProfile();
+  useProfileStore.setState({ profile });
 
   return (
     <html>
