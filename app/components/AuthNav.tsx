@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Group, Menu, Tabs, UnstyledButton } from '@mantine/core';
+import { Group, Menu, Tabs, UnstyledButton } from '@mantine/core';
 import {
   IconChevronDown,
   IconKey,
@@ -9,7 +9,7 @@ import {
 } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next-intl/client';
 
-export function HeaderLoginContent({
+export function AuthNav({
   labelLoginButton,
   labelRegisterButton,
 }: {

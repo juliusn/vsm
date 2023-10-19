@@ -15,7 +15,6 @@ export async function POST(
   const email = String(formData.get('email'));
   const password = String(formData.get('password'));
   const supabase = createRouteHandlerClient({ cookies });
-
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,

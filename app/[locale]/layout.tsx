@@ -5,17 +5,13 @@ import { Metadata } from 'next';
 import { Header } from '@/app/components/Header/Header';
 import { useTranslations } from 'next-intl';
 import { HeaderUserMenu } from '../components/HeaderUserMenu/HeaderUserMenu';
-import {
-  Session,
-  createServerComponentClient,
-} from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/lib/database.types';
-import { cookies } from 'next/headers';
+import { User } from '@supabase/auth-helpers-nextjs';
 import { LanguageSelect } from '../components/LanguageSelect';
 import { LogoVanaheim } from '../components/LogoVanaheim';
-import { HeaderLoginContent } from '../components/HeaderLoginContent';
-import { ProfileStoreInitializer } from '../components/ProfileStoreInitializer';
+import { AuthNav } from '../components/AuthNav';
+import { ProfileStoreAdapter } from '../components/ProfileStoreAdapter';
 import { Modals } from '../components/Modals';
+import { getProfile, getUser } from '../actions';
 import { useProfileStore } from '../store';
 
 export const metadata: Metadata = {
@@ -28,12 +24,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { session, profile } = await initializeSessionAndProfile();
+  const user = await getUser();
+  const profile = user ? await getProfile(user) : null;
   useProfileStore.setState({ profile });
 
   return (
     <html>
-      <ProfileStoreInitializer profile={profile} />
+      <ProfileStoreAdapter profile={profile} />
       <head>
         <link rel="shortcut icon" href="/favicon.svg" />
         <meta
@@ -45,66 +42,49 @@ export default async function RootLayout({
       </head>
       <body>
         <MantineProvider defaultColorScheme="auto">
-          <RootLayoutContent session={session} />
+          <HeaderContent user={user} />
           <Container>{children}</Container>
+          <ModalsContent />
         </MantineProvider>
       </body>
     </html>
   );
-
-  async function initializeSessionAndProfile() {
-    const supabase = createServerComponentClient<Database>({ cookies });
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session?.user) {
-      return { session, profile: null };
-    }
-
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select()
-      .eq('id', session.user.id)
-      .single();
-
-    if (profileError) {
-      throw profileError;
-    }
-
-    return { session, profile };
-  }
 }
 
-function RootLayoutContent({ session }: { session: Session | null }) {
-  const translationsHeader = useTranslations('Header');
-  const translationsMenu = useTranslations('HeaderUserMenu');
-  const translationsHeaderLoginContent = useTranslations('HeaderLoginContent');
+function HeaderContent({ user }: { user: User | null }) {
+  const t = useTranslations('Header');
   return (
-    <>
-      <Header
-        labelHome={translationsHeader('home')}
-        labelOrders={translationsHeader('orders')}
-        labelMessages={translationsHeader('messages')}>
-        <LanguageSelect />
-        <LogoVanaheim className="h-7 fill-gray-900 dark:fill-gray-300 hidden xs:block absolute left-1/2 -translate-x-1/2 top-4 md:top-12" />
-        {session?.user ? (
-          <HeaderUserMenu
-            labelAccount={translationsMenu('account')}
-            labelSettings={translationsMenu('settings')}
-            labelProfile={translationsMenu('profile')}
-            labelRoles={translationsMenu('roles')}
-            labelLogout={translationsMenu('logout')}
-          />
-        ) : (
-          <HeaderLoginContent
-            labelLoginButton={translationsHeaderLoginContent('login')}
-            labelRegisterButton={translationsHeaderLoginContent('register')}
-          />
-        )}
-      </Header>
-      <ModalsContent />
-    </>
+    <Header
+      labelHome={t('home')}
+      labelOrders={t('orders')}
+      labelMessages={t('messages')}>
+      <LanguageSelect />
+      <LogoVanaheim className="h-7 fill-gray-900 dark:fill-gray-300 hidden xs:block absolute left-1/2 -translate-x-1/2 top-4 md:top-12" />
+      {user ? <UserMenuContent /> : <AuthNavContent />}
+    </Header>
+  );
+}
+
+function UserMenuContent() {
+  const t = useTranslations('HeaderUserMenu');
+  return (
+    <HeaderUserMenu
+      labelAccount={t('account')}
+      labelSettings={t('settings')}
+      labelProfile={t('profile')}
+      labelRoles={t('roles')}
+      labelLogout={t('logout')}
+    />
+  );
+}
+
+function AuthNavContent() {
+  const t = useTranslations('HeaderLoginContent');
+  return (
+    <AuthNav
+      labelLoginButton={t('login')}
+      labelRegisterButton={t('register')}
+    />
   );
 }
 
