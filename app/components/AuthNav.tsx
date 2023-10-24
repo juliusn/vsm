@@ -21,58 +21,59 @@ export function AuthNav({
   const items = [
     {
       path: '/login',
-      icon: <IconLogin2 size={20} stroke={1} />,
+      icon: IconLogin2,
       label: labelLoginButton,
     },
     {
       path: '/register',
-      icon: <IconUserPlus size={20} stroke={1} />,
+      icon: IconUserPlus,
       label: labelRegisterButton,
     },
   ];
   return (
-    <>
-      <Group>
-        <Group hiddenFrom="xs">
-          <Menu position="bottom-end">
-            <Menu.Target>
-              <UnstyledButton variant="transparent">
-                <Group gap={7}>
-                  <IconKey size={20} stroke={1} />
-                  <IconChevronDown size={20} stroke={1} />
-                </Group>
-              </UnstyledButton>
-            </Menu.Target>
-            <Menu.Dropdown>
-              {items.map(({ path, icon, label }, i) => {
-                return (
-                  <Menu.Item
-                    key={i}
-                    onClick={() => router.push(path)}
-                    disabled={pathname === path}
-                    leftSection={icon}>
-                    {label}
-                  </Menu.Item>
-                );
-              })}
-            </Menu.Dropdown>
-          </Menu>
-        </Group>
-        <Tabs
-          value={pathname}
-          onChange={(value) => value && router.push(value)}
-          visibleFrom="xs">
-          <Tabs.List>
-            {items.map(({ path, label }, i) => {
+    <Group>
+      <Group hiddenFrom="xs">
+        <Menu position="bottom-end">
+          <Menu.Target>
+            <UnstyledButton variant="transparent">
+              <Group gap={7}>
+                <IconKey size={20} stroke={1} />
+                <IconChevronDown size={20} stroke={1} />
+              </Group>
+            </UnstyledButton>
+          </Menu.Target>
+          <Menu.Dropdown>
+            {items.map(({ path, icon: IconComponent, label }, i) => {
               return (
-                <Tabs.Tab key={i} value={path}>
+                <Menu.Item
+                  key={i}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    router.push(path);
+                  }}
+                  disabled={pathname === path}
+                  leftSection={<IconComponent size={20} stroke={1} />}>
                   {label}
-                </Tabs.Tab>
+                </Menu.Item>
               );
             })}
-          </Tabs.List>
-        </Tabs>
+          </Menu.Dropdown>
+        </Menu>
       </Group>
-    </>
+      <Tabs
+        value={pathname}
+        onChange={(value) => value && router.push(value)}
+        visibleFrom="xs">
+        <Tabs.List>
+          {items.map(({ path, label }, i) => {
+            return (
+              <Tabs.Tab key={i} value={path}>
+                {label}
+              </Tabs.Tab>
+            );
+          })}
+        </Tabs.List>
+      </Tabs>
+    </Group>
   );
 }
