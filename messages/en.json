@@ -12,11 +12,11 @@
     "orders": "Orders",
     "messages": "Messages"
   },
-  "HeaderLoginContent": {
+  "AuthNav": {
     "login": "Log In",
     "register": "Register"
   },
-  "HeaderUserMenu": {
+  "UserMenu": {
     "account": "Account",
     "settings": "Settings",
     "profile": "Profile",

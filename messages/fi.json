@@ -12,11 +12,11 @@
     "orders": "Tilaukset",
     "messages": "Viestit"
   },
-  "HeaderLoginContent": {
+  "AuthNav": {
     "login": "Kirjaudu",
     "register": "Rekisteröidy"
   },
-  "HeaderUserMenu": {
+  "UserMenu": {
     "account": "Tili",
     "settings": "Asetukset",
     "profile": "Profiili",

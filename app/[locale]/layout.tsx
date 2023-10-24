@@ -4,7 +4,7 @@ import '@mantine/core/styles.css';
 import { Metadata } from 'next';
 import { Header } from '@/app/components/Header/Header';
 import { useTranslations } from 'next-intl';
-import { HeaderUserMenu } from '../components/HeaderUserMenu/HeaderUserMenu';
+import { UserMenu } from '../components/UserMenu/UserMenu';
 import { User } from '@supabase/auth-helpers-nextjs';
 import { LanguageSelect } from '../components/LanguageSelect';
 import { LogoVanaheim } from '../components/LogoVanaheim';
@@ -66,9 +66,9 @@ function HeaderContent({ user }: { user: User | null }) {
 }
 
 function UserMenuContent() {
-  const t = useTranslations('HeaderUserMenu');
+  const t = useTranslations('UserMenu');
   return (
-    <HeaderUserMenu
+    <UserMenu
       labelAccount={t('account')}
       labelSettings={t('settings')}
       labelProfile={t('profile')}
@@ -79,7 +79,7 @@ function UserMenuContent() {
 }
 
 function AuthNavContent() {
-  const t = useTranslations('HeaderLoginContent');
+  const t = useTranslations('AuthNav');
   return (
     <AuthNav
       labelLoginButton={t('login')}
