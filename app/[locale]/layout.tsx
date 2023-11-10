@@ -3,7 +3,7 @@ import '../globals.css';
 import '@mantine/core/styles.css';
 import { Metadata } from 'next';
 import { Header } from '@/app/components/Header/Header';
-import { useTranslations } from 'next-intl';
+import { NextIntlClientProvider, useTranslations } from 'next-intl';
 import { UserMenu } from '../components/UserMenu/UserMenu';
 import { User } from '@supabase/auth-helpers-nextjs';
 import { LanguageSelect } from '../components/LanguageSelect';
@@ -12,21 +12,34 @@ import { AuthNav } from '../components/AuthNav';
 import { ProfileStoreAdapter } from '../components/ProfileStoreAdapter';
 import { Modals } from '../components/Modals';
 import { getProfile, getUser } from '../actions';
-import { useProfileStore } from '../store';
+import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'VSM',
   description: 'Vanaheim Service Management',
 };
 
+const locales = ['en', 'fi'];
+
 export default async function RootLayout({
   children,
+  params: { locale },
 }: {
   children: React.ReactNode;
+  params: { locale: string };
 }) {
+  const isValidLocale = locales.some((cur) => cur === locale);
+  if (!isValidLocale) {
+    notFound();
+  }
+  let messages;
+  try {
+    messages = (await import(`../../messages/${locale}.json`)).default;
+  } catch (error) {
+    notFound();
+  }
   const user = await getUser();
   const profile = user ? await getProfile(user) : null;
-  useProfileStore.setState({ profile });
 
   return (
     <html>
@@ -41,11 +54,13 @@ export default async function RootLayout({
         <ColorSchemeScript defaultColorScheme="auto" />
       </head>
       <body>
-        <MantineProvider defaultColorScheme="auto">
-          <HeaderContent user={user} />
-          <Container>{children}</Container>
-          <ModalsContent />
-        </MantineProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <MantineProvider defaultColorScheme="auto">
+            <HeaderContent user={user} />
+            <Container>{children}</Container>
+            <ModalsContent />
+          </MantineProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
