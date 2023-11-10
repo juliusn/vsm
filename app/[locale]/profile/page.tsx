@@ -1,6 +1,4 @@
-import { useProfileStore } from '@/app/store';
-const { getState } = useProfileStore;
-import { Alert, Container, Stack, Text, Title } from '@mantine/core';
+import { Container, Stack, Title } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
 export default function ProfilePage() {
@@ -12,18 +10,10 @@ export default function ProfilePage() {
 }
 
 function ProfileContent() {
-  const { profile } = getState();
   const t = useTranslations('ProfilePage');
   return (
     <Stack>
-      {profile ? (
-        <>
-          <Title size="h4">{t('title')}</Title>
-          <Text>{profile?.user_name}</Text>
-        </>
-      ) : (
-        <Alert>No profile!</Alert>
-      )}
+      <Title size="h4">{t('title')}</Title>
     </Stack>
   );
 }
