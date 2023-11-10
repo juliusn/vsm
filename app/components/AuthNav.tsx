@@ -43,20 +43,18 @@ export function AuthNav({
             </UnstyledButton>
           </Menu.Target>
           <Menu.Dropdown>
-            {items.map(({ path, icon: IconComponent, label }, i) => {
-              return (
-                <Menu.Item
-                  key={i}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    router.push(path);
-                  }}
-                  disabled={pathname === path}
-                  leftSection={<IconComponent size={20} stroke={1} />}>
-                  {label}
-                </Menu.Item>
-              );
-            })}
+            {items.map(({ path, icon: IconComponent, label }, i) => (
+              <Menu.Item
+                key={i}
+                onClick={(event) => {
+                  event.preventDefault();
+                  router.push(path);
+                }}
+                disabled={pathname === path}
+                leftSection={<IconComponent size={20} stroke={1} />}>
+                {label}
+              </Menu.Item>
+            ))}
           </Menu.Dropdown>
         </Menu>
       </Group>
