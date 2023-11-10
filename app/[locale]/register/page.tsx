@@ -1,6 +1,7 @@
 import { RegisterForm } from '@/app/components/RegisterForm';
 import { Anchor, Container, Stack, Text, Title } from '@mantine/core';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 export default function RegisterPage() {
   const t = useTranslations('RegisterPage');
@@ -33,7 +34,11 @@ export default function RegisterPage() {
         />
         <Text>
           {t.rich('alreadyHaveAccount', {
-            link: (text) => <Anchor href="/login">{text}</Anchor>,
+            link: (text) => (
+              <Anchor component={Link} href="/login">
+                {text}
+              </Anchor>
+            ),
           })}
         </Text>
       </Stack>
