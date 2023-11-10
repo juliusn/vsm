@@ -2,9 +2,8 @@ import { ResetPasswordForm } from '@/app/components/ResetPasswordForm';
 import { Container } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
-export default function ResetPasswordPage({ title }: { title: string }) {
+export default function ResetPasswordPage() {
   const t = useTranslations('ResetPasswordPage');
-
   return (
     <Container size="20rem">
       <ResetPasswordForm
