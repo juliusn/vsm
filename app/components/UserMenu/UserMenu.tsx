@@ -13,6 +13,7 @@ import {
 } from '@tabler/icons-react';
 import { useRouter } from 'next-intl/client';
 import { useProfileStore } from '@/app/store';
+import { logout } from '@/app/actions';
 
 export function UserMenu({
   labelAccount,
@@ -27,7 +28,8 @@ export function UserMenu({
   labelRoles: string;
   labelLogout: string;
 }) {
-  const { profile } = useProfileStore();
+  const profile = useProfileStore((store) => store.profile);
+  const setProfile = useProfileStore((store) => store.setProfile);
   const router = useRouter();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -73,11 +75,10 @@ export function UserMenu({
     {
       handler: () => {
         startTransition(async () => {
-          const response = await fetch('/auth/logout', {
-            method: 'POST',
-          });
-          if (response.redirected) {
-            router.push(response.url);
+          const { error } = await logout();
+          if (!error) {
+            setProfile(null);
+            router.push('/login');
             router.refresh();
           }
         });
