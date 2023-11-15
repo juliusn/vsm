@@ -17,6 +17,9 @@ import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { IconSquareCheck, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
+import { useProfileStore } from '../store';
+import { useRouter } from 'next-intl/client';
+import { register } from '../actions';
 
 export function RegisterForm({
   labelReadToS,
@@ -73,7 +76,7 @@ export function RegisterForm({
   }
   const [tosComplete, setTosComplete] = useState(false);
   const [userNameAvailable, setUserNameAvailable] = useState(false);
-  const [userNameAvailibilityMessage, setUserNameAvailibilityMessage] =
+  const [userNameAvailibilityMessage, setUserNameAvailabilityMessage] =
     useState(null);
   const [
     userNameAvailibilityLoading,
@@ -82,7 +85,8 @@ export function RegisterForm({
       close: closeUserNameAvailibilityLoading,
     },
   ] = useDisclosure(false);
-  const [loading, { open: openLoading }] = useDisclosure(false);
+  const [loading, { open: openLoading, close: closeLoading }] =
+    useDisclosure(false);
   const [tosOpened, { open: openTos, close: closeTos }] = useDisclosure(false);
   const form = useForm<FormValues>({
     initialValues: {
@@ -106,15 +110,22 @@ export function RegisterForm({
     },
     validateInputOnBlur: true,
   });
+  const router = useRouter();
+  const setProfile = useProfileStore((store) => store.setProfile);
+  const handleRegister = async (formData: FormData) => {
+    const { profile } = await register(formData);
+    setProfile(profile);
+    closeLoading();
+    if (profile) {
+      router.push('/profile');
+      router.refresh();
+    }
+  };
   return (
     <>
-      <form action="/auth/register" method="post" onSubmit={openLoading}>
+      <form action={handleRegister} onSubmit={openLoading}>
         <Stack pos="relative">
-          <LoadingOverlay
-            visible={loading}
-            zIndex={1000}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-          />
+          <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm' }} />
           <Anchor onClick={openTos}>{labelReadToS}</Anchor>
           <Checkbox
             name="agreedToS"
@@ -156,7 +167,7 @@ export function RegisterForm({
                 {userNameAvailibilityMessage}
               </Text>
             </div>
-            <Box pos="relative">
+            <Box>
               <TextInput
                 name="userName"
                 placeholder={
@@ -167,10 +178,6 @@ export function RegisterForm({
                 disabled={!tosComplete || userNameAvailibilityLoading}
                 {...form.getInputProps('userName')}
               />
-              <LoadingOverlay
-                visible={userNameAvailibilityLoading}
-                loaderProps={{ size: 'sm' }}
-              />
             </Box>
           </div>
           <Button
@@ -179,7 +186,7 @@ export function RegisterForm({
             loading={userNameAvailibilityLoading}
             onClick={(event) => {
               event.preventDefault();
-              checkUserName();
+              handleCheckUserName();
             }}>
             {labelCheckUserName}
           </Button>
@@ -233,23 +240,23 @@ export function RegisterForm({
     </>
   );
 
-  async function checkUserName() {
+  async function handleCheckUserName() {
     if (form.validateField('userName').hasError) {
       return;
     }
     openUserNameAvailibilityLoading();
     setUserNameAvailable(false);
-    setUserNameAvailibilityMessage(null);
+    setUserNameAvailabilityMessage(null);
     const userName = form.getInputProps('userName').value;
     const response = await fetch(`/auth/check-username/${userName}/`);
     if (response.ok) {
       const { userExists, message } = await response.json();
       setUserNameAvailable(!userExists);
-      setUserNameAvailibilityMessage(message);
+      setUserNameAvailabilityMessage(message);
     } else {
       const { error } = await response.json();
       setUserNameAvailable(false);
-      setUserNameAvailibilityMessage(error);
+      setUserNameAvailabilityMessage(error);
     }
     closeUserNameAvailibilityLoading();
   }
