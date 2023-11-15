@@ -6,9 +6,7 @@ import {
   LoadingOverlay,
   PasswordInput,
   Stack,
-  Text,
   TextInput,
-  Title,
 } from '@mantine/core';
 import { IconLogin2 } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
@@ -18,31 +16,15 @@ import Link from 'next/link';
 import { login } from '../actions';
 import { useRouter } from 'next-intl/client';
 import { useProfileStore } from '../store';
+import { useTranslations } from 'next-intl';
 
 interface FormValues {
   email: string;
   password: string;
 }
 
-export function LoginForm({
-  title,
-  labelEmail,
-  labelValidateEmail,
-  labelPassword,
-  labelValidatePassword,
-  submit,
-  forgotPassword,
-  textNoAccount,
-}: {
-  title: string;
-  labelEmail: string;
-  labelValidateEmail: string;
-  labelPassword: string;
-  labelValidatePassword: string;
-  submit: string;
-  forgotPassword: string;
-  textNoAccount: React.ReactNode;
-}) {
+export function LoginForm() {
+  const t = useTranslations('LoginPage');
   const searchParams = useSearchParams();
   const [loading, { open: openLoading }] = useDisclosure(false);
   const form = useForm<FormValues>({
@@ -54,8 +36,8 @@ export function LoginForm({
       email: (value) =>
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
           ? null
-          : labelValidateEmail,
-      password: (value) => (value.length >= 8 ? null : labelValidatePassword),
+          : t('validate.email'),
+      password: (value) => (value.length >= 8 ? null : t('validate.password')),
     },
     validateInputOnBlur: true,
   });
@@ -74,17 +56,16 @@ export function LoginForm({
     <form action={handleRegister} onSubmit={openLoading}>
       <Stack pos="relative">
         <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm' }} />
-        <Title size="h4">{title}</Title>
         <TextInput
           name="email"
-          label={labelEmail}
-          placeholder={labelEmail}
+          label={t('email')}
+          placeholder={t('email')}
           {...form.getInputProps('email')}
         />
         <PasswordInput
           name="password"
-          label={labelPassword}
-          placeholder={labelPassword}
+          label={t('password')}
+          placeholder={t('password')}
           {...form.getInputProps('password')}
         />
         <Button
@@ -94,7 +75,7 @@ export function LoginForm({
           rightSection={<span className="w-6"></span>}
           justify="space-between"
           className="mt-2">
-          {submit}
+          {t('submit')}
         </Button>
         <Anchor
           component={Link}
@@ -104,9 +85,8 @@ export function LoginForm({
               query: { email: form.getInputProps('email').value },
             }),
           }}>
-          {forgotPassword}
+          {t('forgot')}
         </Anchor>
-        <Text>{textNoAccount}</Text>
       </Stack>
     </form>
   );

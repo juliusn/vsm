@@ -20,60 +20,19 @@ import { useState } from 'react';
 import { useProfileStore } from '../store';
 import { useRouter } from 'next-intl/client';
 import { register } from '../actions';
+import { useTranslations } from 'next-intl';
 
-export function RegisterForm({
-  labelReadToS,
-  labelAgreedToS,
-  tosHeader,
-  tos,
-  labelAccountType,
-  labelUserName,
-  placeHolderUserNamePersonal,
-  placeHolderUserNameShared,
-  labelCheckUserName,
-  labelPersonal,
-  labelShared,
-  labelAgree,
-  labelEmail,
-  labelPassword,
-  labelPasswordAgain,
-  labelSubmit,
-  labelValidateUserName,
-  labelValidateEmail,
-  labelValidatePassword,
-  labelValidatePasswordAgain,
-  labelValidateToS,
-}: {
-  labelReadToS: string;
-  labelAgreedToS: string;
-  tosHeader: string;
-  tos: string;
-  labelAccountType: string;
-  labelUserName: string;
-  placeHolderUserNamePersonal: string;
-  placeHolderUserNameShared: string;
-  labelCheckUserName: string;
-  labelPersonal: string;
-  labelShared: string;
-  labelAgree: string;
-  labelEmail: string;
-  labelPassword: string;
-  labelPasswordAgain: string;
-  labelSubmit: string;
-  labelValidateUserName: string;
-  labelValidateEmail: string;
-  labelValidatePassword: string;
-  labelValidatePasswordAgain: string;
-  labelValidateToS: string;
-}) {
-  interface FormValues {
-    userName: string;
-    accountType: 'personal' | 'shared';
-    email: string;
-    password: string;
-    passwordAgain: string;
-    agreeToS: boolean;
-  }
+interface FormValues {
+  userName: string;
+  accountType: 'personal' | 'shared';
+  email: string;
+  password: string;
+  passwordAgain: string;
+  agreeToS: boolean;
+}
+
+export function RegisterForm() {
+  const t = useTranslations('RegisterPage');
   const [tosComplete, setTosComplete] = useState(false);
   const [userNameAvailable, setUserNameAvailable] = useState(false);
   const [userNameAvailibilityMessage, setUserNameAvailabilityMessage] =
@@ -98,15 +57,15 @@ export function RegisterForm({
       agreeToS: false,
     },
     validate: {
-      userName: (value) => (value.length > 2 ? null : labelValidateUserName),
+      userName: (value) => (value.length > 2 ? null : t('validate.userName')),
       email: (value) =>
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
           ? null
-          : labelValidateEmail,
-      password: (value) => (value.length >= 8 ? null : labelValidatePassword),
+          : t('validate.email'),
+      password: (value) => (value.length >= 8 ? null : t('validate.password')),
       passwordAgain: (value, values) =>
-        value === values.password ? null : labelValidatePasswordAgain,
-      agreeToS: () => (tosComplete ? null : labelValidateToS),
+        value === values.password ? null : t('validate.passwordAgain'),
+      agreeToS: () => (tosComplete ? null : t('validate.tos')),
     },
     validateInputOnBlur: true,
   });
@@ -126,17 +85,17 @@ export function RegisterForm({
       <form action={handleRegister} onSubmit={openLoading}>
         <Stack pos="relative">
           <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm' }} />
-          <Anchor onClick={openTos}>{labelReadToS}</Anchor>
+          <Anchor onClick={openTos}>{t('readToS')}</Anchor>
           <Checkbox
             name="agreedToS"
             checked={tosComplete}
             disabled={!tosComplete}
-            label={labelAgreedToS}
+            label={t('agreedToS')}
             {...form.getInputProps('agreeToS')}
           />
           <div className="flex flex-col">
             <Text size="sm" fw={500} mt={3}>
-              {labelAccountType}
+              {t('accountType')}
             </Text>
             <SegmentedControl
               name="accountType"
@@ -144,11 +103,11 @@ export function RegisterForm({
               {...form.getInputProps('accountType')}
               data={[
                 {
-                  label: labelPersonal,
+                  label: t('personal'),
                   value: 'personal',
                 },
                 {
-                  label: labelShared,
+                  label: t('shared'),
                   value: 'shared',
                 },
               ]}
@@ -157,7 +116,7 @@ export function RegisterForm({
           <div className="flex flex-col">
             <div className="flex justify-between">
               <Text size="sm" fw={500} mt={3}>
-                {labelUserName}
+                {t('userName')}
               </Text>
               <Text
                 size="sm"
@@ -172,8 +131,8 @@ export function RegisterForm({
                 name="userName"
                 placeholder={
                   form.values.accountType === 'personal'
-                    ? placeHolderUserNamePersonal
-                    : placeHolderUserNameShared
+                    ? t('placeHolderUserNamePersonal')
+                    : t('placeHolderUserNameShared')
                 }
                 disabled={!tosComplete || userNameAvailibilityLoading}
                 {...form.getInputProps('userName')}
@@ -188,26 +147,26 @@ export function RegisterForm({
               event.preventDefault();
               handleCheckUserName();
             }}>
-            {labelCheckUserName}
+            {t('checkUserName')}
           </Button>
           <TextInput
             name="email"
-            label={labelEmail}
-            placeholder={labelEmail}
+            label={t('email')}
+            placeholder={t('email')}
             disabled={!tosComplete}
             {...form.getInputProps('email')}
           />
           <PasswordInput
             name="password"
-            label={labelPassword}
-            placeholder={labelPassword}
+            label={t('password')}
+            placeholder={t('password')}
             disabled={!tosComplete}
             {...form.getInputProps('password')}
           />
           <PasswordInput
             name="passwordAgain"
-            label={labelPasswordAgain}
-            placeholder={labelPassword}
+            label={t('passwordAgain')}
+            placeholder={t('password')}
             disabled={!tosComplete}
             {...form.getInputProps('passwordAgain')}
           />
@@ -218,13 +177,13 @@ export function RegisterForm({
             rightSection={<span className="w-6"></span>}
             justify="space-between"
             className="mt-2">
-            {labelSubmit}
+            {t('submit')}
           </Button>
         </Stack>
       </form>
-      <Modal opened={tosOpened} onClose={closeTos} title={tosHeader}>
+      <Modal opened={tosOpened} onClose={closeTos} title={t('tosHeader')}>
         <Stack>
-          {tos}
+          {t('tos')}
           <Button
             leftSection={<IconSquareCheck stroke={1.5} />}
             rightSection={<span className="w-6"></span>}
@@ -233,7 +192,7 @@ export function RegisterForm({
               setTosComplete(true);
               closeTos();
             }}>
-            {labelAgree}
+            {t('agree')}
           </Button>
         </Stack>
       </Modal>

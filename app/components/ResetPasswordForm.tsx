@@ -4,19 +4,11 @@ import { Button, LoadingOverlay, Stack, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMail } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
-export function ResetPasswordForm({
-  title,
-  labelEmail,
-  labelInvalidEmail,
-  submit,
-}: {
-  title: string;
-  labelEmail: string;
-  labelInvalidEmail: string;
-  submit: string;
-}) {
+export function ResetPasswordForm({}: {}) {
+  const t = useTranslations('ResetPasswordPage');
   const searchParams = useSearchParams();
   const form = useForm<{ email: string }>({
     initialValues: {
@@ -26,7 +18,7 @@ export function ResetPasswordForm({
       email: (value) =>
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
           ? null
-          : labelInvalidEmail,
+          : t('invalidEmail'),
     },
     validateInputOnBlur: true,
   });
@@ -38,11 +30,10 @@ export function ResetPasswordForm({
           visible={loading}
           overlayProps={{ radius: 'sm', blur: 2 }}
         />
-        <Title size="h4">{title}</Title>
         <TextInput
           name="email"
-          label={labelEmail}
-          placeholder={labelEmail}
+          label={t('email')}
+          placeholder={t('email')}
           {...form.getInputProps('email')}
         />
         <Button
@@ -52,7 +43,7 @@ export function ResetPasswordForm({
           rightSection={<span className="w-6"></span>}
           justify="space-between"
           className="mt-2">
-          {submit}
+          {t('submit')}
         </Button>
       </Stack>
     </form>

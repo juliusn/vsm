@@ -9,29 +9,7 @@ export default function RegisterPage() {
     <Container size="24rem">
       <Stack>
         <Title size="h4">{t('title')}</Title>
-        <RegisterForm
-          labelReadToS={t('readToS')}
-          labelAgreedToS={t('agreedToS')}
-          tosHeader={t('tosHeader')}
-          tos={t('tos')}
-          labelAccountType={t('accountType')}
-          labelUserName={t('userName')}
-          placeHolderUserNamePersonal={t('placeHolderUserNamePersonal')}
-          placeHolderUserNameShared={t('placeHolderUserNameShared')}
-          labelCheckUserName={t('checkUserName')}
-          labelPersonal={t('personal')}
-          labelShared={t('shared')}
-          labelAgree={t('agree')}
-          labelEmail={t('email')}
-          labelPassword={t('password')}
-          labelPasswordAgain={t('passwordAgain')}
-          labelSubmit={t('submit')}
-          labelValidateUserName={t('validate.userName')}
-          labelValidateEmail={t('validate.email')}
-          labelValidatePassword={t('validate.password')}
-          labelValidatePasswordAgain={t('validate.passwordAgain')}
-          labelValidateToS={t('validate.tos')}
-        />
+        <RegisterForm />
         <Text>
           {t.rich('alreadyHaveAccount', {
             link: (text) => (
