@@ -15,6 +15,10 @@ import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { login } from '../actions';
+import { useRouter } from 'next-intl/client';
+import { useProfileStore } from '../store';
+
 interface FormValues {
   email: string;
   password: string;
@@ -55,13 +59,21 @@ export function LoginForm({
     },
     validateInputOnBlur: true,
   });
+  const router = useRouter();
+  const setProfile = useProfileStore((store) => store.setProfile);
+  const handleRegister = async (formData: FormData) => {
+    const { profile, status } = await login(formData);
+    setProfile(profile);
+    if (status === 400) {
+      return;
+    }
+    router.push('/');
+    router.refresh();
+  };
   return (
-    <form action="/auth/login" method="post" onSubmit={openLoading}>
+    <form action={handleRegister} onSubmit={openLoading}>
       <Stack pos="relative">
-        <LoadingOverlay
-          visible={loading}
-          overlayProps={{ radius: 'sm', blur: 2 }}
-        />
+        <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm' }} />
         <Title size="h4">{title}</Title>
         <TextInput
           name="email"
