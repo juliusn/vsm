@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
-type Store = {
+type ProfileStore = {
   profile: Profile | null;
   setProfile: (profile: Profile | null) => void;
 };
 
-export const useProfileStore = create<Store>((set) => ({
+export const useProfileStore = create<ProfileStore>((set) => ({
   profile: null,
   setProfile: (profile) => {
     set(() => ({ profile }));

@@ -1,6 +1,7 @@
 import { ColorSchemeScript, Container, MantineProvider } from '@mantine/core';
 import '../globals.css';
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import { Metadata } from 'next';
 import { Header } from '@/app/components/Header/Header';
 import { NextIntlClientProvider, useTranslations } from 'next-intl';
@@ -13,6 +14,7 @@ import { ProfileStoreAdapter } from '../components/ProfileStoreAdapter';
 import { Modals } from '../components/Modals';
 import { getProfile, getUser } from '../actions';
 import { notFound } from 'next/navigation';
+import { Notifications } from '@mantine/notifications';
 
 export const metadata: Metadata = {
   title: 'VSM',
@@ -59,6 +61,7 @@ export default async function RootLayout({
             <HeaderContent user={user} />
             <Container>{children}</Container>
             <ModalsContent />
+            <Notifications autoClose={6000} />
           </MantineProvider>
         </NextIntlClientProvider>
       </body>
