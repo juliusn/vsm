@@ -1,7 +1,7 @@
 'use client';
 
+import { usePathname, useRouter } from '@/navigation';
 import { NavLink } from '@mantine/core';
-import { usePathname, useRouter } from 'next-intl/client';
 
 export function HeaderNavbarLinks({
   navItems,

@@ -1,94 +1,112 @@
 'use client';
 
-import { Avatar, Group, Menu, Text, UnstyledButton, rem } from '@mantine/core';
-import { useState, useTransition } from 'react';
+import {
+  Avatar,
+  Group,
+  LoadingOverlay,
+  Menu,
+  Text,
+  UnstyledButton,
+  rem,
+} from '@mantine/core';
+import { ReactNode, useState, useTransition } from 'react';
 import classes from './UserMenu.module.css';
 import cx from 'clsx';
 import {
+  IconCheck,
   IconChevronDown,
+  IconExclamationMark,
   IconLogout,
   IconSettings,
   IconUserCheck,
   IconUserCircle,
 } from '@tabler/icons-react';
-import { useRouter } from 'next-intl/client';
 import { useProfileStore } from '@/app/store';
-import { logout } from '@/app/actions';
+import { showNotification } from '@mantine/notifications';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/navigation';
+import { createClient } from '@/lib/supabase/client';
+type MenuItem = { label: string; icon: ReactNode; handler: () => void };
 
-export function UserMenu({
-  labelAccount,
-  labelSettings,
-  labelProfile,
-  labelRoles,
-  labelLogout,
-}: {
-  labelAccount: string;
-  labelSettings: string;
-  labelProfile: string;
-  labelRoles: string;
-  labelLogout: string;
-}) {
+export function UserMenu() {
+  const t = useTranslations('UserMenu');
+  const supabase = createClient();
   const profile = useProfileStore((store) => store.profile);
-  const setProfile = useProfileStore((store) => store.setProfile);
   const router = useRouter();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const items = [
+  const items: MenuItem[] = [
     {
-      handler: () => {
-        startTransition(() => router.push('/settings'));
-      },
+      label: t('settings'),
       icon: (
         <IconSettings
           style={{ width: rem(16), height: rem(16) }}
           stroke={1.5}
         />
       ),
-      label: labelSettings,
+      handler: () => {
+        startTransition(() => {
+          router.push('/settings');
+        });
+      },
     },
     {
-      handler: () => {
-        startTransition(() => router.push('/profile'));
-      },
+      label: t('profile'),
       icon: (
         <IconUserCircle
           style={{ width: rem(16), height: rem(16) }}
           stroke={1.5}
         />
       ),
-      label: labelProfile,
-    },
-    {
       handler: () => {
         startTransition(() => {
-          router.push('/roles');
+          router.push('/profile');
         });
       },
+    },
+    {
+      label: t('roles'),
       icon: (
         <IconUserCheck
           style={{ width: rem(16), height: rem(16) }}
           stroke={1.5}
         />
       ),
-      label: labelRoles,
-    },
-    {
       handler: () => {
-        startTransition(async () => {
-          const { error } = await logout();
-          if (!error) {
-            setProfile(null);
-            router.push('/login');
-            router.refresh();
-          }
+        startTransition(() => {
+          router.push('/roles');
         });
       },
+    },
+    {
+      label: t('logout'),
       icon: (
         <IconLogout style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
       ),
-      label: labelLogout,
+      handler: () => {
+        startTransition(async () => {
+          const { error } = await supabase.auth.signOut();
+          if (!error) {
+            showNotification({
+              title: t('bye'),
+              message: t('logoutMessage'),
+              icon: <IconCheck stroke={1.5} />,
+              color: 'green',
+            });
+            router.push('/login');
+          } else {
+            showNotification({
+              title: t('error'),
+              message: t('logoutError'),
+              icon: <IconExclamationMark stroke={1.5} />,
+              color: 'red',
+            });
+          }
+        });
+      },
     },
   ];
+
   return (
     <Menu
       position="bottom-end"
@@ -96,6 +114,7 @@ export function UserMenu({
       onOpen={() => setUserMenuOpened(true)}
       disabled={isPending}
       withinPortal>
+      <LoadingOverlay visible={isPending} />
       <Menu.Target>
         <UnstyledButton
           className={cx(classes.user, {
@@ -122,7 +141,7 @@ export function UserMenu({
         </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown>
-        <Menu.Label>{labelAccount}</Menu.Label>
+        <Menu.Label>{t('account')}</Menu.Label>
         {items.map(({ handler, icon, label }, i) => (
           <Menu.Item key={i} onClick={handler} leftSection={icon}>
             {label}

@@ -1,20 +1,13 @@
-import { ColorSchemeScript, Container, MantineProvider } from '@mantine/core';
 import '../globals.css';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import { ColorSchemeScript, Container, MantineProvider } from '@mantine/core';
 import { Metadata } from 'next';
-import { Header } from '@/app/components/Header/Header';
-import { NextIntlClientProvider, useTranslations } from 'next-intl';
-import { UserMenu } from '../components/UserMenu/UserMenu';
-import { User } from '@supabase/auth-helpers-nextjs';
-import { LanguageSelect } from '../components/LanguageSelect';
-import { LogoVanaheim } from '../components/LogoVanaheim';
-import { AuthNav } from '../components/AuthNav';
-import { ProfileStoreAdapter } from '../components/ProfileStoreAdapter';
-import { Modals } from '../components/Modals';
-import { getProfile, getUser } from '../actions';
+import { NextIntlClientProvider } from 'next-intl';
+import { AuthListener } from '../components/AuthListener';
 import { notFound } from 'next/navigation';
 import { Notifications } from '@mantine/notifications';
+import { HeaderContent } from '../components/HeaderContent';
 
 export const metadata: Metadata = {
   title: 'VSM',
@@ -40,12 +33,10 @@ export default async function RootLayout({
   } catch (error) {
     notFound();
   }
-  const user = await getUser();
-  const profile = user ? await getProfile(user) : null;
 
   return (
-    <html>
-      <ProfileStoreAdapter profile={profile} />
+    <html lang={locale}>
+      <AuthListener />
       <head>
         <link rel="shortcut icon" href="/favicon.svg" />
         <meta
@@ -58,57 +49,12 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <MantineProvider defaultColorScheme="auto">
-            <HeaderContent user={user} />
+            <HeaderContent />
             <Container>{children}</Container>
-            <ModalsContent />
             <Notifications autoClose={6000} />
           </MantineProvider>
         </NextIntlClientProvider>
       </body>
     </html>
-  );
-}
-
-function HeaderContent({ user }: { user: User | null }) {
-  const t = useTranslations('Header');
-  return (
-    <Header
-      labelHome={t('home')}
-      labelOrders={t('orders')}
-      labelMessages={t('messages')}>
-      <LanguageSelect />
-      <LogoVanaheim className="h-7 fill-gray-900 dark:fill-gray-300 hidden xs:block absolute left-1/2 -translate-x-1/2 top-4 md:top-12" />
-      {user ? <UserMenuContent /> : <AuthNavContent />}
-    </Header>
-  );
-}
-
-function UserMenuContent() {
-  const t = useTranslations('UserMenu');
-  return (
-    <UserMenu
-      labelAccount={t('account')}
-      labelSettings={t('settings')}
-      labelProfile={t('profile')}
-      labelRoles={t('roles')}
-      labelLogout={t('logout')}
-    />
-  );
-}
-
-function AuthNavContent() {
-  const t = useTranslations('AuthNav');
-  return (
-    <AuthNav
-      labelLoginButton={t('login')}
-      labelRegisterButton={t('register')}
-    />
-  );
-}
-
-function ModalsContent() {
-  const t = useTranslations('Modals');
-  return (
-    <Modals titleMessage={t('titleMessage')} titleError={t('titleError')} />
   );
 }

@@ -11,3 +11,15 @@ export const useProfileStore = create<ProfileStore>((set) => ({
     set(() => ({ profile }));
   },
 }));
+
+type EmailStore = {
+  email: string;
+  setEmail: (email: string) => void;
+};
+
+export const useEmailStore = create<EmailStore>((set) => ({
+  email: '',
+  setEmail: (email) => {
+    set(() => ({ email }));
+  },
+}));

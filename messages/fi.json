@@ -21,25 +21,30 @@
     "settings": "Asetukset",
     "profile": "Profiili",
     "roles": "Roolit",
-    "logout": "Kirjaudu Ulos"
+    "logout": "Kirjaudu Ulos",
+    "error": "Virhe",
+    "bye": "Näkemiin!",
+    "logoutMessage": "Uloskirjautuminen onnistui.",
+    "logoutError": "Uloskirjautuminen epäonnistui palvelinvirheen takia."
   },
-  "Modals": {
-    "titleMessage": "Valmis!",
-    "titleError": "Virhe!"
-  },
-  "LoginPage": {
+  "Login": {
     "title": "Kirjaudu sisään",
     "email": "Sähköposti",
     "password": "Salasana",
     "submit": "Kirjaudu",
     "forgot": "Unohtuiko salasana?",
     "noAccount": "Ei tunnuksia? <link>Rekisteröidy tästä!</link>",
+    "error": "Virhe",
+    "loginError": "Sähköposti tai salasana on virheellinen.",
+    "noProfileError": "Käyttäjäprofiilia ei löytynyt käyttäjätunnukselle {email}.",
+    "loggedIn": "Olet kirjautunut sisään",
+    "welcome": "Tervetuloa, {name}!",
     "validate": {
       "email": "Virheellinen sähköpostiosoite",
       "password": "Virheellinen salasana"
     }
   },
-  "RegisterPage": {
+  "Register": {
     "title": "Luo uusi käyttäjätunnus",
     "readToS": "Lue palvelun käyttöehdot",
     "tosHeader": "Palvelun käyttöehdot",
@@ -53,6 +58,8 @@
     "placeHolderUserNamePersonal": "Oikea nimesi",
     "placeHolderUserNameShared": "Tunnusta käyttävän ryhmän nimi",
     "checkUserName": "Tarkista käyttäjänimen saatavuus",
+    "available": "Käyttäjänimi on vapaa.",
+    "notAvailable": "Käyttäjänimi on varattu.",
     "email": "Sähköposti",
     "password": "Salasana",
     "passwordAgain": "Salasana uudelleen",
@@ -64,30 +71,52 @@
       "email": "Sähköpostiosoite on virheellinen",
       "password": "Salasanan tulee olla vähintään 8 merkkiä pitkä",
       "passwordAgain": "Salasanat eivät täsmää"
-    }
+    },
+    "error": "Virhe",
+    "checkUserNameError": "Käyttäjänimeä ei voitu tarkistaa palvelinvirheen takia.",
+    "signupError": "Käyttäjäunnusta ei voitu luoda palvelinvirheen takia.",
+    "accountCreated": "Käyttäjätunnus luotu.",
+    "checkYourEmail": "Tarkista sähköpostisi vahvistaaksesi tunnuksesi."
   },
-  "ResetPasswordPage": {
+  "ResetPassword": {
     "title": "Resetoi salasana",
     "email": "Sähköposti",
     "invalidEmail": "Virheellinen sähköposti",
-    "submit": "Lähetä linkki sähköpostiin"
+    "submit": "Lähetä linkki sähköpostiin",
+    "error": "Virhe",
+    "resetPasswordError": "Salasanaa ei voitu resetoida palvelinvirheen takia.",
+    "emailSent": "Sähköposti lähetetty",
+    "checkYourEmail": "Tarkista sähköpostisi resetoidaksesi salasanasi."
   },
-  "auth/register": {
-    "checkEmail": "Tarkista sähköpostisi vahvistaaksesi käyttäjätunnuksesi."
-  },
-  "auth/login": {
-    "invalidEmailOrPassword": "Väärä sähköposti tai salasana.",
-    "serverError": "Palvelinvirhe."
-  },
-  "auth/check-username": {
-    "available": "Käyttäjänimi on vapaa.",
-    "notAvailable": "Käyttäjänimi on varattu.",
-    "error": "Käyttäjänimeä ei voitu tarkistaa palvelinvirheen takia."
+  "UpdatePassword": {
+    "title": "Päivitä salasana",
+    "password": "Salasana",
+    "passwordAgain": "Salasana uudelleen",
+    "submit": "Päivitä",
+    "error": "Virhe",
+    "unavailableMessage": "Salasanan päivityspyyntöä ei voitu aloittaa. Pyyntö saattaa olla vanhentunut. Jos haluat resetoida salasanasi, <link>klikkaa tästä</link>!",
+    "validate": {
+      "password": "Salasanan tulee olla vähintään 8 merkkiä pitkä",
+      "passwordAgain": "Salasanat eivät täsmää"
+    },
+    "done": "Valmis!",
+    "passwordUpdated": "Salasanasi on päivitetty.",
+    "passwordShouldBeDifferentError": "Uusi salasana ei saa olla sama kuin vanha salasana.",
+    "serverError": "Salasanaa ei voitu päivittää palvelinvirheen takia."
   },
   "SettingsPage": {
-    "title": "Tunnuksen asetukset"
+    "title": "Tunnuksen asetukset",
+    "changePassword": "Vaihda salasana"
   },
   "ProfilePage": {
-    "title": "Käyttäjäprofiili"
+    "title": "Käyttäjäprofiili",
+    "userName": "Käyttäjän nimi",
+    "accountType": "Tunnuksen tyyppi",
+    "personal": "Henkilökohtainen",
+    "shared": "Jaettu",
+    "approvalStatus": "Hyväksynnän tila",
+    "approved": "Hyväksytty",
+    "rejected": "Hylätty",
+    "pending": "Odottaa"
   }
 }

@@ -1,10 +1,11 @@
-import { LoginForm } from '@/app/components/LoginForm';
-import { Anchor, Container, Stack, Text, Title } from '@mantine/core';
+import { LoginForm } from '@/app/[locale]/login/LoginForm';
+import { Link } from '@/navigation';
+import { Container, Stack, Text, Title } from '@mantine/core';
 import { useTranslations } from 'next-intl';
-import Link from 'next/link';
 
 export default function LoginPage() {
-  const t = useTranslations('LoginPage');
+  const t = useTranslations('Login');
+
   return (
     <Container size="20rem">
       <Stack>
@@ -12,11 +13,7 @@ export default function LoginPage() {
         <LoginForm />
         <Text>
           {t.rich('noAccount', {
-            link: (text) => (
-              <Anchor component={Link} href="/register">
-                {text}
-              </Anchor>
-            ),
+            link: (text) => <Link href="/register">{text}</Link>,
           })}
         </Text>
       </Stack>

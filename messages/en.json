@@ -21,25 +21,30 @@
     "settings": "Settings",
     "profile": "Profile",
     "roles": "Roles",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "error": "Error",
+    "bye": "Bye!",
+    "logoutMessage": "Logout successful.",
+    "logoutError": "Logout failed because of a server error."
   },
-  "Modals": {
-    "titleMessage": "Done!",
-    "titleError": "Error!"
-  },
-  "LoginPage": {
+  "Login": {
     "title": "Log In",
     "email": "Email",
     "password": "Password",
     "submit": "Log In",
     "forgot": "Forgot password?",
     "noAccount": "Don't have an account? <link>Register here!</link>",
+    "error": "Error",
+    "loginError": "Invalid email or password.",
+    "noProfileError": "Could not find a profile for user account {email}.",
+    "loggedIn": "You are now logged in",
+    "welcome": "Welcome, {name}!",
     "validate": {
       "email": "Invalid email address",
       "password": "Invalid password"
     }
   },
-  "RegisterPage": {
+  "Register": {
     "title": "Create a New Account",
     "readToS": "Read Terms of Service",
     "tosHeader": "Terms of Service",
@@ -53,6 +58,8 @@
     "placeHolderUserNamePersonal": "Your real name",
     "placeHolderUserNameShared": "Name of the group that has access to the account",
     "checkUserName": "Check user name availability",
+    "available": "User name is available.",
+    "notAvailable": "User name is not available.",
     "email": "Email",
     "password": "Password",
     "passwordAgain": "Re-enter password",
@@ -64,30 +71,52 @@
       "email": "Invalid email address",
       "password": "Password must be at least 8 characters long",
       "passwordAgain": "Passwords don't match"
-    }
+    },
+    "error": "Error",
+    "checkUserNameError": "Could not check user name because of a server error.",
+    "signupError": "Could not create the user account because of a server error.",
+    "accountCreated": "User account created.",
+    "checkYourEmail": "Check your email to confirm your account."
   },
-  "ResetPasswordPage": {
+  "ResetPassword": {
     "title": "Reset Password",
     "email": "Email",
     "invalidEmail": "Invalid email",
-    "submit": "Send link to my email"
+    "submit": "Send Link to My Email",
+    "error": "Error",
+    "resetPasswordError": "Password could not be reset because of a server error.",
+    "emailSent": "Email sent",
+    "checkYourEmail": "Check your email to reset your password."
   },
-  "auth/register": {
-    "checkEmail": "Check your email to confirm your account."
-  },
-  "auth/login": {
-    "invalidEmailOrPassword": "Invalid email or password.",
-    "serverError": "Server error."
-  },
-  "auth/check-username": {
-    "available": "User name is available.",
-    "notAvailable": "User name is not available.",
-    "error": "User name could not be checked because of a server error."
+  "UpdatePassword": {
+    "title": "Update Password",
+    "password": "Password",
+    "passwordAgain": "Re-enter password",
+    "submit": "Update",
+    "error": "Error",
+    "unavailableMessage": "Password update request cannot be initiated. The request may have expired. If you need to reset your password, <link>click here</link>!",
+    "validate": {
+      "password": "Password must be at least 8 characters long",
+      "passwordAgain": "Passwords don't match"
+    },
+    "done": "Done!",
+    "passwordUpdated": "Your password has been updated.",
+    "passwordShouldBeDifferentError": "New password should be different from the old password.",
+    "serverError": "Password could not be updated because of a server error."
   },
   "SettingsPage": {
-    "title": "Account Settings"
+    "title": "Account Settings",
+    "changePassword": "Change password"
   },
   "ProfilePage": {
-    "title": "User Profile"
+    "title": "User Profile",
+    "userName": "User Name",
+    "accountType": "Account Type",
+    "personal": "Personal",
+    "shared": "Shared",
+    "approvalStatus": "Approval Status",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "pending": "Pending"
   }
 }

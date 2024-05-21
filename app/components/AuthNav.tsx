@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname, useRouter } from '@/navigation';
 import { Group, Menu, Tabs, UnstyledButton } from '@mantine/core';
 import {
   IconChevronDown,
@@ -7,27 +8,22 @@ import {
   IconLogin2,
   IconUserPlus,
 } from '@tabler/icons-react';
-import { usePathname, useRouter } from 'next-intl/client';
+import { useTranslations } from 'next-intl';
 
-export function AuthNav({
-  labelLoginButton,
-  labelRegisterButton,
-}: {
-  labelLoginButton: string;
-  labelRegisterButton: string;
-}) {
+export function AuthNav() {
+  const t = useTranslations('AuthNav');
   const router = useRouter();
   const pathname = usePathname();
   const items = [
     {
       path: '/login',
       icon: IconLogin2,
-      label: labelLoginButton,
+      label: t('login'),
     },
     {
       path: '/register',
       icon: IconUserPlus,
-      label: labelRegisterButton,
+      label: t('register'),
     },
   ];
   return (
