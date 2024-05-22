@@ -36,7 +36,6 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <AuthListener />
       <head>
         <link rel="shortcut icon" href="/favicon.svg" />
         <meta
@@ -48,6 +47,7 @@ export default async function RootLayout({
       </head>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <AuthListener />
           <MantineProvider defaultColorScheme="auto">
             <HeaderContent />
             <Container>{children}</Container>

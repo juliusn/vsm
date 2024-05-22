@@ -8,15 +8,14 @@ import {
   Stack,
   TextInput,
 } from '@mantine/core';
-import { IconCheck, IconLogin2 } from '@tabler/icons-react';
+import { IconLogin2 } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { useEmailStore } from '../../store';
 import { useTranslations } from 'next-intl';
-import { showNotification } from '@mantine/notifications';
 import { Link, useRouter } from '@/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { startTransition, useState } from 'react';
+import { startTransition } from 'react';
 import { ErrorModal } from '@/app/components/ErrorModal';
 
 interface FormValues {
@@ -33,7 +32,6 @@ export function LoginForm() {
   const router = useRouter();
   const email = useEmailStore((store) => store.email);
   const setEmail = useEmailStore((store) => store.setEmail);
-  const [loginError, setLoginError] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -89,50 +87,26 @@ export function LoginForm() {
         opened={errorModalOpened}
         onClose={closeErrorModal}
         title={t('error')}>
-        {loginError}
+        {t('loginError')}
       </ErrorModal>
     </>
   );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setLoginError(null);
     openLoading();
     const { email, password } = form.values;
     const supabase = createClient();
-    const signInResponse = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (signInResponse.error) {
-      setLoginError(t('loginError'));
+    if (error) {
       closeLoading();
       openErrorModal();
       return;
     }
-
-    const profileResponse = await supabase
-      .from('profiles')
-      .select()
-      .eq('id', signInResponse.data.user.id)
-      .single();
-
-    if (profileResponse.error) {
-      setLoginError(t('noProfileError', { email }));
-      closeLoading();
-      openErrorModal();
-      return;
-    }
-
-    const data = profileResponse.data;
-
-    showNotification({
-      title: t('loggedIn'),
-      message: t('welcome', { name: data.user_name }),
-      icon: <IconCheck stroke={1.5} />,
-      color: 'green',
-    });
 
     startTransition(() => {
       router.push('/');

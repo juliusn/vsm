@@ -24,7 +24,6 @@
     "logout": "Kirjaudu Ulos",
     "error": "Virhe",
     "bye": "Näkemiin!",
-    "logoutMessage": "Uloskirjautuminen onnistui.",
     "logoutError": "Uloskirjautuminen epäonnistui palvelinvirheen takia."
   },
   "Login": {
@@ -37,8 +36,6 @@
     "error": "Virhe",
     "loginError": "Sähköposti tai salasana on virheellinen.",
     "noProfileError": "Käyttäjäprofiilia ei löytynyt käyttäjätunnukselle {email}.",
-    "loggedIn": "Olet kirjautunut sisään",
-    "welcome": "Tervetuloa, {name}!",
     "validate": {
       "email": "Virheellinen sähköpostiosoite",
       "password": "Virheellinen salasana"
@@ -118,5 +115,11 @@
     "approved": "Hyväksytty",
     "rejected": "Hylätty",
     "pending": "Odottaa"
+  },
+  "AuthListener": {
+    "loggedInTitle": "Olet kirjautunut sisään",
+    "loggedInMessage": "Tervetuloa, {name}!",
+    "loggedOutTitle": "Näkemiin!",
+    "loggedOutMessage": "Uloskirjautuminen onnistui."
   }
 }

@@ -23,8 +23,6 @@
     "roles": "Roles",
     "logout": "Log Out",
     "error": "Error",
-    "bye": "Bye!",
-    "logoutMessage": "Logout successful.",
     "logoutError": "Logout failed because of a server error."
   },
   "Login": {
@@ -37,8 +35,6 @@
     "error": "Error",
     "loginError": "Invalid email or password.",
     "noProfileError": "Could not find a profile for user account {email}.",
-    "loggedIn": "You are now logged in",
-    "welcome": "Welcome, {name}!",
     "validate": {
       "email": "Invalid email address",
       "password": "Invalid password"
@@ -118,5 +114,11 @@
     "approved": "Approved",
     "rejected": "Rejected",
     "pending": "Pending"
+  },
+  "AuthListener": {
+    "loggedInTitle": "You are now logged in",
+    "loggedInMessage": "Welcome, {name}!",
+    "loggedOutTitle": "Bye!",
+    "loggedOutMessage": "Logout successful."
   }
 }

@@ -13,7 +13,6 @@ import { ReactNode, useState, useTransition } from 'react';
 import classes from './UserMenu.module.css';
 import cx from 'clsx';
 import {
-  IconCheck,
   IconChevronDown,
   IconExclamationMark,
   IconLogout,
@@ -87,12 +86,6 @@ export function UserMenu() {
         startTransition(async () => {
           const { error } = await supabase.auth.signOut();
           if (!error) {
-            showNotification({
-              title: t('bye'),
-              message: t('logoutMessage'),
-              icon: <IconCheck stroke={1.5} />,
-              color: 'green',
-            });
             router.push('/login');
           } else {
             showNotification({
