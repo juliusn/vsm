@@ -4,9 +4,6 @@
     "english": "English",
     "finnish": "Finnish"
   },
-  "Index": {
-    "title": "Hello world!"
-  },
   "Header": {
     "home": "Home",
     "orders": "Orders",
@@ -120,5 +117,12 @@
     "loggedInMessage": "Welcome, {name}!",
     "loggedOutTitle": "Bye!",
     "loggedOutMessage": "Logout successful."
+  },
+  "Orders": {
+    "title": "Orders"
+  },
+  "NewOrder": {
+    "newOrder": "New Order",
+    "title": "Create a New Order"
   }
 }

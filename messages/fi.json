@@ -4,9 +4,6 @@
     "english": "Englanti",
     "finnish": "Suomi"
   },
-  "Index": {
-    "title": "Hei maailma!"
-  },
   "Header": {
     "home": "Koti",
     "orders": "Tilaukset",
@@ -23,7 +20,6 @@
     "roles": "Roolit",
     "logout": "Kirjaudu Ulos",
     "error": "Virhe",
-    "bye": "Näkemiin!",
     "logoutError": "Uloskirjautuminen epäonnistui palvelinvirheen takia."
   },
   "Login": {
@@ -121,5 +117,12 @@
     "loggedInMessage": "Tervetuloa, {name}!",
     "loggedOutTitle": "Näkemiin!",
     "loggedOutMessage": "Uloskirjautuminen onnistui."
+  },
+  "Orders": {
+    "title": "Tilaukset"
+  },
+  "NewOrder": {
+    "newOrder": "Uusi tilaus",
+    "title": "Luo uusi tilaus"
   }
 }
