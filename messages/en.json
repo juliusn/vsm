@@ -97,6 +97,13 @@
     "passwordShouldBeDifferentError": "New password should be different from the old password.",
     "serverError": "Password could not be updated because of a server error."
   },
+  "Confirm": {
+    "successTitle": "Confirmed",
+    "successMessage": "Your email has been confirmed. Your user profile still must be reviewed and approved by an admin. <link>Click here</link> to see your profile status.",
+    "warningTitle": "Authentication Required",
+    "authFlowWarningMessage": "It looks like you're trying to complete a registration process, but you're not signed in. Try to open the confirmation link in the original browser.",
+    "noCodeWarningMessage": "Could not confirm your account. Be sure to follow the confirmation link in your email."
+  },
   "SettingsPage": {
     "title": "Account Settings",
     "changePassword": "Change password"

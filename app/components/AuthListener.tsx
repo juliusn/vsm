@@ -14,21 +14,21 @@ export function AuthListener() {
   const t = useTranslations('AuthListener');
 
   useEffect(() => {
-    async function udpateProfile(id: string) {
+    const updateProfile = async (id: string) => {
       const { data } = await supabase
         .from('profiles')
         .select()
         .eq('id', id)
         .single();
       setProfile(data);
-    }
+    };
 
     const checkSession = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
       if (session?.user) {
-        await udpateProfile(session.user.id);
+        await updateProfile(session.user.id);
       } else {
         setProfile(null);
       }
@@ -49,7 +49,7 @@ export function AuthListener() {
               color: 'green',
             });
             setTimeout(async () => {
-              await udpateProfile(session.user.id);
+              await updateProfile(session.user.id);
             });
           }
         } else if (event === 'SIGNED_OUT') {
@@ -67,6 +67,6 @@ export function AuthListener() {
     return () => {
       authListener?.subscription.unsubscribe();
     };
-  }, [setProfile, profile?.id, t, supabase]);
+  }, [setProfile, profile, t, supabase]);
   return null;
 }

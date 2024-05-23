@@ -47,8 +47,8 @@ export default async function RootLayout({
       </head>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthListener />
           <MantineProvider defaultColorScheme="auto">
+            <AuthListener />
             <HeaderContent />
             <Container>{children}</Container>
             <Notifications autoClose={6000} />

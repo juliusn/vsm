@@ -119,7 +119,7 @@ export function RegisterForm() {
     event.preventDefault();
     openLoading();
     const { email, password, accountType, userName } = form.values;
-    const redirectUrl = new URL(`/${locale}/profile`, window.location.origin);
+    const redirectUrl = new URL(`/${locale}/confirm`, window.location.origin);
 
     const response = await supabase.auth.signUp({
       email,

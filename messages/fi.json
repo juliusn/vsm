@@ -97,6 +97,13 @@
     "passwordShouldBeDifferentError": "Uusi salasana ei saa olla sama kuin vanha salasana.",
     "serverError": "Salasanaa ei voitu päivittää palvelinvirheen takia."
   },
+  "Confirm": {
+    "successTitle": "Vahvistettu",
+    "successMessage": "Sähköpostisi on vahvistettu. Ylläpidon pitää vielä tarkastaa ja hyväksyä käyttäjäprofiilisi. <link>Klikkaa tästä</link> nähdäksesi profiilisi tilan.",
+    "warningTitle": "Tunnistautuminen vaaditaan",
+    "authFlowWarningMessage": "Näyttää siltä, että yrität viimeistellä käyttäjätunnuksen rekisteröintiä, mutta et ole kirjautuneena sisään. Koita avata vahvistuslinkki alkuperäisessä selaimessa.",
+    "noCodeWarningMessage": "Käyttäjätunnusta ei voitu vahvistaa. Käytäthän sähköpostiisi lähetettyä linkkiä."
+  },
   "SettingsPage": {
     "title": "Tunnuksen asetukset",
     "changePassword": "Vaihda salasana"
