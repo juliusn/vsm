@@ -104,6 +104,10 @@
     "authFlowWarningMessage": "It looks like you're trying to complete a registration process, but you're not signed in. Try to open the confirmation link in the original browser.",
     "noCodeWarningMessage": "Could not confirm your account. Be sure to follow the confirmation link in your email."
   },
+  "AuthCodeError": {
+    "title": "Authentication Error",
+    "message": "We encountered an issue while verifying your authentication code. This might have happened due to an expired verification link."
+  },
   "SettingsPage": {
     "title": "Account Settings",
     "changePassword": "Change password"

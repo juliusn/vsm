@@ -104,6 +104,10 @@
     "authFlowWarningMessage": "Näyttää siltä, että yrität viimeistellä käyttäjätunnuksen rekisteröintiä, mutta et ole kirjautuneena sisään. Koita avata vahvistuslinkki alkuperäisessä selaimessa.",
     "noCodeWarningMessage": "Käyttäjätunnusta ei voitu vahvistaa. Käytäthän sähköpostiisi lähetettyä linkkiä."
   },
+  "AuthCodeError": {
+    "title": "Virhe tunnistautumisessa",
+    "message": "Tunnistautumiskoodin varmentamisessa tapahtui virhe. Varmistuslinkki saattaa olla virheellinen tai vanhentunut."
+  },
   "SettingsPage": {
     "title": "Tunnuksen asetukset",
     "changePassword": "Vaihda salasana"
