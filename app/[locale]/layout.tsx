@@ -4,7 +4,6 @@ import '@mantine/notifications/styles.css';
 import { ColorSchemeScript, Container, MantineProvider } from '@mantine/core';
 import { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
-import { AuthListener } from '../components/AuthListener';
 import { notFound } from 'next/navigation';
 import { Notifications } from '@mantine/notifications';
 import { HeaderContent } from '../components/HeaderContent';
@@ -48,7 +47,6 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <MantineProvider defaultColorScheme="auto">
-            <AuthListener />
             <HeaderContent />
             <Container>{children}</Container>
             <Notifications autoClose={6000} />
