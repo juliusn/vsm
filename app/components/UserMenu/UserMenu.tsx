@@ -31,6 +31,7 @@ export function UserMenu() {
   const t = useTranslations('UserMenu');
   const supabase = createClient();
   const session = useSessionStore((store) => store.session);
+  const setSession = useSessionStore((store) => store.setSession);
   const router = useRouter();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -87,6 +88,8 @@ export function UserMenu() {
           const { error } = await supabase.auth.signOut();
           if (!error) {
             router.push('/login');
+          } else if (error.status === 403) {
+            setSession(null);
           } else {
             showNotification({
               title: t('error'),
