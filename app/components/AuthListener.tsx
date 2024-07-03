@@ -11,6 +11,7 @@ export function AuthListener() {
   const setSession = useSessionStore((state) => state.setSession);
   const supabase = createClient();
   const currentJWTRef = useRef<string | null>(null);
+  const initialLoadRef = useRef(true);
   const t = useTranslations('AuthListener');
 
   useEffect(() => {
@@ -24,27 +25,34 @@ export function AuthListener() {
           if (session && session.access_token !== currentJWTRef.current) {
             currentJWTRef.current = session.access_token;
             setSession(session);
-            showNotification({
-              title: t('loggedInTitle'),
-              message: t.rich('loggedInMessage', {
-                name: session.user.user_metadata.user_name,
-              }),
-              icon: <IconCheck stroke={1.5} />,
-              color: 'green',
-            });
+            if (!initialLoadRef.current) {
+              showNotification({
+                title: t('loggedInTitle'),
+                message: t.rich('loggedInMessage', {
+                  name: session.user.user_metadata.user_name,
+                }),
+                icon: <IconCheck stroke={1.5} />,
+                color: 'green',
+              });
+            }
           }
         } else if (event === 'SIGNED_OUT') {
           if (currentJWTRef.current) {
             currentJWTRef.current = null;
             setSession(null);
-
-            showNotification({
-              title: t('loggedOutTitle'),
-              message: t('loggedOutMessage'),
-              icon: <IconCheck stroke={1.5} />,
-              color: 'green',
-            });
+            if (!initialLoadRef.current) {
+              showNotification({
+                title: t('loggedOutTitle'),
+                message: t('loggedOutMessage'),
+                icon: <IconCheck stroke={1.5} />,
+                color: 'green',
+              });
+            }
           }
+        }
+
+        if (initialLoadRef.current) {
+          initialLoadRef.current = false;
         }
       }
     );
