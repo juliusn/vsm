@@ -7,6 +7,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { Notifications } from '@mantine/notifications';
 import { HeaderContent } from '../components/HeaderContent';
+import { AuthListener } from '../components/AuthListener';
 
 export const metadata: Metadata = {
   title: 'VSM',
@@ -47,6 +48,7 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <MantineProvider defaultColorScheme="auto">
+            <AuthListener />
             <HeaderContent />
             <Container>{children}</Container>
             <Notifications autoClose={6000} />

@@ -1,72 +1,43 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useProfileStore } from '../store';
+import { useEffect, useRef } from 'react';
+import { useSessionStore } from '../store';
 import { createClient } from '@/lib/supabase/client';
-import { showNotification } from '@mantine/notifications';
-import { useTranslations } from 'next-intl';
-import { IconCheck } from '@tabler/icons-react';
+import { Session } from '@supabase/supabase-js';
 
 export function AuthListener() {
-  const setProfile = useProfileStore((state) => state.setProfile);
-  const profile = useProfileStore((state) => state.profile);
+  const setSession = useSessionStore((state) => state.setSession);
   const supabase = createClient();
-  const t = useTranslations('AuthListener');
+  const currentSessionRef = useRef<Session | null>(null);
 
   useEffect(() => {
-    const updateProfile = async (id: string) => {
-      const { data } = await supabase
-        .from('profiles')
-        .select()
-        .eq('id', id)
-        .single();
-      setProfile(data);
-    };
-
-    const checkSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.user) {
-        await updateProfile(session.user.id);
-      } else {
-        setProfile(null);
-      }
-    };
-
-    checkSession();
-
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-          if (profile?.id !== session.user.id) {
-            showNotification({
-              title: t('loggedInTitle'),
-              message: t('loggedInMessage', {
-                name: session.user.user_metadata.user_name,
-              }),
-              icon: <IconCheck stroke={1.5} />,
-              color: 'green',
-            });
-            setTimeout(async () => {
-              await updateProfile(session.user.id);
-            });
+        if (
+          event === 'SIGNED_IN' ||
+          event === 'INITIAL_SESSION' ||
+          event === 'TOKEN_REFRESHED'
+        ) {
+          if (
+            session &&
+            session.access_token !== currentSessionRef.current?.access_token
+          ) {
+            currentSessionRef.current = session;
+            setSession(session);
           }
         } else if (event === 'SIGNED_OUT') {
-          showNotification({
-            title: t('loggedOutTitle'),
-            message: t('loggedOutMessage'),
-            icon: <IconCheck stroke={1.5} />,
-            color: 'green',
-          });
-          setProfile(null);
+          if (currentSessionRef.current) {
+            currentSessionRef.current = null;
+            setSession(null);
+          }
         }
       }
     );
 
     return () => {
-      authListener?.subscription.unsubscribe();
+      authListener.subscription.unsubscribe();
     };
-  }, [setProfile, profile, t, supabase]);
+  }, [setSession, supabase]);
+
   return null;
 }
