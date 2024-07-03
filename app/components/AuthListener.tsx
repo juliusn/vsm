@@ -3,12 +3,15 @@
 import { useEffect, useRef } from 'react';
 import { useSessionStore } from '../store';
 import { createClient } from '@/lib/supabase/client';
-import { Session } from '@supabase/supabase-js';
+import { showNotification } from '@mantine/notifications';
+import { useTranslations } from 'next-intl';
+import { IconCheck } from '@tabler/icons-react';
 
 export function AuthListener() {
   const setSession = useSessionStore((state) => state.setSession);
   const supabase = createClient();
-  const currentSessionRef = useRef<Session | null>(null);
+  const currentJWTRef = useRef<string | null>(null);
+  const t = useTranslations('AuthListener');
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -18,17 +21,29 @@ export function AuthListener() {
           event === 'INITIAL_SESSION' ||
           event === 'TOKEN_REFRESHED'
         ) {
-          if (
-            session &&
-            session.access_token !== currentSessionRef.current?.access_token
-          ) {
-            currentSessionRef.current = session;
+          if (session && session.access_token !== currentJWTRef.current) {
+            currentJWTRef.current = session.access_token;
             setSession(session);
+            showNotification({
+              title: t('loggedInTitle'),
+              message: t.rich('loggedInMessage', {
+                name: session.user.user_metadata.user_name,
+              }),
+              icon: <IconCheck stroke={1.5} />,
+              color: 'green',
+            });
           }
         } else if (event === 'SIGNED_OUT') {
-          if (currentSessionRef.current) {
-            currentSessionRef.current = null;
+          if (currentJWTRef.current) {
+            currentJWTRef.current = null;
             setSession(null);
+
+            showNotification({
+              title: t('loggedOutTitle'),
+              message: t('loggedOutMessage'),
+              icon: <IconCheck stroke={1.5} />,
+              color: 'green',
+            });
           }
         }
       }
@@ -37,7 +52,7 @@ export function AuthListener() {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [setSession, supabase]);
+  }, [setSession, supabase, t]);
 
   return null;
 }
