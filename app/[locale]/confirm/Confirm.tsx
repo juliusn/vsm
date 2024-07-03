@@ -1,6 +1,6 @@
 'use client';
 
-import { useProfileStore } from '@/app/store';
+import { useSessionStore } from '@/app/store';
 import { Link } from '@/navigation';
 import { Alert } from '@mantine/core';
 import { IconExclamationCircle, IconMailCheck } from '@tabler/icons-react';
@@ -11,7 +11,7 @@ export function Confirm() {
   const params = useSearchParams();
   const code = params.get('code');
   const t = useTranslations('Confirm');
-  const profile = useProfileStore((state) => state.profile);
+  const profile = useSessionStore((state) => state.session);
 
   return profile ? (
     <Alert

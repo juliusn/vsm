@@ -3,12 +3,12 @@
 import { Header } from './Header/Header';
 import { LanguageSelect } from './LanguageSelect';
 import { LogoVanaheim } from './LogoVanaheim';
-import { useProfileStore } from '../store';
+import { useSessionStore } from '../store';
 import { UserMenu } from './UserMenu/UserMenu';
 import { AuthNav } from './AuthNav';
 
 export function HeaderContent() {
-  const profile = useProfileStore((store) => store.profile);
+  const profile = useSessionStore((store) => store.session);
   return (
     <Header>
       <LanguageSelect />

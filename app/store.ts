@@ -1,14 +1,15 @@
+import { Session } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
-type ProfileStore = {
-  profile: Profile | null;
-  setProfile: (profile: Profile | null) => void;
+type SessionStore = {
+  session: Session | null;
+  setSession: (session: Session | null) => void;
 };
 
-export const useProfileStore = create<ProfileStore>((set) => ({
-  profile: null,
-  setProfile: (profile) => {
-    set(() => ({ profile }));
+export const useSessionStore = create<SessionStore>((set) => ({
+  session: null,
+  setSession: (session) => {
+    set(() => ({ session }));
   },
 }));
 

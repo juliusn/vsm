@@ -20,7 +20,7 @@ import {
   IconUserCheck,
   IconUserCircle,
 } from '@tabler/icons-react';
-import { useProfileStore } from '@/app/store';
+import { useSessionStore } from '@/app/store';
 import { showNotification } from '@mantine/notifications';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/navigation';
@@ -30,7 +30,7 @@ type MenuItem = { label: string; icon: ReactNode; handler: () => void };
 export function UserMenu() {
   const t = useTranslations('UserMenu');
   const supabase = createClient();
-  const profile = useProfileStore((store) => store.profile);
+  const session = useSessionStore((store) => store.session);
   const router = useRouter();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -116,14 +116,16 @@ export function UserMenu() {
           <Group gap={7}>
             <Avatar
               src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
-              alt={`${profile?.user_name}`}
+              alt={`${session?.user.user_metadata.user_name}`}
               radius="xl"
               size={20}
             />
             <Text fw={500} size="sm" lh={1} mr={3}>
-              <span className="hidden sm:inline">{profile?.user_name}</span>
+              <span className="hidden sm:inline">
+                {session?.user.user_metadata.user_name}
+              </span>
               <span className="sm:hidden">
-                {profile?.user_name.split(' ')[0]}
+                {session?.user.user_metadata.user_name.split(' ')[0]}
               </span>
             </Text>
             <IconChevronDown
