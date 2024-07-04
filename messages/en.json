@@ -108,7 +108,7 @@
     "title": "Authentication Error",
     "message": "We encountered an issue while verifying your authentication code. This might have happened due to an expired verification link."
   },
-  "SettingsPage": {
+  "Settings": {
     "title": "Account Settings",
     "changePassword": "Change password"
   },

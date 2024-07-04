@@ -1,4 +1,4 @@
-import { Container, Stack, Title } from '@mantine/core';
+import { Title } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 import { UpdatePasswordForm } from './UpdatePasswordForm';
 
@@ -10,11 +10,9 @@ function UpdatePasswordContent() {
   const t = useTranslations('UpdatePassword');
 
   return (
-    <Container size="20rem">
-      <Stack>
-        <Title size="h4">{t('title')}</Title>
-        <UpdatePasswordForm />
-      </Stack>
-    </Container>
+    <>
+      <Title size="h5">{t('title')}</Title>
+      <UpdatePasswordForm />
+    </>
   );
 }

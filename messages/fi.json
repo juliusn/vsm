@@ -108,7 +108,7 @@
     "title": "Virhe tunnistautumisessa",
     "message": "Tunnistautumiskoodin varmentamisessa tapahtui virhe. Varmistuslinkki saattaa olla virheellinen tai vanhentunut."
   },
-  "SettingsPage": {
+  "Settings": {
     "title": "Tunnuksen asetukset",
     "changePassword": "Vaihda salasana"
   },

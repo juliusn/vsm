@@ -76,7 +76,10 @@ export function ResetPasswordForm() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const email = String(formData.get('email'));
-    const url = new URL(`/${locale}/update-password`, window.location.origin);
+    const url = new URL(
+      `/${locale}/settings/update-password`,
+      window.location.origin
+    );
 
     openLoading();
 
