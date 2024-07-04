@@ -110,7 +110,9 @@
   },
   "Settings": {
     "title": "Tunnuksen asetukset",
-    "changePassword": "Vaihda salasana"
+    "settingsMenu": "Asetusvalikko",
+    "changePassword": "Päivitä salasana",
+    "deleteAccount": "Poista käyttäjätunnus"
   },
   "ProfilePage": {
     "title": "Käyttäjäprofiili",

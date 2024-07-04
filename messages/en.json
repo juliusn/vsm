@@ -110,7 +110,9 @@
   },
   "Settings": {
     "title": "Account Settings",
-    "changePassword": "Change password"
+    "settingsMenu": "Settings menu",
+    "changePassword": "Update password",
+    "deleteAccount": "Delete account"
   },
   "ProfilePage": {
     "title": "User Profile",
