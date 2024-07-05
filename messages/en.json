@@ -114,6 +114,19 @@
     "changePassword": "Update password",
     "deleteAccount": "Delete account"
   },
+  "DeleteAccountPage": {
+    "cautionTitle": "Caution!",
+    "cautionMessage": "You are about to delete your user account. Your personal information and user profile will be removed from the service.",
+    "iUnderstand": "I understand",
+    "delete": "Delete",
+    "confirmationTitle": "Confirm delete user account",
+    "confirmationMessage": "Are you sure?",
+    "cancel": "Cancel",
+    "errorTitle": "Error",
+    "errorMessage": "An unexpected error occurred while trying to delete your account.",
+    "successTitle": "Done!",
+    "successMessage": "Your user account has been deleted from the service."
+  },
   "ProfilePage": {
     "title": "User Profile",
     "userName": "User Name",

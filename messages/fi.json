@@ -114,6 +114,19 @@
     "changePassword": "Päivitä salasana",
     "deleteAccount": "Poista käyttäjätunnus"
   },
+  "DeleteAccountPage": {
+    "cautionTitle": "Huomio!",
+    "cautionMessage": "Olet poistamassa käyttäjätunnuksesi. Henkilökohtaiset tietosi ja käyttäjäprofiilisi poistetaan palvelusta.",
+    "iUnderstand": "Ymmärrän",
+    "delete": "Poista",
+    "confirmationTitle": "Vahvista käyttäjätunnuksen poistaminen",
+    "confirmationMessage": "Oletko varma?",
+    "cancel": "Peruuta",
+    "errorTitle": "Virhe",
+    "errorMessage": "Tunnustasi poistaessa tapahtui odottamaton virhe.",
+    "successTitle": "Valmis!",
+    "successMessage": "Käyttäjätunnuksesi on poistettu palvelusta."
+  },
   "ProfilePage": {
     "title": "Käyttäjäprofiili",
     "userName": "Käyttäjän nimi",
