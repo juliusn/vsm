@@ -2,7 +2,6 @@
 
 import {
   Anchor,
-  Box,
   Button,
   Checkbox,
   Fieldset,
@@ -10,28 +9,20 @@ import {
   LoadingOverlay,
   Modal,
   PasswordInput,
-  SegmentedControl,
   Stack,
-  Text,
   TextInput,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
-import {
-  IconCheck,
-  IconExclamationMark,
-  IconSquareCheck,
-  IconUserPlus,
-} from '@tabler/icons-react';
+import { IconCheck, IconSquareCheck, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { showNotification } from '@mantine/notifications';
 import { createClient } from '@/lib/supabase/client';
 import { ErrorModal } from '@/app/components/ErrorModal';
 
 interface FormValues {
-  userName: string;
-  accountType: 'personal' | 'shared';
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   passwordAgain: string;
@@ -42,9 +33,6 @@ export function RegisterForm() {
   const t = useTranslations('Register');
   const supabase = createClient();
   const [tosComplete, setTosComplete] = useState<boolean>(false);
-  const [userNameAvailable, setUserNameAvailable] = useState(false);
-  const [userNameAvailabilityMessage, setUserNameAvailabilityMessage] =
-    useState<string | null>(null);
   const [formDisabled, setFormDisabled] = useState(false);
   const [
     accountCreatedModalOpened,
@@ -54,28 +42,23 @@ export function RegisterForm() {
     useDisclosure(false);
   const [errorModalOpened, { open: openErrorModal, close: closeErrorModal }] =
     useDisclosure(false);
-  const [
-    userNameAvailabilityLoading,
-    { open: startUserNameLoading, close: stopUserNameLoading },
-  ] = useDisclosure(false);
+
   const [loading, { open: openLoading, close: closeLoading }] =
     useDisclosure(false);
 
   const form = useForm<FormValues>({
     initialValues: {
-      userName: '',
-      accountType: 'personal',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       passwordAgain: '',
       agreeToS: false,
     },
     validate: {
-      userName: (value) => (value.length > 2 ? null : t('validate.userName')),
-      email: (value) =>
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
-          ? null
-          : t('validate.email'),
+      firstName: isNotEmpty(t('validate.required')),
+      lastName: isNotEmpty(t('validate.required')),
+      email: isEmail(t('validate.email')),
       password: (value) => (value.length >= 8 ? null : t('validate.password')),
       passwordAgain: (value, values) =>
         value === values.password ? null : t('validate.passwordAgain'),
@@ -84,48 +67,18 @@ export function RegisterForm() {
     validateInputOnBlur: true,
   });
 
-  async function handleCheckUserName() {
-    if (form.validateField('userName').hasError) {
-      return;
-    }
-    startUserNameLoading();
-    setUserNameAvailable(false);
-    setUserNameAvailabilityMessage(null);
-    const userName = form.getInputProps('userName').value;
-    const response = await supabase
-      .from('profiles')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_name', userName);
-
-    if (response.error) {
-      setUserNameAvailable(false);
-      showNotification({
-        title: t('error'),
-        message: t('checkUserNameError'),
-        icon: <IconExclamationMark stroke={1.5} />,
-        color: 'red',
-      });
-    }
-
-    const userNameIsAvailable = response.count === 0;
-    setUserNameAvailable(userNameIsAvailable);
-    const message = userNameIsAvailable ? t('available') : t('notAvailable');
-    setUserNameAvailabilityMessage(message);
-    stopUserNameLoading();
-  }
-
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     openLoading();
-    const { email, password, accountType, userName } = form.values;
+    const { firstName, lastName, email, password } = form.values;
 
     const response = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          account_type: accountType,
-          user_name: userName,
+          first_name: firstName,
+          last_name: lastName,
         },
       },
     });
@@ -153,68 +106,18 @@ export function RegisterForm() {
               label={t('agreedToS')}
               {...form.getInputProps('agreeToS')}
             />
-            <div className="flex flex-col">
-              <Text size="sm" fw={500} mt={3}>
-                {t('accountType')}
-              </Text>
-              <SegmentedControl
-                name="accountType"
-                disabled={!tosComplete}
-                {...form.getInputProps('accountType')}
-                data={[
-                  {
-                    label: t('personal'),
-                    value: 'personal',
-                  },
-                  {
-                    label: t('shared'),
-                    value: 'shared',
-                  },
-                ]}
-              />
-            </div>
-            <div className="flex flex-col">
-              <div className="flex justify-between">
-                <Text size="sm" fw={500} mt={3}>
-                  {t('userName')}
-                </Text>
-                <Text
-                  size="sm"
-                  fw={500}
-                  mt={3}
-                  c={userNameAvailable ? 'green' : 'red'}>
-                  {userNameAvailabilityMessage}
-                </Text>
-              </div>
-              <Box>
-                <TextInput
-                  name="userName"
-                  placeholder={
-                    form.values.accountType === 'personal'
-                      ? t('placeHolderUserNamePersonal')
-                      : t('placeHolderUserNameShared')
-                  }
-                  disabled={!tosComplete || userNameAvailabilityLoading}
-                  {...form.getInputProps('userName')}
-                  onChange={(event) => {
-                    setUserNameAvailabilityMessage(null);
-                    form.setFieldValue('userName', event.target.value);
-                  }}
-                />
-              </Box>
-            </div>
-            <Button
-              variant="outline"
-              disabled={!tosComplete || userNameAvailabilityLoading}
-              loading={userNameAvailabilityLoading}
-              onClick={handleCheckUserName}
-              styles={{
-                label: {
-                  overflow: 'visible',
-                },
-              }}>
-              {t('checkUserName')}
-            </Button>
+            <TextInput
+              name="firstName"
+              label={t('firstName')}
+              disabled={!tosComplete}
+              {...form.getInputProps('firstName')}
+            />
+            <TextInput
+              name="lastName"
+              label={t('lastName')}
+              disabled={!tosComplete}
+              {...form.getInputProps('lastName')}
+            />
             <TextInput
               name="email"
               label={t('email')}

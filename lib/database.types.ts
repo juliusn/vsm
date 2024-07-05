@@ -11,28 +11,28 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
-          account_type: Database["public"]["Enums"]["account_type_enum"]
           approval_status: Database["public"]["Enums"]["approval_status_enum"]
           approval_status_set_by: string | null
+          first_name: string
           id: string
+          last_name: string | null
           updated_at: string | null
-          user_name: string
         }
         Insert: {
-          account_type?: Database["public"]["Enums"]["account_type_enum"]
           approval_status?: Database["public"]["Enums"]["approval_status_enum"]
           approval_status_set_by?: string | null
+          first_name: string
           id: string
+          last_name?: string | null
           updated_at?: string | null
-          user_name: string
         }
         Update: {
-          account_type?: Database["public"]["Enums"]["account_type_enum"]
           approval_status?: Database["public"]["Enums"]["approval_status_enum"]
           approval_status_set_by?: string | null
+          first_name?: string
           id?: string
+          last_name?: string | null
           updated_at?: string | null
-          user_name?: string
         }
         Relationships: [
           {
@@ -59,7 +59,6 @@ export type Database = {
       }
     }
     Enums: {
-      account_type_enum: "personal" | "shared"
       approval_status_enum: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {

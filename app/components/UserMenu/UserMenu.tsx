@@ -111,33 +111,34 @@ export function UserMenu() {
       disabled={isPending}
       withinPortal>
       <LoadingOverlay visible={isPending} />
-      <Menu.Target>
-        <UnstyledButton
-          className={cx(classes.user, {
-            [classes.userActive]: userMenuOpened,
-          })}>
-          <Group gap={7}>
-            <Avatar
-              src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
-              alt={`${session?.user.user_metadata.user_name}`}
-              radius="xl"
-              size={20}
-            />
-            <Text fw={500} size="sm" lh={1} mr={3}>
-              <span className="hidden sm:inline">
-                {session?.user.user_metadata.user_name}
-              </span>
-              <span className="sm:hidden">
-                {session?.user.user_metadata.user_name.split(' ')[0]}
-              </span>
-            </Text>
-            <IconChevronDown
-              style={{ width: rem(12), height: rem(12) }}
-              stroke={1.5}
-            />
-          </Group>
-        </UnstyledButton>
-      </Menu.Target>
+      {session && (
+        <Menu.Target>
+          <UnstyledButton
+            className={cx(classes.user, {
+              [classes.userActive]: userMenuOpened,
+            })}>
+            <Group gap={7}>
+              <Avatar
+                src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
+                alt={`${session?.user.user_metadata.first_name}`}
+                radius="xl"
+                size={20}
+              />
+              <Text fw={500} size="sm" lh={1} mr={3}>
+                {session.user.user_metadata.first_name}
+                <span className="hidden sm:inline">
+                  {' '}
+                  {session.user.user_metadata.last_name}
+                </span>
+              </Text>
+              <IconChevronDown
+                style={{ width: rem(12), height: rem(12) }}
+                stroke={1.5}
+              />
+            </Group>
+          </UnstyledButton>
+        </Menu.Target>
+      )}
       <Menu.Dropdown>
         <Menu.Label>{t('account')}</Menu.Label>
         {items.map(({ handler, icon, label }, i) => (

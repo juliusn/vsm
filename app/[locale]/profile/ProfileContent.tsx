@@ -5,19 +5,14 @@ import { useTranslations } from 'next-intl';
 
 export function ProfileContent({ profile }: { profile: Profile }) {
   const t = useTranslations('ProfilePage');
-
-  const accountType = {
-    personal: t('personal'),
-    shared: t('shared'),
-  };
   const approvalStatus = {
     pending: t('pending'),
     approved: t('approved'),
     rejected: t('rejected'),
   };
   const rows = [
-    { key: t('userName'), value: profile.user_name },
-    { key: t('accountType'), value: accountType[profile.account_type] },
+    { key: t('firstName'), value: profile.first_name },
+    { key: t('lastName'), value: profile.last_name },
     {
       key: t('approvalStatus'),
       value: approvalStatus[profile.approval_status],

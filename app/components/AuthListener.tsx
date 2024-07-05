@@ -29,7 +29,7 @@ export function AuthListener() {
               showNotification({
                 title: t('loggedInTitle'),
                 message: t.rich('loggedInMessage', {
-                  name: session.user.user_metadata.user_name,
+                  name: session.user.user_metadata.first_name,
                 }),
                 icon: <IconCheck stroke={1.5} />,
                 color: 'green',
