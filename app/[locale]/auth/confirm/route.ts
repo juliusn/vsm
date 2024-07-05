@@ -14,12 +14,10 @@ export async function GET(request: NextRequest) {
     const supabase = createClient();
     const { error } = await supabase.auth.verifyOtp({ type, token_hash });
     if (!error) {
-      console.log({ redirectTo });
       return NextResponse.redirect(redirectTo);
     }
   }
 
   redirectTo.pathname = '/auth/auth-code-error';
-  console.log({ redirectTo });
   return NextResponse.redirect(redirectTo);
 }
