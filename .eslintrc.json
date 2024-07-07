@@ -7,6 +7,24 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "no-console": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "next/link",
+            "importNames": ["default"],
+            "message": "Please use { Link } from \"next-intl/navigation\" instead."
+          },
+          {
+            "name": "next/navigation",
+            "importNames": ["redirect", "usePathname", "useRouter"],
+            "message": "Please use { redirect, usePathname, useRouter } from \"next-intl/navigation\" instead."
+          }
+        ]
+      }
+    ]
   }
 }
