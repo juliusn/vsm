@@ -1,14 +1,17 @@
-import { Container, Stack } from '@mantine/core';
+import { Container, Stack, Title } from '@mantine/core';
 import { SettingsNavigation } from './SettingsNavigation';
+import { useTranslations } from 'next-intl';
 
 export default function SettingsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations('Settings');
   return (
     <Container size="24rem">
       <Stack>
+        <Title size="h4">{t('title')}</Title>
         <SettingsNavigation />
         {children}
       </Stack>
