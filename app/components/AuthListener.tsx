@@ -17,11 +17,7 @@ export function AuthListener() {
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if (
-          event === 'SIGNED_IN' ||
-          event === 'INITIAL_SESSION' ||
-          event === 'TOKEN_REFRESHED'
-        ) {
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
           if (session && session.access_token !== currentJWTRef.current) {
             currentJWTRef.current = session.access_token;
             setSession(session);
@@ -36,6 +32,13 @@ export function AuthListener() {
               });
             }
           }
+        } else if (
+          event === 'TOKEN_REFRESHED' &&
+          session &&
+          session.access_token !== currentJWTRef.current
+        ) {
+          currentJWTRef.current = session.access_token;
+          setSession(session);
         } else if (event === 'SIGNED_OUT') {
           if (currentJWTRef.current) {
             currentJWTRef.current = null;
