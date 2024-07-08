@@ -4,17 +4,15 @@ import '@mantine/notifications/styles.css';
 import { ColorSchemeScript, Container, MantineProvider } from '@mantine/core';
 import { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
-import { notFound } from 'next/navigation';
 import { Notifications } from '@mantine/notifications';
 import { HeaderContent } from '../components/HeaderContent';
 import { AuthListener } from '../components/AuthListener';
+import { getMessages } from 'next-intl/server';
 
 export const metadata: Metadata = {
   title: 'VSM',
   description: 'Vanaheim Service Management',
 };
-
-const locales = ['en', 'fi'];
 
 export default async function RootLayout({
   children,
@@ -23,16 +21,7 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const isValidLocale = locales.some((cur) => cur === locale);
-  if (!isValidLocale) {
-    notFound();
-  }
-  let messages;
-  try {
-    messages = (await import(`../../messages/${locale}.json`)).default;
-  } catch (error) {
-    notFound();
-  }
+  const messages = await getMessages();
 
   return (
     <html lang={locale}>
@@ -46,7 +35,7 @@ export default async function RootLayout({
         <ColorSchemeScript defaultColorScheme="auto" />
       </head>
       <body>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider messages={messages}>
           <MantineProvider defaultColorScheme="auto">
             <AuthListener />
             <HeaderContent />

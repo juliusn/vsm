@@ -1,9 +1,10 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest } from 'next/server';
 import { createClient } from './lib/supabase/middleware';
+import { locales } from './config';
 
 const handleI18nRouting = createMiddleware({
-  locales: ['en', 'fi'],
+  locales,
   defaultLocale: 'fi',
 });
 
