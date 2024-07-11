@@ -1,7 +1,7 @@
 'use client';
 
+import { ProgressBarLink } from '@/app/components/ProgressBar';
 import { useSessionStore } from '@/app/store';
-import { Link } from '@/navigation';
 import { Alert } from '@mantine/core';
 import { IconExclamationCircle, IconMailCheck } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
@@ -20,7 +20,9 @@ export function Confirm() {
       title={t('successTitle')}
       color="green">
       {t.rich('successMessage', {
-        link: (text) => <Link href="/profile">{text}</Link>,
+        link: (text) => (
+          <ProgressBarLink href="/profile">{text}</ProgressBarLink>
+        ),
       })}
     </Alert>
   ) : (

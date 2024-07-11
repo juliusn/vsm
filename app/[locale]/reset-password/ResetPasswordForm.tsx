@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, LoadingOverlay, Stack, TextInput } from '@mantine/core';
+import { Button, Fieldset, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { IconExclamationMark, IconMail } from '@tabler/icons-react';
@@ -9,7 +9,8 @@ import { showNotification } from '@mantine/notifications';
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useLocale, useTranslations } from 'next-intl';
-import SuccessModal from '@/app/components/SuccessModal';
+import { SuccessModal } from '@/app/components/SuccessModal';
+import { useProgressBar } from '@/app/components/ProgressBar';
 
 export function ResetPasswordForm() {
   const locale = useLocale();
@@ -27,8 +28,9 @@ export function ResetPasswordForm() {
     },
     validateInputOnBlur: true,
   });
-  const [loading, { open: openLoading, close: closeLoading }] =
-    useDisclosure(false);
+  const progress = useProgressBar();
+  const [isLoading, { open: openLoading, close: closeLoading }] =
+    useDisclosure();
   const [emailSent, setEmailSent] = useState(false);
   const [
     emailResetModalOpened,
@@ -39,29 +41,31 @@ export function ResetPasswordForm() {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <Stack pos="relative">
-          <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm' }} />
-          <TextInput
-            name="email"
-            label={t('email')}
-            placeholder={t('email')}
-            {...form.getInputProps('email')}
-          />
-          <Button
-            type="submit"
-            disabled={!form.isValid() || loading || emailSent}
-            leftSection={<IconMail stroke={1.5} />}
-            rightSection={<span className="w-6 invisible"></span>}
-            justify="space-between"
-            className="mt-2"
-            styles={{
-              label: {
-                overflow: 'visible',
-              },
-            }}>
-            {t('submit')}
-          </Button>
-        </Stack>
+        <Fieldset disabled={isLoading || emailSent}>
+          <Stack pos="relative">
+            <TextInput
+              name="email"
+              label={t('email')}
+              placeholder={t('email')}
+              {...form.getInputProps('email')}
+            />
+            <Button
+              type="submit"
+              disabled={!form.isValid()}
+              loading={isLoading}
+              leftSection={<IconMail stroke={1.5} />}
+              rightSection={<span className="w-6 invisible"></span>}
+              justify="space-between"
+              className="mt-2"
+              styles={{
+                label: {
+                  overflow: 'visible',
+                },
+              }}>
+              {t('submit')}
+            </Button>
+          </Stack>
+        </Fieldset>
       </form>
       <SuccessModal
         opened={emailResetModalOpened}
@@ -81,12 +85,14 @@ export function ResetPasswordForm() {
       window.location.origin
     );
 
+    progress.start();
     openLoading();
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: url.href,
     });
 
+    progress.done();
     closeLoading();
 
     if (error) {

@@ -1,7 +1,7 @@
 import { Group, Modal, Text } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 
-export default function SuccessModal({
+export function SuccessModal({
   opened,
   onClose,
   title,

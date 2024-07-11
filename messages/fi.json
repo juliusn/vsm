@@ -68,7 +68,7 @@
     "title": "Resetoi salasana",
     "email": "Sähköposti",
     "invalidEmail": "Virheellinen sähköposti",
-    "submit": "Lähetä linkki sähköpostiin",
+    "submit": "Lähetä linkki",
     "error": "Virhe",
     "resetPasswordError": "Salasanaa ei voitu resetoida palvelinvirheen takia.",
     "emailSent": "Sähköposti lähetetty",

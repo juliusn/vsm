@@ -68,7 +68,7 @@
     "title": "Reset Password",
     "email": "Email",
     "invalidEmail": "Invalid email",
-    "submit": "Send Link to My Email",
+    "submit": "Send Link",
     "error": "Error",
     "resetPasswordError": "Password could not be reset because of a server error.",
     "emailSent": "Email sent",

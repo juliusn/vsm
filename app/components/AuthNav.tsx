@@ -9,11 +9,14 @@ import {
   IconUserPlus,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
+import { startTransition } from 'react';
+import { useProgressBar } from './ProgressBar';
 
 export function AuthNav() {
   const t = useTranslations('AuthNav');
   const router = useRouter();
   const pathname = usePathname();
+  const progress = useProgressBar();
   const items = [
     {
       path: '/login',
@@ -44,7 +47,11 @@ export function AuthNav() {
                 key={i}
                 onClick={(event) => {
                   event.preventDefault();
-                  router.push(path);
+                  progress.start();
+                  startTransition(() => {
+                    router.push(path);
+                    progress.done();
+                  });
                 }}
                 disabled={pathname === path}
                 leftSection={<IconComponent size={20} stroke={1} />}>
@@ -56,7 +63,15 @@ export function AuthNav() {
       </Group>
       <Tabs
         value={pathname}
-        onChange={(value) => value && router.push(value)}
+        onChange={(value) => {
+          if (value) {
+            progress.start();
+            startTransition(() => {
+              router.push(value);
+              progress.done();
+            });
+          }
+        }}
         visibleFrom="xs">
         <Tabs.List>
           {items.map(({ path, label }, i) => {

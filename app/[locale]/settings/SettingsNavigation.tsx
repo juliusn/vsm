@@ -1,7 +1,8 @@
 'use client';
 
+import { ProgressBarAnchor } from '@/app/components/ProgressBar';
 import { usePathname } from '@/navigation';
-import { Anchor, Breadcrumbs, Text } from '@mantine/core';
+import { Breadcrumbs, Text } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
 type TitleMapKeys = 'settings' | 'update-password' | 'delete-account';
@@ -21,9 +22,11 @@ export function SettingsNavigation() {
       i === segments.length - 1 ? (
         <Text key={i}>{titleMap[segment]}</Text>
       ) : (
-        <Anchor href={`/${segments.slice(0, i + 1).join('/')}`} key={i}>
+        <ProgressBarAnchor
+          href={`/${segments.slice(0, i + 1).join('/')}`}
+          key={i}>
           {titleMap[segment]}
-        </Anchor>
+        </ProgressBarAnchor>
       )
     );
 

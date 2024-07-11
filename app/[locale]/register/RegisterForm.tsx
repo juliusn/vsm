@@ -6,7 +6,6 @@ import {
   Checkbox,
   Fieldset,
   Group,
-  LoadingOverlay,
   Modal,
   PasswordInput,
   Stack,
@@ -19,6 +18,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
 import { ErrorModal } from '@/app/components/ErrorModal';
+import { useProgressBar } from '@/app/components/ProgressBar';
 
 interface FormValues {
   firstName: string;
@@ -42,9 +42,7 @@ export function RegisterForm() {
     useDisclosure(false);
   const [errorModalOpened, { open: openErrorModal, close: closeErrorModal }] =
     useDisclosure(false);
-
-  const [loading, { open: openLoading, close: closeLoading }] =
-    useDisclosure(false);
+  const progress = useProgressBar();
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -69,7 +67,7 @@ export function RegisterForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    openLoading();
+    progress.start();
     const { firstName, lastName, email, password } = form.values;
 
     const response = await supabase.auth.signUp({
@@ -89,15 +87,17 @@ export function RegisterForm() {
       openAccountCreatedModal();
       setFormDisabled(true);
     }
-    closeLoading();
+
+    progress.done();
   }
 
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <Fieldset variant="unstyled" disabled={formDisabled || loading}>
+        <Fieldset
+          variant="unstyled"
+          disabled={formDisabled || progress.state === 'in-progress'}>
           <Stack pos="relative">
-            <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm' }} />
             <Anchor onClick={openTosModal}>{t('readToS')}</Anchor>
             <Checkbox
               name="agreedToS"
@@ -141,7 +141,7 @@ export function RegisterForm() {
             />
             <Button
               type="submit"
-              disabled={!form.isValid() || loading}
+              disabled={!form.isValid()}
               leftSection={<IconUserPlus stroke={1.5} />}
               rightSection={<span className="w-6"></span>}
               justify="space-between"

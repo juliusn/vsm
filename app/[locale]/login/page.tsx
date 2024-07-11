@@ -1,5 +1,5 @@
 import { LoginForm } from '@/app/[locale]/login/LoginForm';
-import { Link } from '@/navigation';
+import { ProgressBarLink } from '@/app/components/ProgressBar';
 import { Container, Stack, Text, Title } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
@@ -8,12 +8,14 @@ export default function LoginPage() {
 
   return (
     <Container size="20rem">
-      <Stack>
+      <Stack pb="md">
         <Title size="h4">{t('title')}</Title>
         <LoginForm />
         <Text>
           {t.rich('noAccount', {
-            link: (text) => <Link href="/register">{text}</Link>,
+            link: (text) => (
+              <ProgressBarLink href="/register">{text}</ProgressBarLink>
+            ),
           })}
         </Text>
       </Stack>

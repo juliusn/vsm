@@ -1,6 +1,7 @@
 'use client';
 
-import { useSessionStore } from '@/app/store';
+import { useProgressBar } from '@/app/components/ProgressBar';
+import { useEmailStore, useSessionStore } from '@/app/store';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from '@/navigation';
 import { Alert, Button, Checkbox, Group, Modal, Stack } from '@mantine/core';
@@ -8,7 +9,11 @@ import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { IconCheck, IconExclamationMark } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { useState, useTransition } from 'react';
+import {
+  useState,
+  useTransition,
+  startTransition as redirectTransition,
+} from 'react';
 
 export default function DeleteAccountPage() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -17,9 +22,11 @@ export default function DeleteAccountPage() {
   const supabase = createClient();
   const router = useRouter();
   const setSession = useSessionStore((store) => store.setSession);
-  const [isPending, startTransition] = useTransition();
+  const setEmail = useEmailStore((store) => store.setEmail);
+  const [deleteIsPending, startDelete] = useTransition();
+  const progress = useProgressBar();
   const deleteUser = () => {
-    startTransition(async () => {
+    startDelete(async () => {
       const { error } = await supabase.rpc('delete_user');
       if (error) {
         showNotification({
@@ -37,7 +44,12 @@ export default function DeleteAccountPage() {
         color: 'green',
       });
       setSession(null);
-      router.push('/login');
+      setEmail('');
+      progress.start();
+      redirectTransition(() => {
+        router.push('/login');
+        progress.done();
+      });
     });
   };
   return (
@@ -66,7 +78,7 @@ export default function DeleteAccountPage() {
             <Button variant="outline" onClick={close}>
               {t('cancel')}
             </Button>
-            <Button color="red" loading={isPending} onClick={deleteUser}>
+            <Button color="red" loading={deleteIsPending} onClick={deleteUser}>
               {t('delete')}
             </Button>
           </Group>

@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Button,
-  Fieldset,
-  LoadingOverlay,
-  PasswordInput,
-  Stack,
-} from '@mantine/core';
+import { Button, Fieldset, PasswordInput, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -15,7 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { ErrorModal } from '@/app/components/ErrorModal';
-import { Link } from '@/navigation';
+import { ProgressBarLink, useProgressBar } from '@/app/components/ProgressBar';
 
 interface FormValues {
   password: string;
@@ -36,8 +30,7 @@ export function UpdatePasswordForm() {
     },
     validateInputOnBlur: true,
   });
-  const [loading, { open: openLoading, close: closeLoading }] =
-    useDisclosure(false);
+  const progress = useProgressBar();
   const [errorModalOpened, { open: openErrorModal, close: closeErrorModal }] =
     useDisclosure(false);
   const [updateSuccessful, setUpdateSuccessful] = useState<boolean>(false);
@@ -49,8 +42,7 @@ export function UpdatePasswordForm() {
         <Fieldset
           pos="relative"
           variant="unstyled"
-          disabled={loading || updateSuccessful}>
-          <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm' }} />
+          disabled={progress.state === 'in-progress' || updateSuccessful}>
           <Stack>
             <PasswordInput
               name="password"
@@ -75,7 +67,9 @@ export function UpdatePasswordForm() {
         onClose={closeErrorModal}
         title={t('error')}>
         {t.rich('unavailableMessage', {
-          link: (text) => <Link href="/reset-password">{text}</Link>,
+          link: (text) => (
+            <ProgressBarLink href="/reset-password">{text}</ProgressBarLink>
+          ),
         })}
       </ErrorModal>
     </>
@@ -86,13 +80,13 @@ export function UpdatePasswordForm() {
     const formData = new FormData(event.currentTarget);
     const password = String(formData.get('password'));
 
-    openLoading();
+    progress.start();
 
     const { error } = await supabase.auth.updateUser({
       password,
     });
 
-    closeLoading();
+    progress.done();
 
     if (error) {
       if (error.message === 'Auth session missing!') {

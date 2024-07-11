@@ -2,6 +2,8 @@
 
 import { usePathname, useRouter } from '@/navigation';
 import { NavLink } from '@mantine/core';
+import { startTransition } from 'react';
+import { useProgressBar } from './ProgressBar';
 
 export function HeaderNavbarLinks({
   navItems,
@@ -12,6 +14,7 @@ export function HeaderNavbarLinks({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const progress = useProgressBar();
   return navItems.map(({ label, href }) => (
     <NavLink
       key={label}
@@ -20,7 +23,11 @@ export function HeaderNavbarLinks({
       onClick={(event) => {
         event.preventDefault();
         toggle();
-        router.push(href);
+        progress.start();
+        startTransition(() => {
+          router.push(href);
+          progress.done();
+        });
       }}
     />
   ));

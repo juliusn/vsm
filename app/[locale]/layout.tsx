@@ -8,6 +8,7 @@ import { Notifications } from '@mantine/notifications';
 import { HeaderContent } from '../components/HeaderContent';
 import { AuthListener } from '../components/AuthListener';
 import { getMessages } from 'next-intl/server';
+import { ProgressBar } from '../components/ProgressBar';
 
 export const metadata: Metadata = {
   title: 'VSM',
@@ -38,8 +39,11 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <MantineProvider defaultColorScheme="auto">
             <AuthListener />
-            <HeaderContent />
-            <Container>{children}</Container>
+
+            <ProgressBar className="fixed top-0 h-1 bg-sky-500">
+              <HeaderContent />
+              <Container>{children}</Container>
+            </ProgressBar>
             <Notifications autoClose={6000} />
           </MantineProvider>
         </NextIntlClientProvider>

@@ -3,7 +3,6 @@
 import {
   Button,
   Fieldset,
-  LoadingOverlay,
   PasswordInput,
   Stack,
   TextInput,
@@ -13,10 +12,11 @@ import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { useEmailStore } from '../../store';
 import { useTranslations } from 'next-intl';
-import { Link, useRouter } from '@/navigation';
+import { useRouter } from '@/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { startTransition } from 'react';
 import { ErrorModal } from '@/app/components/ErrorModal';
+import { ProgressBarLink, useProgressBar } from '@/app/components/ProgressBar';
 
 interface FormValues {
   email: string;
@@ -25,11 +25,10 @@ interface FormValues {
 
 export function LoginForm() {
   const t = useTranslations('Login');
-  const [loading, { open: openLoading, close: closeLoading }] =
-    useDisclosure(false);
   const [errorModalOpened, { open: openErrorModal, close: closeErrorModal }] =
     useDisclosure(false);
   const router = useRouter();
+  const progress = useProgressBar();
   const email = useEmailStore((store) => store.email);
   const setEmail = useEmailStore((store) => store.setEmail);
 
@@ -51,9 +50,10 @@ export function LoginForm() {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <Fieldset variant="unstyled" disabled={loading}>
+        <Fieldset
+          variant="unstyled"
+          disabled={progress.state === 'in-progress'}>
           <Stack pos="relative">
-            <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm' }} />
             <TextInput
               name="email"
               label={t('email')}
@@ -79,7 +79,9 @@ export function LoginForm() {
               className="mt-2">
               {t('submit')}
             </Button>
-            <Link href="/reset-password">{t('forgot')}</Link>
+            <ProgressBarLink href="/reset-password">
+              {t('forgot')}
+            </ProgressBarLink>
           </Stack>
         </Fieldset>
       </form>
@@ -92,25 +94,28 @@ export function LoginForm() {
     </>
   );
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    openLoading();
+    progress.start();
     const { email, password } = form.values;
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
 
-    if (error) {
-      closeLoading();
-      openErrorModal();
-      return;
-    }
+    startTransition(async () => {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    startTransition(() => {
-      router.push('/');
-      closeLoading();
+      if (error) {
+        progress.done();
+        openErrorModal();
+        return;
+      }
+
+      startTransition(() => {
+        router.push('/');
+        progress.done();
+      });
     });
   }
 }

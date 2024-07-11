@@ -3,7 +3,8 @@
 import { Tabs } from '@mantine/core';
 import classes from './HeaderTabs.module.css';
 import { usePathname, useRouter } from '@/navigation';
-import { useEffect, useState } from 'react';
+import { startTransition, useEffect, useState } from 'react';
+import { useProgressBar } from '../ProgressBar';
 
 export function HeaderTabs({
   navItems,
@@ -11,6 +12,7 @@ export function HeaderTabs({
   navItems: { label: string; href: string }[];
 }) {
   const router = useRouter();
+  const progress = useProgressBar();
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState<string | null>(pathname);
 
@@ -24,7 +26,11 @@ export function HeaderTabs({
       onChange={(value) => {
         if (value) {
           setActiveTab(value);
-          router.push(value);
+          progress.start();
+          startTransition(() => {
+            router.push(value);
+            progress.done();
+          });
         }
       }}
       variant="outline"

@@ -1,15 +1,7 @@
 'use client';
 
-import {
-  Avatar,
-  Group,
-  LoadingOverlay,
-  Menu,
-  Text,
-  UnstyledButton,
-  rem,
-} from '@mantine/core';
-import { ReactNode, useState, useTransition } from 'react';
+import { Avatar, Group, Menu, Text, UnstyledButton, rem } from '@mantine/core';
+import { ReactNode, startTransition, useState } from 'react';
 import classes from './UserMenu.module.css';
 import cx from 'clsx';
 import {
@@ -25,6 +17,7 @@ import { showNotification } from '@mantine/notifications';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useProgressBar } from '../ProgressBar';
 type MenuItem = { label: string; icon: ReactNode; handler: () => void };
 
 export function UserMenu() {
@@ -34,7 +27,7 @@ export function UserMenu() {
   const setSession = useSessionStore((store) => store.setSession);
   const router = useRouter();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const progress = useProgressBar();
   const items: MenuItem[] = [
     {
       label: t('settings'),
@@ -45,8 +38,10 @@ export function UserMenu() {
         />
       ),
       handler: () => {
+        progress.start();
         startTransition(() => {
           router.push('/settings');
+          progress.done();
         });
       },
     },
@@ -59,8 +54,10 @@ export function UserMenu() {
         />
       ),
       handler: () => {
+        progress.start();
         startTransition(() => {
           router.push('/profile');
+          progress.done();
         });
       },
     },
@@ -73,8 +70,10 @@ export function UserMenu() {
         />
       ),
       handler: () => {
+        progress.start();
         startTransition(() => {
           router.push('/roles');
+          progress.done();
         });
       },
     },
@@ -84,13 +83,20 @@ export function UserMenu() {
         <IconLogout style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
       ),
       handler: () => {
+        progress.start();
         startTransition(async () => {
           const { error } = await supabase.auth.signOut();
+
           if (!error) {
-            router.push('/login');
+            startTransition(() => {
+              router.push('/login');
+              progress.done();
+            });
           } else if (error.status === 403) {
+            progress.done();
             setSession(null);
           } else {
+            progress.done();
             showNotification({
               title: t('error'),
               message: t('logoutError'),
@@ -108,9 +114,7 @@ export function UserMenu() {
       position="bottom-end"
       onClose={() => setUserMenuOpened(false)}
       onOpen={() => setUserMenuOpened(true)}
-      disabled={isPending}
       withinPortal>
-      <LoadingOverlay visible={isPending} />
       {session && (
         <Menu.Target>
           <UnstyledButton
