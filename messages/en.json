@@ -136,10 +136,8 @@
     "loggedOutMessage": "Logout successful."
   },
   "Orders": {
-    "title": "Orders"
-  },
-  "NewOrder": {
+    "ordersTitle": "Orders",
     "newOrder": "New Order",
-    "title": "Create a New Order"
+    "newOrderTitle": "Create a New Order"
   }
 }

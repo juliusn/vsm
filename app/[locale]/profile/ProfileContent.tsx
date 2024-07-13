@@ -24,7 +24,7 @@ export function ProfileContent({ profile }: { profile: Profile }) {
         {rows.map((row) => (
           <tr key={row.key}>
             <td>{row.key}</td>
-            <td>{row.value}</td>
+            <td className="pl-12">{row.value}</td>
           </tr>
         ))}
       </tbody>

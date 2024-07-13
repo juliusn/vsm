@@ -1,7 +1,7 @@
-import { Stack, Title } from '@mantine/core';
-import { ProfileContent } from './ProfileContent';
 import { createClient } from '@/lib/supabase/server';
+import { Center, Stack, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
+import { ProfileContent } from './ProfileContent';
 
 export default async function ProfilePage() {
   const t = await getTranslations('ProfilePage');
@@ -20,9 +20,11 @@ export default async function ProfilePage() {
     .single();
 
   return (
-    <Stack>
-      <Title size="h4">{t('title')}</Title>
-      {profile && <ProfileContent profile={profile} />}
-    </Stack>
+    <Center>
+      <Stack>
+        <Title size="h4">{t('title')}</Title>
+        {profile && <ProfileContent profile={profile} />}
+      </Stack>
+    </Center>
   );
 }

@@ -136,10 +136,8 @@
     "loggedOutMessage": "Uloskirjautuminen onnistui."
   },
   "Orders": {
-    "title": "Tilaukset"
-  },
-  "NewOrder": {
+    "ordersTitle": "Tilaukset",
     "newOrder": "Uusi tilaus",
-    "title": "Luo uusi tilaus"
+    "newOrderTitle": "Luo uusi tilaus"
   }
 }
