@@ -138,6 +138,17 @@
   "Orders": {
     "ordersTitle": "Tilaukset",
     "newOrder": "Uusi tilaus",
-    "newOrderTitle": "Luo uusi tilaus"
+    "newOrderTitle": "Luo uusi tilaus",
+    "portArea": "Satama-alue",
+    "selectPortArea": "Valitse satama-alue",
+    "berth": "Laituri",
+    "selectBerth": "Valitse laituri",
+    "vessel": "Alus",
+    "selectVessel": "Valitse alus",
+    "tasks": "Tehtävät",
+    "addTask": "Lisää tehtävä",
+    "beginTime": "Aloitusaika",
+    "estimatedEndTime": "Arvioitu lopetusaika",
+    "overtimeThreshold": "Ylityökynnys"
   }
 }

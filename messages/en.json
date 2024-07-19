@@ -138,6 +138,17 @@
   "Orders": {
     "ordersTitle": "Orders",
     "newOrder": "New Order",
-    "newOrderTitle": "Create a New Order"
+    "newOrderTitle": "Create a New Order",
+    "portArea": "Port area",
+    "selectPortArea": "Select port area",
+    "berth": "Berth",
+    "selectBerth": "Select berth",
+    "vessel": "Vessel",
+    "selectVessel": "Select vessel",
+    "tasks": "Tasks",
+    "addTask": "Add task",
+    "beginTime": "Begin time",
+    "estimatedEndTime": "Estimated end time",
+    "overtimeThreshold": "Overtime threshold"
   }
 }

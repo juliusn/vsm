@@ -1,6 +1,8 @@
 import '../globals.css';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
+import 'dayjs/locale/fi';
 import { ColorSchemeScript, Container, MantineProvider } from '@mantine/core';
 import { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
@@ -9,6 +11,7 @@ import { HeaderContent } from '../components/HeaderContent';
 import { AuthListener } from '../components/AuthListener';
 import { getMessages } from 'next-intl/server';
 import { ProgressBar } from '../components/ProgressBar';
+import { DatesProvider } from '@mantine/dates';
 
 export const metadata: Metadata = {
   title: 'VSM',
@@ -38,13 +41,17 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider messages={messages}>
           <MantineProvider defaultColorScheme="auto">
-            <AuthListener />
-
-            <ProgressBar className="fixed top-0 h-1 bg-sky-500">
-              <HeaderContent />
-              <Container>{children}</Container>
-            </ProgressBar>
-            <Notifications autoClose={6000} />
+            <DatesProvider
+              settings={{
+                locale,
+              }}>
+              <AuthListener />
+              <ProgressBar className="fixed top-0 h-1 bg-sky-500">
+                <HeaderContent />
+                <Container>{children}</Container>
+              </ProgressBar>
+              <Notifications autoClose={6000} />
+            </DatesProvider>
           </MantineProvider>
         </NextIntlClientProvider>
       </body>

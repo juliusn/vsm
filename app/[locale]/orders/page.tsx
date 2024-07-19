@@ -1,22 +1,63 @@
-'use client';
-
-import { Button, Modal } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { IconPlus } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
+import { NewOrderContent } from './NewOrderContent';
 import { NewOrderForm } from './NewOrderForm';
 
-export default function OrdersPage() {
-  const [opened, { open, close }] = useDisclosure(false);
-  const t = useTranslations('Orders');
+export type Berth = {
+  locode: string;
+  portAreaCode: string;
+  berthCode: string;
+  berthName: string;
+};
+
+export type Ship = {
+  name: string;
+  timestamp: number;
+  destination: string;
+  draught: number;
+  eta: number;
+  posType: number;
+  referencePointA: number;
+  referencePointB: number;
+  referencePointC: number;
+  referencePointD: number;
+  shipType: number;
+  mmsi: number;
+  callSign: string;
+  imo: number;
+};
+
+export type PortArea = {
+  locode: string;
+  type: string;
+  geometry: null;
+  properties: {
+    locode: string;
+    portAreaName: string;
+  };
+  portAreaCode: string;
+};
+
+export default async function OrdersPage() {
+  const res = await fetch('https://meri.digitraffic.fi/api/port-call/v1/ports');
+  if (!res.ok) {
+    throw new Error(`No port data.`);
+  }
+  const supportedPortAreaCodes = ['LS', 'ES', 'VUOS'];
+  const data: {
+    portAreas: { features: PortArea[] };
+    berths: { berths: Berth[] };
+  } = await res.json();
+  const portAreas: PortArea[] = data.portAreas.features.filter((portArea) =>
+    supportedPortAreaCodes.includes(portArea.portAreaCode)
+  );
+  const berths: Berth[] = data.berths.berths.filter(
+    (berth) =>
+      berth.locode === 'FIHEL' &&
+      supportedPortAreaCodes.includes(berth.portAreaCode)
+  );
+
   return (
-    <>
-      <Button onClick={open} leftSection={<IconPlus stroke={1.5} />}>
-        {t('newOrder')}
-      </Button>
-      <Modal opened={opened} onClose={close} title={t('ordersTitle')}>
-        <NewOrderForm />
-      </Modal>
-    </>
+    <NewOrderContent>
+      <NewOrderForm portAreas={portAreas} berths={berths} />
+    </NewOrderContent>
   );
 }
