@@ -135,6 +135,12 @@ export function NewOrderForm({
           placeholder={t('addTask')}
           searchable
           clearable
+          styles={{
+            pillsList: {
+              display: 'inline',
+            },
+            pill: { justifyContent: 'space-between' },
+          }}
           value={selectedTasks}
           onChange={handleOptionsChange}
         />
