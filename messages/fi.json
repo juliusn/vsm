@@ -7,7 +7,7 @@
   "Header": {
     "home": "Koti",
     "orders": "Tilaukset",
-    "messages": "Viestit"
+    "data": "Data"
   },
   "AuthNav": {
     "login": "Kirjaudu",
@@ -150,5 +150,21 @@
     "beginTime": "Aloitusaika",
     "estimatedEndTime": "Arvioitu lopetusaika",
     "overtimeThreshold": "Ylityökynnys"
+  },
+  "Data": {
+    "title": "Data",
+    "dataMenu": "Datavalikko",
+    "dataAlertTitle": "Pyyntö epäonnistui",
+    "dataAlertMessage": "Tietoja ei voitu ladata. Palvelin vastasi statuksella {status} ({statusText}).",
+    "portsAndBerths": "Satamat ja laiturit",
+    "locode": "Sijaintitunnus",
+    "portAreaName": "Satama-alueen nimi",
+    "portAreaCode": "Satama-alueen tunnus",
+    "coordinates": "Koordinaatit",
+    "berthCode": "Laituritunnus",
+    "berthName": "Laiturin nimi",
+    "vessels": "Alukset",
+    "mmsi": "MMSI",
+    "name": "Nimi"
   }
 }

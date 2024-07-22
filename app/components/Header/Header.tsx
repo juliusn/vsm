@@ -14,7 +14,7 @@ export function Header({ children }: { children: React.ReactNode }) {
   const navItems = [
     { label: t('home'), href: '/' },
     { label: t('orders'), href: '/orders' },
-    { label: t('messages'), href: '/messages' },
+    { label: t('data'), href: '/data' },
   ];
 
   return (

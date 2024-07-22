@@ -7,7 +7,7 @@
   "Header": {
     "home": "Home",
     "orders": "Orders",
-    "messages": "Messages"
+    "data": "Data"
   },
   "AuthNav": {
     "login": "Log In",
@@ -150,5 +150,21 @@
     "beginTime": "Begin time",
     "estimatedEndTime": "Estimated end time",
     "overtimeThreshold": "Overtime threshold"
+  },
+  "Data": {
+    "title": "Data",
+    "dataMenu": "Data menu",
+    "dataAlertTitle": "Request failed",
+    "dataAlertMessage": "Could not load data. Sever responded with status code {status} ({statusText}).",
+    "portsAndBerths": "Ports and berths",
+    "locode": "Locode",
+    "portAreaName": "Port area name",
+    "portAreaCode": "Port area code",
+    "coordinates": "Coordinates",
+    "berthCode": "Berth code",
+    "berthName": "Berth name",
+    "vessels": "Vessels",
+    "mmsi": "MMSI",
+    "name": "Name"
   }
 }
