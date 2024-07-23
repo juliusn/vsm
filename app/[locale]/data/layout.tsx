@@ -1,5 +1,4 @@
-import { Container, Stack, Title } from '@mantine/core';
-import { useTranslations } from 'next-intl';
+import { Container, ScrollAreaAutosize, Stack } from '@mantine/core';
 import { DataNavigation } from './DataNavigation';
 
 export default function SettingsLayout({
@@ -7,13 +6,13 @@ export default function SettingsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const t = useTranslations('Data');
   return (
     <Container>
       <Stack>
-        <Title size="h4">{t('title')}</Title>
         <DataNavigation />
-        {children}
+        <ScrollAreaAutosize type="auto" mah="auto">
+          {children}
+        </ScrollAreaAutosize>
       </Stack>
     </Container>
   );

@@ -1,15 +1,8 @@
 import { VesselsApiResponse } from '@/lib/types/vessels-api.types';
-import {
-  Alert,
-  Table,
-  TableTbody,
-  TableTd,
-  TableTh,
-  TableThead,
-  TableTr,
-} from '@mantine/core';
+import { Alert, Stack, Title } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import { getTranslations } from 'next-intl/server';
+import { VesselsTable } from './VesselsTable';
 
 export default async function VesselsPage() {
   const t = await getTranslations('Data');
@@ -29,22 +22,12 @@ export default async function VesselsPage() {
     );
   }
   const data: VesselsApiResponse = await response.json();
-  const vesselsApiRows = data.map((vessel, index) => (
-    <TableTr key={index}>
-      <TableTd>{vessel.mmsi}</TableTd>
-      <TableTd>{vessel.name}</TableTd>
-    </TableTr>
-  ));
-
   return (
-    <Table>
-      <TableThead>
-        <TableTr>
-          <TableTh>{t('mmsi')}</TableTh>
-          <TableTh>{t('name')}</TableTh>
-        </TableTr>
-      </TableThead>
-      <TableTbody>{vesselsApiRows}</TableTbody>
-    </Table>
+    <Stack>
+      <Title size="h4" mt="md">
+        {t('vessels')}
+      </Title>
+      <VesselsTable vessels={data} />
+    </Stack>
   );
 }

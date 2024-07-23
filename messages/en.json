@@ -152,18 +152,25 @@
     "overtimeThreshold": "Overtime threshold"
   },
   "Data": {
-    "title": "Data",
     "dataMenu": "Data menu",
     "dataAlertTitle": "Request failed",
     "dataAlertMessage": "Could not load data. Sever responded with status code {status} ({statusText}).",
     "portsAndBerths": "Ports and berths",
+    "ports": "Ports",
+    "portsCaption": "Include these port areas in service management:",
+    "portsSelect": "Select",
     "locode": "Locode",
     "portAreaName": "Port area name",
     "portAreaCode": "Port area code",
     "coordinates": "Coordinates",
+    "berths": "Berths",
+    "berthsCaption": "Include these berths in service management:",
+    "berthsSelect": "Select berth",
     "berthCode": "Berth code",
     "berthName": "Berth name",
     "vessels": "Vessels",
+    "vesselsCaption": "Include these vessels in service management:",
+    "vesselsSelect": "Select vessel",
     "mmsi": "MMSI",
     "name": "Name"
   }

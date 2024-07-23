@@ -152,18 +152,25 @@
     "overtimeThreshold": "Ylityökynnys"
   },
   "Data": {
-    "title": "Data",
     "dataMenu": "Datavalikko",
     "dataAlertTitle": "Pyyntö epäonnistui",
     "dataAlertMessage": "Tietoja ei voitu ladata. Palvelin vastasi statuksella {status} ({statusText}).",
     "portsAndBerths": "Satamat ja laiturit",
-    "locode": "Sijaintitunnus",
+    "ports": "Satamat",
+    "portsCaption": "Käytä näitä satama-alueita palvelunhallinnassa:",
+    "portsSelect": "Valitse",
+    "locode": "Geokoodi",
     "portAreaName": "Satama-alueen nimi",
     "portAreaCode": "Satama-alueen tunnus",
     "coordinates": "Koordinaatit",
+    "berths": "Laiturit",
+    "berthsCaption": "Käytä näitä laitureita palvelunhallinnassa:",
+    "berthsSelect": "Valitse laituri",
     "berthCode": "Laituritunnus",
     "berthName": "Laiturin nimi",
     "vessels": "Alukset",
+    "vesselsCaption": "Käytä näitä aluksia palvelunhallinnassa:",
+    "vesselsSelect": "Valitse alus",
     "mmsi": "MMSI",
     "name": "Nimi"
   }
