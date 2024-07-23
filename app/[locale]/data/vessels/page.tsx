@@ -2,7 +2,7 @@ import { VesselsApiResponse } from '@/lib/types/vessels-api.types';
 import { Alert, Stack, Title } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import { getTranslations } from 'next-intl/server';
-import { VesselsTable } from './VesselsTable';
+import VesselsList from './VesselsList';
 
 export default async function VesselsPage() {
   const t = await getTranslations('Data');
@@ -27,7 +27,7 @@ export default async function VesselsPage() {
       <Title size="h4" mt="md">
         {t('vessels')}
       </Title>
-      <VesselsTable vessels={data} />
+      <VesselsList vessels={data} />
     </Stack>
   );
 }
