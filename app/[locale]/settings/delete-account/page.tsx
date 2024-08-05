@@ -27,8 +27,9 @@ export default function DeleteAccountPage() {
   const progress = useProgressBar();
   const deleteUser = () => {
     startDelete(async () => {
-      const { error } = await supabase.rpc('delete_user');
-      if (error) {
+      const { error: deleteError } = await supabase.rpc('delete_user');
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (deleteError || signOutError) {
         showNotification({
           title: t('errorTitle'),
           message: t('errorMessage'),
