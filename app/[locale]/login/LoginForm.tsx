@@ -7,7 +7,7 @@ import {
   Stack,
   TextInput,
 } from '@mantine/core';
-import { IconLogin2 } from '@tabler/icons-react';
+import { IconCheck, IconLogin2 } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { useEmailStore } from '../../store';
@@ -17,6 +17,7 @@ import { createClient } from '@/lib/supabase/client';
 import { startTransition } from 'react';
 import { ErrorModal } from '@/app/components/ErrorModal';
 import { ProgressBarLink, useProgressBar } from '@/app/components/ProgressBar';
+import { showNotification } from '@mantine/notifications';
 
 interface FormValues {
   email: string;
@@ -101,7 +102,7 @@ export function LoginForm() {
     const supabase = createClient();
 
     startTransition(async () => {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -111,6 +112,15 @@ export function LoginForm() {
         openErrorModal();
         return;
       }
+
+      showNotification({
+        title: t('loggedInTitle'),
+        message: t.rich('loggedInMessage', {
+          name: data.user.user_metadata.first_name,
+        }),
+        icon: <IconCheck stroke={1.5} />,
+        color: 'green',
+      });
 
       startTransition(() => {
         router.push('/');

@@ -1,18 +1,14 @@
 'use client';
 
+import { createClient } from '@/lib/supabase/client';
 import { useEffect, useRef } from 'react';
 import { useSessionStore } from '../store';
-import { createClient } from '@/lib/supabase/client';
-import { showNotification } from '@mantine/notifications';
-import { useTranslations } from 'next-intl';
-import { IconCheck } from '@tabler/icons-react';
 
 export function AuthListener() {
   const setSession = useSessionStore((state) => state.setSession);
   const supabase = createClient();
   const currentJWTRef = useRef<string | null>(null);
   const initialLoadRef = useRef(true);
-  const t = useTranslations('AuthListener');
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -21,16 +17,6 @@ export function AuthListener() {
           if (session && session.access_token !== currentJWTRef.current) {
             currentJWTRef.current = session.access_token;
             setSession(session);
-            if (!initialLoadRef.current) {
-              showNotification({
-                title: t('loggedInTitle'),
-                message: t.rich('loggedInMessage', {
-                  name: session.user.user_metadata.first_name,
-                }),
-                icon: <IconCheck stroke={1.5} />,
-                color: 'green',
-              });
-            }
           }
         } else if (
           event === 'TOKEN_REFRESHED' &&
@@ -43,17 +29,8 @@ export function AuthListener() {
           if (currentJWTRef.current) {
             currentJWTRef.current = null;
             setSession(null);
-            if (!initialLoadRef.current) {
-              showNotification({
-                title: t('loggedOutTitle'),
-                message: t('loggedOutMessage'),
-                icon: <IconCheck stroke={1.5} />,
-                color: 'green',
-              });
-            }
           }
         }
-
         if (initialLoadRef.current) {
           initialLoadRef.current = false;
         }
@@ -63,7 +40,7 @@ export function AuthListener() {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [setSession, supabase, t]);
+  }, [setSession, supabase]);
 
   return null;
 }

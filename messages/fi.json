@@ -19,6 +19,8 @@
     "profile": "Profiili",
     "roles": "Roolit",
     "logout": "Kirjaudu Ulos",
+    "logoutTitle": "Näkemiin!",
+    "logoutMessage": "Uloskirjautuminen onnistui.",
     "error": "Virhe",
     "logoutError": "Uloskirjautuminen epäonnistui palvelinvirheen takia."
   },
@@ -35,7 +37,9 @@
     "validate": {
       "email": "Virheellinen sähköpostiosoite",
       "password": "Virheellinen salasana"
-    }
+    },
+    "loggedInTitle": "Olet kirjautunut sisään",
+    "loggedInMessage": "Tervetuloa, {name}!"
   },
   "Register": {
     "title": "Luo uusi käyttäjätunnus",
@@ -128,12 +132,6 @@
     "approved": "Hyväksytty",
     "rejected": "Hylätty",
     "pending": "Odottaa"
-  },
-  "AuthListener": {
-    "loggedInTitle": "Olet kirjautunut sisään",
-    "loggedInMessage": "Tervetuloa, {name}!",
-    "loggedOutTitle": "Näkemiin!",
-    "loggedOutMessage": "Uloskirjautuminen onnistui."
   },
   "Orders": {
     "ordersTitle": "Tilaukset",

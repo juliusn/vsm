@@ -19,6 +19,8 @@
     "profile": "Profile",
     "roles": "Roles",
     "logout": "Log Out",
+    "logoutTitle": "Bye!",
+    "logoutMessage": "Logout successful.",
     "error": "Error",
     "logoutError": "Logout failed because of a server error."
   },
@@ -35,7 +37,9 @@
     "validate": {
       "email": "Invalid email address",
       "password": "Invalid password"
-    }
+    },
+    "loggedInTitle": "You are now logged in",
+    "loggedInMessage": "Welcome, {name}!"
   },
   "Register": {
     "title": "Create a New Account",
@@ -128,12 +132,6 @@
     "approved": "Approved",
     "rejected": "Rejected",
     "pending": "Pending"
-  },
-  "AuthListener": {
-    "loggedInTitle": "You are now logged in",
-    "loggedInMessage": "Welcome, {name}!",
-    "loggedOutTitle": "Bye!",
-    "loggedOutMessage": "Logout successful."
   },
   "Orders": {
     "ordersTitle": "Orders",
