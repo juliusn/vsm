@@ -1,4 +1,4 @@
-import { Container, ScrollAreaAutosize, Stack } from '@mantine/core';
+import { Stack } from '@mantine/core';
 import { DataNavigation } from './DataNavigation';
 
 export default function SettingsLayout({
@@ -7,13 +7,9 @@ export default function SettingsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Container>
-      <Stack>
-        <DataNavigation />
-        <ScrollAreaAutosize type="auto" mah="auto">
-          {children}
-        </ScrollAreaAutosize>
-      </Stack>
-    </Container>
+    <Stack h="100%">
+      <DataNavigation />
+      {children}
+    </Stack>
   );
 }

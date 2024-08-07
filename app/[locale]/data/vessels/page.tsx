@@ -1,5 +1,5 @@
 import { VesselsApiResponse } from '@/lib/types/vessels-api.types';
-import { Alert, Stack, Title } from '@mantine/core';
+import { Alert, Title } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import { getTranslations } from 'next-intl/server';
 import VesselsList from './VesselsList';
@@ -23,11 +23,11 @@ export default async function VesselsPage() {
   }
   const data: VesselsApiResponse = await response.json();
   return (
-    <Stack>
+    <>
       <Title size="h4" mt="md">
         {t('vessels')}
       </Title>
       <VesselsList vessels={data} />
-    </Stack>
+    </>
   );
 }

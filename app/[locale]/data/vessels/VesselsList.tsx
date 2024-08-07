@@ -1,7 +1,8 @@
 'use client';
 
 import { Vessel } from '@/lib/types/vessels-api.types';
-import { Group, NumberInput, Text, TextInput } from '@mantine/core';
+import { Checkbox, Group, NumberInput, TextInput } from '@mantine/core';
+import { useListState } from '@mantine/hooks';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -10,11 +11,15 @@ export default function VesselsList({ vessels }: { vessels: Vessel[] }) {
   const t = useTranslations('Data');
   const [mmsiSearch, setMmsiSearch] = useState<string | number>('');
   const [nameSearch, setNameSearch] = useState<string>('');
-  const filteredItems = vessels.filter(
-    (vessel) =>
-      new RegExp(mmsiSearch.toString(), 'i').test(vessel.mmsi.toString()) &&
-      new RegExp(nameSearch, 'i').test(vessel.name)
-  );
+  const initialValues = vessels.map((vessel) => ({ checked: false, vessel }));
+  const [values, handlers] = useListState(initialValues);
+  const filteredValues = values
+    .map((value, originalIndex) => ({ ...value, originalIndex }))
+    .filter(
+      ({ vessel }) =>
+        new RegExp(mmsiSearch.toString(), 'i').test(vessel.mmsi.toString()) &&
+        new RegExp(nameSearch, 'i').test(vessel.name)
+    );
   return (
     <>
       <Group align="end">
@@ -33,11 +38,25 @@ export default function VesselsList({ vessels }: { vessels: Vessel[] }) {
         />
       </Group>
       <Virtuoso
-        style={{ height: 400 }}
-        data={filteredItems}
-        totalCount={vessels.length}
-        itemContent={(index, vessel) => {
-          return <Text key={index}>{`${vessel.mmsi} ${vessel.name}`}</Text>;
+        style={{ height: '100%' }}
+        data={filteredValues}
+        totalCount={initialValues.length}
+        itemContent={(index, { checked, vessel, originalIndex }) => {
+          return (
+            <Checkbox
+              mt="xs"
+              key={index}
+              checked={checked}
+              label={`${vessel.mmsi} ${vessel.name}`}
+              onChange={(event) =>
+                handlers.setItemProp(
+                  originalIndex,
+                  'checked',
+                  event.currentTarget.checked
+                )
+              }
+            />
+          );
         }}
       />
     </>
