@@ -38,7 +38,7 @@ export default async function RootLayout({
         <title>VSM</title>
         <ColorSchemeScript defaultColorScheme="auto" />
       </head>
-      <body>
+      <body className="h-screen flex flex-col">
         <NextIntlClientProvider messages={messages}>
           <MantineProvider defaultColorScheme="auto">
             <DatesProvider
@@ -48,7 +48,9 @@ export default async function RootLayout({
               <AuthListener />
               <ProgressBar className="fixed top-0 h-1 bg-sky-500">
                 <HeaderContent />
-                <Container>{children}</Container>
+                <Container mb="xs" h="100%">
+                  {children}
+                </Container>
               </ProgressBar>
               <Notifications autoClose={6000} />
             </DatesProvider>
