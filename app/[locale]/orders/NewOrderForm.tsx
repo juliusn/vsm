@@ -64,15 +64,36 @@ export function NewOrderForm({
   berths: Berth[];
 }) {
   const t = useTranslations('Orders');
-  portAreas.sort((a, b) =>
-    a.properties.portAreaName.localeCompare(b.properties.portAreaName)
-  );
-  berths.sort((a, b) => a.berthCode.localeCompare(b.berthCode));
-  const portAreaItems = portAreas.map((portArea) => ({
-    label: portArea.properties.portAreaName,
-    value: portArea.portAreaCode,
-  }));
-  const [berthItems, setBerthItems] = useState<string[]>([]);
+  const berthsData = berths
+    .sort((a, b) => a.berthCode.localeCompare(b.berthCode))
+    .reduce(
+      (
+        data: ComboboxItemGroup<ComboboxItem>[],
+        { berthCode, portAreaCode }
+      ) => {
+        const portArea = portAreas.find(
+          (portArea) => portAreaCode === portArea.portAreaCode
+        );
+        if (!portArea) {
+          return data;
+        }
+        const match = data.find(
+          (item) => item.group === portArea.properties.portAreaName
+        );
+        const value = `${portAreaCode}.${berthCode}`;
+        const item: ComboboxItem = { label: berthCode, value };
+        if (match) {
+          match.items.push(item);
+        } else {
+          data.push({
+            group: portArea.properties.portAreaName,
+            items: [item],
+          });
+        }
+        return data;
+      },
+      []
+    );
   const [berthCode, setBerthCode] = useState<string | null>(null);
   const allTaskItems = taskItems.flatMap((group) => group.items);
   const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
@@ -84,43 +105,18 @@ export function NewOrderForm({
     );
     setSelectedTasks(orderedValues);
   };
-  const handlePortAreaChange = (portAreaCode: string | null) => {
-    const availableBerths = berths.filter(
-      (berth) => berth.portAreaCode === portAreaCode
-    );
-    setBerthItems(
-      availableBerths
-        .map((berth) => berth.berthCode)
-        .filter((berthCode, index, array) => array.indexOf(berthCode) === index)
-    );
-    if (!availableBerths.find((berth) => berth.berthCode === berthCode)) {
-      setBerthCode(null);
-    }
-  };
-  const handleBerthChange = (value: string | null) => {
-    setBerthCode(value);
-  };
 
   return (
     <form>
       <Stack>
         <Select
-          data={portAreaItems}
-          label={t('portArea')}
-          placeholder={t('selectPortArea')}
-          searchable
-          clearable
-          onChange={handlePortAreaChange}
-        />
-        <Select
-          data={berthItems}
+          data={berthsData}
           value={berthCode}
-          disabled={!berthItems.length}
           label={t('berth')}
           placeholder={t('selectBerth')}
           searchable
           clearable
-          onChange={handleBerthChange}
+          onChange={setBerthCode}
         />
         <Select
           data={shipItems}
