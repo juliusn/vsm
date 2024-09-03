@@ -174,5 +174,36 @@
     "vesselsSelect": "Select vessel",
     "mmsi": "MMSI",
     "name": "Name"
+  },
+  "PortDataPage": {
+    "title": "Supported locodes",
+    "alertTitle": "Alert",
+    "alertMessage": "This feature uses data from a service that is currently unavailable.",
+    "locode": "Locode",
+    "added": "Added",
+    "remove": "Remove"
+  },
+  "AddLocodeContent": {
+    "title": "Add Locode"
+  },
+  "AddLocodeForm": {
+    "inputPlaceholder": "Enter locode",
+    "inputError": "This locode has already been added.",
+    "buttonLabel": "Add",
+    "201Title": "Done!",
+    "201Message": "Locode added.",
+    "errorTitle": "Error",
+    "409Message": "This locode has already been added.",
+    "errorMessage": "Locode could not be added. Server responded with status {status}."
+  },
+  "RemoveLocodeButton": {
+    "modalTitle": "Remove locode?",
+    "modalMessage": "Are you sure you want to remove locode {locode} from service management?",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "errorTitle": "Error",
+    "errorMessage": "Locode could not be deleted. Server responded with status {status}.",
+    "successTitle": "Done!",
+    "successMessage": "Locode {locode} has been removed from service management."
   }
 }

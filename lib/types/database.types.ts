@@ -7,8 +7,48 @@ export type Json =
   | Json[]
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
+      locodes: {
+        Row: {
+          created_at: string
+          locode: string
+        }
+        Insert: {
+          created_at?: string
+          locode: string
+        }
+        Update: {
+          created_at?: string
+          locode?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           approval_status: Database["public"]["Enums"]["approval_status_enum"]
@@ -148,3 +188,4 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
+

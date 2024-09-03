@@ -174,5 +174,36 @@
     "vesselsSelect": "Valitse alus",
     "mmsi": "MMSI",
     "name": "Nimi"
+  },
+  "PortDataPage": {
+    "title": "Tuetut geokoodit",
+    "alertTitle": "Varoitus",
+    "alertMessage": "Tämä ominaisuus käyttää dataa palvelusta, joka ei tällä hetkellä ole käytettävissä.",
+    "locode": "Geokoodi",
+    "added": "Lisätty",
+    "remove": "Poista"
+  },
+  "AddLocodeContent": {
+    "title": "Lisää geokoodi"
+  },
+  "AddLocodeForm": {
+    "inputPlaceholder": "Syötä geokoodi",
+    "inputError": "Tämä geokoodi on jo lisätty.",
+    "buttonLabel": "Lisää",
+    "201Title": "Valmis!",
+    "201Message": "Geokoodi lisätty.",
+    "errorTitle": "Virhe",
+    "409Message": "Tämä geokoodi on jo lisätty.",
+    "errorMessage": "Geokoodia ei voitu lisätä. Palvelin vastasi statuskoodilla {status}."
+  },
+  "RemoveLocodeButton": {
+    "modalTitle": "Poista geokoodi?",
+    "modalMessage": "Haluatko varmasti poistaa geokoodin {locode} palvelunhallinnasta?",
+    "cancel": "Peru",
+    "remove": "Poista",
+    "errorTitle": "Virhe",
+    "errorMessage": "Geokoodia ei voitu poistaa. Palvelin vastasi statuskoodilla {status}.",
+    "successTitle": "Valmis!",
+    "successMessage": "Geokoodi {locode} on poistettu palvelunhallinnasta."
   }
 }
