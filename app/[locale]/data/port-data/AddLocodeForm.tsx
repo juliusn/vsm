@@ -1,6 +1,7 @@
 'use client';
 
 import { createClient } from '@/lib/supabase/client';
+import { useRouter } from '@/navigation';
 import { Autocomplete, Button, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
@@ -20,6 +21,7 @@ export default function AddLocodeForm({
   addedLocodes: string[];
   closeModal: () => void;
 }) {
+  const router = useRouter();
   const t = useTranslations('AddLocodeForm');
   const supabase = createClient();
   const form = useForm<FormValues>({
@@ -45,6 +47,7 @@ export default function AddLocodeForm({
             color: 'green',
           });
           closeModal();
+          router.refresh();
         } else if (status === 409) {
           showNotification({
             title: t('errorTitle'),

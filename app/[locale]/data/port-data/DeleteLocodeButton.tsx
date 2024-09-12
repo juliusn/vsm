@@ -7,8 +7,10 @@ import { useTranslations } from 'next-intl';
 import { useTransition } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { showNotification } from '@mantine/notifications';
+import { useRouter } from '@/navigation';
 
 export function RemoveLocodeButton({ locode }: { locode: string }) {
+  const router = useRouter();
   const t = useTranslations('RemoveLocodeButton');
   const supabase = createClient();
   const { showModal, closeModal } = useModal();
@@ -35,6 +37,7 @@ export function RemoveLocodeButton({ locode }: { locode: string }) {
         color: 'green',
       });
       closeModal();
+      router.refresh();
     });
   };
   const content = (
