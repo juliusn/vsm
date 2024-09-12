@@ -198,7 +198,7 @@
   },
   "RemoveLocodeButton": {
     "modalTitle": "Remove locode?",
-    "modalMessage": "Are you sure you want to remove locode {locode} from service management?",
+    "modalMessage": "Are you sure you want to remove locode <strong>{locode}</strong> from service management?",
     "cancel": "Cancel",
     "remove": "Remove",
     "errorTitle": "Error",

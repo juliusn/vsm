@@ -198,7 +198,7 @@
   },
   "RemoveLocodeButton": {
     "modalTitle": "Poista geokoodi?",
-    "modalMessage": "Haluatko varmasti poistaa geokoodin {locode} palvelunhallinnasta?",
+    "modalMessage": "Haluatko varmasti poistaa geokoodin <strong>{locode}</strong> palvelunhallinnasta?",
     "cancel": "Peru",
     "remove": "Poista",
     "errorTitle": "Virhe",

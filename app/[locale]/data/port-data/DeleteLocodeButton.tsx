@@ -1,13 +1,13 @@
 'use client';
 
-import { ActionIcon, Button, Group, Stack } from '@mantine/core';
+import { createClient } from '@/lib/supabase/client';
+import { useRouter } from '@/navigation';
+import { ActionIcon, Button, Group, Stack, Text } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { IconCheck, IconExclamationMark, IconTrash } from '@tabler/icons-react';
-import { useModal } from './ModalProvider';
 import { useTranslations } from 'next-intl';
 import { useTransition } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { showNotification } from '@mantine/notifications';
-import { useRouter } from '@/navigation';
+import { useModal } from './ModalProvider';
 
 export function RemoveLocodeButton({ locode }: { locode: string }) {
   const router = useRouter();
@@ -42,7 +42,12 @@ export function RemoveLocodeButton({ locode }: { locode: string }) {
   };
   const content = (
     <Stack>
-      {t.rich('modalMessage', { locode })}
+      <Text>
+        {t.rich('modalMessage', {
+          locode,
+          strong: (chunks) => <strong>{chunks}</strong>,
+        })}
+      </Text>
       <Group grow>
         <Button
           variant="outline"
