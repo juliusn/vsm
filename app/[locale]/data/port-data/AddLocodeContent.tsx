@@ -1,7 +1,8 @@
 'use client';
 
-import { Button, Modal } from '@mantine/core';
+import { ActionIcon, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { IconPlus } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import AddLocodeForm from './AddLocodeForm';
 
@@ -17,7 +18,9 @@ export default function AddLocodeContent({
 
   return (
     <>
-      <Button onClick={open}>{t('title')}</Button>
+      <ActionIcon onClick={open}>
+        <IconPlus stroke={1.5} />
+      </ActionIcon>
       <Modal opened={opened} onClose={close} title={t('title')}>
         <AddLocodeForm
           existingLocodes={existingLocodes}

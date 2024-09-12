@@ -48,7 +48,7 @@ export default async function RootLayout({
               <AuthListener />
               <ProgressBar className="fixed top-0 h-1 bg-sky-500">
                 <HeaderContent />
-                <Container mb="xs" h="100%">
+                <Container mb="xs" h="100%" w="100%">
                   {children}
                 </Container>
               </ProgressBar>

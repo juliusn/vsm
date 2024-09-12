@@ -74,7 +74,9 @@ export default async function PortDataPage() {
           <TableTr>
             <TableTh>{t('locode')}</TableTh>
             <TableTh>{t('added')}</TableTh>
-            <TableTh>{t('remove')}</TableTh>
+            <TableTh styles={{ th: { textAlign: 'center' } }}>
+              {t('remove')}
+            </TableTh>
           </TableTr>
         </TableThead>
         <TableTbody>
