@@ -152,6 +152,7 @@ export function RegisterForm() {
         </Fieldset>
       </form>
       <Modal
+        size="xl"
         opened={tosModalOpened}
         onClose={closeTosModal}
         title={t('tosHeader')}>
