@@ -49,6 +49,18 @@ export type Database = {
         }
         Relationships: []
       }
+      "port-area-codes": {
+        Row: {
+          "port-area-code": string
+        }
+        Insert: {
+          "port-area-code": string
+        }
+        Update: {
+          "port-area-code"?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           approval_status: Database["public"]["Enums"]["approval_status_enum"]

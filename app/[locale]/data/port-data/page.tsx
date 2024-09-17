@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { PortsApiResponse } from '@/lib/types/ports-api.types';
+import { Link } from '@/navigation';
 import {
   Alert,
   Group,
@@ -28,7 +29,9 @@ export default async function PortDataPage() {
   const addedLocodes = locodes ? locodes.map(({ locode }) => locode) : [];
   const locodeRows = locodes?.map(({ locode, created_at }) => (
     <TableTr key={locode}>
-      <TableTd>{locode}</TableTd>
+      <TableTd>
+        <Link href={`/data/port-data/${locode}`}>{locode}</Link>
+      </TableTd>
       <TableTd>
         {format.dateTime(new Date(created_at), {
           year: 'numeric',
