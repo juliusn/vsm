@@ -1,5 +1,5 @@
+import { ProgressBarLink } from '@/app/components/ProgressBar';
 import { PortAreaFeature, PortsApiResponse } from '@/lib/types/ports-api.types';
-import { Link } from '@/navigation';
 import {
   Alert,
   Table,
@@ -36,9 +36,9 @@ export default async function LocodePage({
           <IncludeCheckbox portAreaCode={portAreaCode} />
         </TableTd>
         <TableTd>
-          <Link href={`/data/port-data/${locode}/${portAreaCode}`}>
+          <ProgressBarLink href={`/data/port-data/${locode}/${portAreaCode}`}>
             {portAreaCode}
-          </Link>
+          </ProgressBarLink>
         </TableTd>
         <TableTd>{portAreaName}</TableTd>
       </TableTr>

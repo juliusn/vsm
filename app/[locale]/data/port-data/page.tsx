@@ -1,6 +1,6 @@
+import { ProgressBarLink } from '@/app/components/ProgressBar';
 import { createClient } from '@/lib/supabase/server';
 import { PortsApiResponse } from '@/lib/types/ports-api.types';
-import { Link } from '@/navigation';
 import {
   Alert,
   Group,
@@ -30,7 +30,9 @@ export default async function PortDataPage() {
   const locodeRows = locodes?.map(({ locode, created_at }) => (
     <TableTr key={locode}>
       <TableTd>
-        <Link href={`/data/port-data/${locode}`}>{locode}</Link>
+        <ProgressBarLink href={`/data/port-data/${locode}`}>
+          {locode}
+        </ProgressBarLink>
       </TableTd>
       <TableTd>
         {format.dateTime(new Date(created_at), {
