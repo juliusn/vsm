@@ -206,14 +206,16 @@
     "successTitle": "Done!",
     "successMessage": "Locode {locode} has been removed from service management."
   },
+  "LocodeLayout": {
+    "alertTitle": "Alert",
+    "alertMessage": "This feature uses data from a service that is currently unavailable."
+  },
   "LocodePage": {
     "title": "Port areas",
     "caption": "Select port areas that you want to include in service management.",
     "select": "Select",
     "portAreaCode": "Port area code",
-    "portName": "Port name",
-    "alertTitle": "Alert",
-    "alertMessage": "This feature uses data from a service that is currently unavailable."
+    "portName": "Port name"
   },
   "IncludeCheckbox": {
     "errorTitle": "Error",

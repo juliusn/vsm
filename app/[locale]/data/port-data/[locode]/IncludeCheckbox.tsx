@@ -7,9 +7,15 @@ import { IconExclamationMark } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-export function IncludeCheckbox({ portAreaCode }: { portAreaCode: string }) {
+export function IncludeCheckbox({
+  portAreaCode,
+  selected,
+}: {
+  portAreaCode: string;
+  selected: boolean;
+}) {
   const t = useTranslations('IncludeCheckbox');
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(selected);
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
   return (

@@ -206,14 +206,16 @@
     "successTitle": "Valmis!",
     "successMessage": "Geokoodi {locode} on poistettu palvelunhallinnasta."
   },
+  "LocodeLayout": {
+    "alertTitle": "Varoitus",
+    "alertMessage": "Tämä ominaisuus käyttää dataa palvelusta, joka ei tällä hetkellä ole käytettävissä."
+  },
   "LocodePage": {
     "title": "Satama-alueet",
     "caption": "Valitse satama-alueet, jotka haluat liittää palvelunhallintaan.",
     "select": "Valitse",
     "portAreaCode": "Satama-alueen tunnus",
-    "portAreaName": "Satama-alueen nimi",
-    "alertTitle": "Varoitus",
-    "alertMessage": "Tämä ominaisuus käyttää dataa palvelusta, joka ei tällä hetkellä ole käytettävissä."
+    "portAreaName": "Satama-alueen nimi"
   },
   "IncludeCheckbox": {
     "errorTitle": "Virhe",
