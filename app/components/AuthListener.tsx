@@ -11,6 +11,7 @@ export function AuthListener() {
   const initialLoadRef = useRef(true);
 
   useEffect(() => {
+    if (typeof window === 'undefined') throw new Error(`where's my window?`);
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {

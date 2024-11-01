@@ -175,38 +175,49 @@
     "mmsi": "MMSI",
     "name": "Name"
   },
+  "UpdatePortData": {
+    "updateDatabase": "Update Database",
+    "results": "Results",
+    "datasetName": "Dataset name",
+    "dateUpdatedApi": "Date updated (API)",
+    "dateUpdatedDb": "Date updated (database)",
+    "result": "Result",
+    "portData": "Port data",
+    "locations": "Locations",
+    "portAreas": "Port areas",
+    "berths": "Berths",
+    "metadata": "Metadata",
+    "notFound": "Not found",
+    "datesMatch": "Dates match",
+    "datesMismatch": "Dates mismatch",
+    "error": "Error",
+    "insert": "Insert",
+    "successLabel": "Done!",
+    "errorLabel": "Error",
+    "updateSuccessMessage": "Update successful.",
+    "deleteSuccessMessage": "Delete successful.",
+    "updateErrorMessage": "Update query on {label} failed. Server responded with status code {status}.",
+    "deleteErrorMessage": "Delete query on {label} failed. Server responded with status code {status}."
+  },
+  "UpdateAllButton": {
+    "label": "Update All"
+  },
+  "DeleteAllButton": {
+    "label": "Delete All"
+  },
   "PortDataPage": {
-    "title": "Supported locodes",
-    "alertTitle": "Alert",
-    "alertMessage": "This feature uses data from a service that is currently unavailable.",
+    "title": "Locations"
+  },
+  "LocationsTable": {
+    "caption": "Select locations that you want to include in service management.",
+    "select": "Select",
+    "country": "Country",
+    "locationName": "Location name",
     "locode": "Locode",
-    "added": "Added",
-    "remove": "Remove"
-  },
-  "AddLocodeContent": {
-    "title": "Add Locode"
-  },
-  "AddLocodeForm": {
-    "inputPlaceholder": "Enter locode",
-    "inputError": "This locode has already been added.",
-    "buttonLabel": "Add",
-    "201Title": "Done!",
-    "201Message": "Locode added.",
     "errorTitle": "Error",
-    "409Message": "This locode has already been added.",
-    "errorMessage": "Locode could not be added. Server responded with status {status}."
+    "errorMessage": "The request could not be completed. Server responded with status code {status}."
   },
-  "RemoveLocodeButton": {
-    "modalTitle": "Remove locode?",
-    "modalMessage": "Are you sure you want to remove locode <strong>{locode}</strong> from service management?",
-    "cancel": "Cancel",
-    "remove": "Remove",
-    "errorTitle": "Error",
-    "errorMessage": "Locode could not be deleted. Server responded with status {status}.",
-    "successTitle": "Done!",
-    "successMessage": "Locode {locode} has been removed from service management."
-  },
-  "LocodeLayout": {
+  "ServiceAlert": {
     "alertTitle": "Alert",
     "alertMessage": "This feature uses data from a service that is currently unavailable."
   },
@@ -217,8 +228,15 @@
     "portAreaCode": "Port area code",
     "portName": "Port name"
   },
-  "IncludeCheckbox": {
+  "ErrorNotification": {
     "errorTitle": "Error",
     "errorMessage": "Request could not be completed. Server responded with status {status}."
+  },
+  "PortAreaCodePage": {
+    "title": "Berths",
+    "caption": "Select berths that you want to include in service management.",
+    "select": "Select",
+    "berthCode": "Berth code",
+    "berthName": "Berth name"
   }
 }

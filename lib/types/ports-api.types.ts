@@ -3,7 +3,7 @@ import { FeatureCollection, Point, Feature } from 'geojson';
 export type PortsApiResponse = {
   dataUpdatedTime: string;
   ssnLocations: SsnLocations;
-  portAreas: PortAreas;
+  portAreas: PortAreaFeatureCollection;
   berths: Berths;
 };
 
@@ -17,9 +17,10 @@ export type SsnLocationProperties = {
   country: string;
 };
 
-export type PortAreas = FeatureCollection<Point, PortAreaProperties> & {
+export type PortAreaFeatureCollection = {
+  type: 'FeatureCollection';
+  features: PortAreaFeature[]; // Explicitly define that features are of type PortAreaFeature
   dataUpdatedTime: string;
-  features: PortAreaFeature[];
 };
 
 export type PortAreaProperties = {

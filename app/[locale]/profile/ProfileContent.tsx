@@ -3,7 +3,7 @@
 import { Table } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
-export function ProfileContent({ profile }: { profile: Profile }) {
+export function ProfileContent({ profile }: { profile: AppTypes.Profile }) {
   const t = useTranslations('ProfilePage');
   const approvalStatus = {
     pending: t('pending'),

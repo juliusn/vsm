@@ -1,31 +1,23 @@
 'use client';
 
-import { Table } from '@mantine/core';
-import { usePortAreaApi } from './PortAreaApiContext';
 import { ProgressBarLink } from '@/app/components/ProgressBar';
-import { IncludeCheckbox } from './IncludeCheckbox';
-import { usePortAreaDb } from './PortAreaDbContext';
+import { Table } from '@mantine/core';
+import { PortAreaCheckbox } from './PortAreaCheckbox';
+import { useLocation } from './LocationContext';
 
 export default function PortAreaRows({ locode }: { locode: string }) {
-  const existingPortAreas = usePortAreaApi();
-  const selectedPortAreas = usePortAreaDb();
-  const portAreaRows = existingPortAreas.map(
-    ({ portAreaCode, properties: { portAreaName } }) => (
-      <Table.Tr key={portAreaCode}>
-        <Table.Td>
-          <IncludeCheckbox
-            portAreaCode={portAreaCode}
-            selected={selectedPortAreas.includes(portAreaCode)}
-          />
-        </Table.Td>
-        <Table.Td>
-          <ProgressBarLink href={`/data/port-data/${locode}/${portAreaCode}`}>
-            {portAreaCode}
-          </ProgressBarLink>
-        </Table.Td>
-        <Table.Td>{portAreaName}</Table.Td>
-      </Table.Tr>
-    )
-  );
-  return <>{portAreaRows}</>;
+  const { portAreas } = useLocation();
+  return portAreas?.map(({ port_area_code, port_area_name, enabled }) => (
+    <Table.Tr key={port_area_code}>
+      <Table.Td>
+        <PortAreaCheckbox portAreaCode={port_area_code} selected={enabled} />
+      </Table.Td>
+      <Table.Td>
+        <ProgressBarLink href={`/data/port-data/${locode}/${port_area_code}`}>
+          {port_area_code}
+        </ProgressBarLink>
+      </Table.Td>
+      <Table.Td>{port_area_name}</Table.Td>
+    </Table.Tr>
+  ));
 }

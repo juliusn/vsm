@@ -1,10 +1,5 @@
-import { PortAreaFeature, PortsApiResponse } from '@/lib/types/ports-api.types';
-import { PortAreaApiProvider } from './PortAreaApiContext';
 import { createClient } from '@/lib/supabase/server';
-import { PortAreaDbProvider } from './PortAreaDbContext';
-import { getTranslations } from 'next-intl/server';
-import { Alert } from '@mantine/core';
-import { IconAlertTriangle } from '@tabler/icons-react';
+import { LocationProvider } from './LocationContext';
 
 export default async function LocodeLayout({
   children,
@@ -13,35 +8,20 @@ export default async function LocodeLayout({
   children: React.ReactNode;
   params: { locode: string };
 }) {
-  const t = await getTranslations('LocodeLayout');
   const supabase = createClient();
-  const apiResponse = await fetch(
-    `https://meri.digitraffic.fi/api/port-call/v1/ports/${locode}`
-  );
-  let existingPortAreas: PortAreaFeature[] = [];
-  if (apiResponse.ok) {
-    const data: PortsApiResponse = await apiResponse.json();
-    existingPortAreas = data.portAreas.features;
-  }
-  let selectedPortAreas: string[] = [];
-  const dbResponse = await supabase.from('port-area-codes').select('*');
-  if (!dbResponse.error) {
-    selectedPortAreas = dbResponse.data.map((row) => row['port-area-code']);
-  }
+  const [locationsResponse, portAreasResponse, berthsResponse] =
+    await Promise.all([
+      supabase.from('locations').select('*').eq('locode', locode).single(),
+      supabase.from('port_areas').select('*').eq('locode', locode),
+      supabase.from('berths').select('*').eq('locode', locode),
+    ]);
+  const location = locationsResponse.data;
+  const portAreas = portAreasResponse.data;
+  const berths = berthsResponse.data;
+
   return (
-    <PortAreaApiProvider value={existingPortAreas}>
-      <PortAreaDbProvider value={selectedPortAreas}>
-        {(!apiResponse.ok || dbResponse.error) && (
-          <Alert
-            variant="outline"
-            color="yellow"
-            icon={<IconAlertTriangle stroke={1.5} />}
-            title={t('alertTitle')}>
-            {t('alertMessage')}
-          </Alert>
-        )}
-        {children}
-      </PortAreaDbProvider>
-    </PortAreaApiProvider>
+    <LocationProvider value={{ location, portAreas, berths }}>
+      {children}
+    </LocationProvider>
   );
 }

@@ -175,38 +175,49 @@
     "mmsi": "MMSI",
     "name": "Nimi"
   },
+  "UpdatePortData": {
+    "updateDatabase": "Päivitä tietokanta",
+    "results": "Tulokset",
+    "datasetName": "Tietojoukon nimi",
+    "dateUpdatedApi": "Päivitetty (API)",
+    "dateUpdatedDb": "Päivitetty (tietokanta)",
+    "result": "Tulos",
+    "portData": "Satamadata",
+    "locations": "Alueet",
+    "portAreas": "Satama-alueet",
+    "berths": "Laiturit",
+    "metadata": "Metadata",
+    "notFound": "Ei löytynyt",
+    "datesMatch": "Päiväykset täsmää",
+    "datesMismatch": "Päiväykset eivät täsmää",
+    "error": "Virhe",
+    "insert": "Lisää",
+    "successLabel": "Valmis!",
+    "errorLabel": "Virhe",
+    "updateSuccessMessage": "Päivitys onnistui.",
+    "deleteSuccessMessage": "Rivit poistettu.",
+    "updateErrorMessage": "Päivitys epäonnistui kohteessa {label}. Palvelin vastasi statuskoodilla {status}.",
+    "deleteErrorMessage": "Rivien poisto epäonnistui kohteessa {label}. Palvelin vastasi statuskoodilla {status}."
+  },
+  "UpdateAllButton": {
+    "label": "Päivitä kaikki"
+  },
+  "DeleteAllButton": {
+    "label": "Poista kaikki"
+  },
   "PortDataPage": {
-    "title": "Tuetut geokoodit",
-    "alertTitle": "Varoitus",
-    "alertMessage": "Tämä ominaisuus käyttää dataa palvelusta, joka ei tällä hetkellä ole käytettävissä.",
+    "title": "Alueet"
+  },
+  "LocationsTable": {
+    "caption": "Valitse alueet, jotka haluat liittää palvelunhallintaan.",
+    "select": "Valitse",
+    "country": "Maa",
+    "locationName": "Alueen nimi",
     "locode": "Geokoodi",
-    "added": "Lisätty",
-    "remove": "Poista"
-  },
-  "AddLocodeContent": {
-    "title": "Lisää geokoodi"
-  },
-  "AddLocodeForm": {
-    "inputPlaceholder": "Syötä geokoodi",
-    "inputError": "Tämä geokoodi on jo lisätty.",
-    "buttonLabel": "Lisää",
-    "201Title": "Valmis!",
-    "201Message": "Geokoodi lisätty.",
     "errorTitle": "Virhe",
-    "409Message": "Tämä geokoodi on jo lisätty.",
-    "errorMessage": "Geokoodia ei voitu lisätä. Palvelin vastasi statuskoodilla {status}."
+    "errorMessage": "Pyyntöä ei voitu toteuttaa. Palvelin vastasi statuskoodilla {status}."
   },
-  "RemoveLocodeButton": {
-    "modalTitle": "Poista geokoodi?",
-    "modalMessage": "Haluatko varmasti poistaa geokoodin <strong>{locode}</strong> palvelunhallinnasta?",
-    "cancel": "Peru",
-    "remove": "Poista",
-    "errorTitle": "Virhe",
-    "errorMessage": "Geokoodia ei voitu poistaa. Palvelin vastasi statuskoodilla {status}.",
-    "successTitle": "Valmis!",
-    "successMessage": "Geokoodi {locode} on poistettu palvelunhallinnasta."
-  },
-  "LocodeLayout": {
+  "ServiceAlert": {
     "alertTitle": "Varoitus",
     "alertMessage": "Tämä ominaisuus käyttää dataa palvelusta, joka ei tällä hetkellä ole käytettävissä."
   },
@@ -217,8 +228,15 @@
     "portAreaCode": "Satama-alueen tunnus",
     "portAreaName": "Satama-alueen nimi"
   },
-  "IncludeCheckbox": {
+  "ErrorNotification": {
     "errorTitle": "Virhe",
     "errorMessage": "Pyyntöä ei voitu toteuttaa. Palvelin vastasi statuskoodilla {status}."
+  },
+  "PortAreaCodePage": {
+    "title": "Laiturit",
+    "caption": "Valitse laiturit, jotka haluat liittää palvelunhallintaan.",
+    "select": "Select",
+    "berthCode": "Laituritunnus",
+    "berthName": "Laiturin nimi"
   }
 }

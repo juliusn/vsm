@@ -1,7 +1,7 @@
 import { Stack } from '@mantine/core';
 import { DataNavigation } from './DataNavigation';
 
-export default function SettingsLayout({
+export default function DataLayout({
   children,
 }: {
   children: React.ReactNode;
