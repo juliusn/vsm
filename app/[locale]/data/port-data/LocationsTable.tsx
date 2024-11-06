@@ -40,7 +40,7 @@ export function LocationsTable() {
       }
     };
     query();
-  }, [page]);
+  }, [page, supabase, t]);
 
   return (
     <DataTable
