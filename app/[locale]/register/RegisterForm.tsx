@@ -15,7 +15,7 @@ import { isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCheck, IconSquareCheck, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
 import { ErrorModal } from '@/app/components/ErrorModal';
 import { useProgressBar } from '@/app/components/ProgressBar';
@@ -32,6 +32,7 @@ interface FormValues {
 export function RegisterForm() {
   const t = useTranslations('Register');
   const supabase = createClient();
+  const locale = useLocale();
   const [tosComplete, setTosComplete] = useState<boolean>(false);
   const [formDisabled, setFormDisabled] = useState(false);
   const [
@@ -69,6 +70,7 @@ export function RegisterForm() {
     event.preventDefault();
     progress.start();
     const { firstName, lastName, email, password } = form.values;
+    const url = new URL(`/${locale}/confirm`, window.location.origin);
 
     const response = await supabase.auth.signUp({
       email,
@@ -78,6 +80,7 @@ export function RegisterForm() {
           first_name: firstName,
           last_name: lastName,
         },
+        emailRedirectTo: url.href,
       },
     });
 
@@ -85,6 +88,7 @@ export function RegisterForm() {
       openErrorModal();
     } else {
       openAccountCreatedModal();
+      form.reset();
       setFormDisabled(true);
     }
 
