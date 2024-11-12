@@ -1,33 +1,44 @@
 'use client';
 
-import { Table } from '@mantine/core';
+import { Badge, DefaultMantineColor, Table } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
+type ApprovalStatusAttributes = {
+  label: string;
+  color: DefaultMantineColor;
+};
+
+type ApprovalStatus = Database['public']['Enums']['approval_status_enum'];
+
 export function ProfileContent({ profile }: { profile: AppTypes.Profile }) {
-  const t = useTranslations('ProfilePage');
-  const approvalStatus = {
-    pending: t('pending'),
-    approved: t('approved'),
-    rejected: t('rejected'),
+  const t = useTranslations('ProfileContent');
+  const approvalStatusMap: Record<ApprovalStatus, ApprovalStatusAttributes> = {
+    pending: { label: t('pending'), color: 'yellow' },
+    approved: { label: t('approved'), color: 'green' },
+    rejected: { label: t('rejected'), color: 'red' },
   };
-  const rows = [
-    { key: t('firstName'), value: profile.first_name },
-    { key: t('lastName'), value: profile.last_name },
-    {
-      key: t('approvalStatus'),
-      value: approvalStatus[profile.approval_status],
-    },
-  ];
+  const approvalStatus = approvalStatusMap[profile.approval_status];
+
   return (
     <Table>
-      <tbody>
-        {rows.map((row) => (
-          <tr key={row.key}>
-            <td>{row.key}</td>
-            <td className="pl-12">{row.value}</td>
-          </tr>
-        ))}
-      </tbody>
+      <Table.Tbody>
+        <Table.Tr>
+          <Table.Td>{t('firstName')}</Table.Td>
+          <Table.Td>{profile.first_name}</Table.Td>
+        </Table.Tr>
+        <Table.Tr>
+          <Table.Td>{t('lastName')}</Table.Td>
+          <Table.Td>{profile.last_name}</Table.Td>
+        </Table.Tr>
+        <Table.Tr>
+          <Table.Td>{t('approvalStatus')}</Table.Td>
+          <Table.Td>
+            <Badge radius="xs" color={approvalStatus.color}>
+              {approvalStatus.label}
+            </Badge>
+          </Table.Td>
+        </Table.Tr>
+      </Table.Tbody>
     </Table>
   );
 }

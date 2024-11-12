@@ -121,7 +121,9 @@
     "successMessage": "Your user account has been deleted from the service."
   },
   "ProfilePage": {
-    "title": "User Profile",
+    "title": "User Profile"
+  },
+  "ProfileContent": {
     "firstName": "First name",
     "lastName": "Last name",
     "approvalStatus": "Approval Status",

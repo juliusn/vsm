@@ -121,7 +121,9 @@
     "successMessage": "Käyttäjätunnuksesi on poistettu palvelusta."
   },
   "ProfilePage": {
-    "title": "Käyttäjäprofiili",
+    "title": "Käyttäjäprofiili"
+  },
+  "ProfileContent": {
     "firstName": "Etunimi",
     "lastName": "Sukunimi",
     "approvalStatus": "Hyväksynnän tila",
