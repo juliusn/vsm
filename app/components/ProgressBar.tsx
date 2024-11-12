@@ -1,6 +1,6 @@
 'use client';
 
-import { Link, useRouter } from '@/navigation';
+import { Link, useRouter } from '@/i18n/routing';
 import { Anchor, NavLink } from '@mantine/core';
 import {
   AnimatePresence,

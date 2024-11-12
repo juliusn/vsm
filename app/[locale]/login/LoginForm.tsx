@@ -12,7 +12,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { useEmailStore } from '../../store';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/navigation';
+import { useRouter } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
 import { startTransition } from 'react';
 import { ErrorModal } from '@/app/components/ErrorModal';

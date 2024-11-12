@@ -1,7 +1,7 @@
 'use client';
 
 import { ProgressBarAnchor } from '@/app/components/ProgressBar';
-import { usePathname } from '@/navigation';
+import { usePathname } from '@/i18n/routing';
 import { Breadcrumbs, Text } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 

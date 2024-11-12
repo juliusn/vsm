@@ -3,12 +3,13 @@
 import { useProgressBar } from '@/app/components/ProgressBar';
 import { useEmailStore, useSessionStore } from '@/app/store';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter } from '@/navigation';
+import { useRouter } from '@/i18n/routing';
 import { Alert, Button, Checkbox, Group, Modal, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { IconCheck, IconExclamationMark } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
+
 import {
   useState,
   useTransition,

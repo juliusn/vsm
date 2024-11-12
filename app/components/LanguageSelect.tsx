@@ -2,7 +2,7 @@
 
 import { Select } from '@mantine/core';
 import { useLocale } from 'next-intl';
-import { usePathname, useRouter } from '@/navigation';
+import { usePathname, useRouter } from '@/i18n/routing';
 import { useProgressBar } from './ProgressBar';
 import { startTransition } from 'react';
 

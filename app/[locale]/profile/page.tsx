@@ -2,21 +2,25 @@ import { createClient } from '@/lib/supabase/server';
 import { Center, Stack, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
 import { ProfileContent } from './ProfileContent';
+import { redirect } from '@/i18n/routing';
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   const t = await getTranslations('ProfilePage');
   const supabase = createClient();
-  const { data: sessionData, error: sessionError } =
-    await supabase.auth.getSession();
+  const { data, error } = await supabase.auth.getUser();
 
-  if (sessionError || !sessionData.session) {
-    return <Title size="h4">No Session</Title>;
+  if (error) {
+    redirect({ href: '/login', locale });
   }
 
   const { data: profile } = await supabase
     .from('profiles')
     .select()
-    .eq('id', sessionData.session.user.id)
+    .eq('id', data.user.id)
     .single();
 
   return (

@@ -2,7 +2,7 @@
 
 import { Tabs } from '@mantine/core';
 import classes from './HeaderTabs.module.css';
-import { usePathname, useRouter } from '@/navigation';
+import { usePathname, useRouter } from '@/i18n/routing';
 import { startTransition, useEffect, useState } from 'react';
 import { useProgressBar } from '../ProgressBar';
 

@@ -32,15 +32,22 @@ const configs = [
           paths: [
             {
               name: 'next/link',
-              importNames: ['default'],
-              message:
-                'Please use { Link } from "next-intl/navigation" instead.',
+              message: 'Please import from `@/i18n/routing` instead.',
+            },
+            {
+              name: 'next/router',
+              importNames: ['useRouter'],
+              message: 'Please import from `@/i18n/routing` instead.',
             },
             {
               name: 'next/navigation',
-              importNames: ['redirect', 'usePathname', 'useRouter'],
-              message:
-                'Please use { redirect, usePathname, useRouter } from "next-intl/navigation" instead.',
+              importNames: [
+                'redirect',
+                'permanentRedirect',
+                'useRouter',
+                'usePathname',
+              ],
+              message: 'Please import from `@/i18n/routing` instead.',
             },
           ],
         },

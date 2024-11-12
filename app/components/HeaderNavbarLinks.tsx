@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter } from '@/navigation';
+import { usePathname, useRouter } from '@/i18n/routing';
 import { NavLink } from '@mantine/core';
 import { startTransition } from 'react';
 import { useProgressBar } from './ProgressBar';

@@ -16,7 +16,7 @@ import {
 import { useSessionStore } from '@/app/store';
 import { showNotification } from '@mantine/notifications';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/navigation';
+import { useRouter } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
 import { useProgressBar } from '../ProgressBar';
 type MenuItem = { label: string; icon: ReactNode; handler: () => void };

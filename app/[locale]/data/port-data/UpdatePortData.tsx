@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/client';
 import { PortsApiResponse } from '@/lib/types/ports-api.types';
-import { useRouter } from '@/navigation';
+import { useRouter } from '@/i18n/routing';
 import { Button, Group, Modal, Stack, Table } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
