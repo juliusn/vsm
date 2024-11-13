@@ -13,7 +13,7 @@
     "@mantine/form": "^7.13.4",
     "@mantine/hooks": "^7.13.4",
     "@mantine/notifications": "^7.13.4",
-    "@supabase/ssr": "^0.4.0",
+    "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "latest",
     "@tabler/icons-react": "^3.11.0",
     "@types/geojson": "^7946.0.14",
