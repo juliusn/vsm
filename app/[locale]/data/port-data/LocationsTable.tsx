@@ -3,13 +3,14 @@
 import { ProgressBarLink } from '@/app/components/ProgressBar';
 import { usePathname } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
-import { ActionIcon, Badge, TextInput } from '@mantine/core';
+import { ActionIcon, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { IconExclamationMark, IconSearch, IconX } from '@tabler/icons-react';
 import { DataTable } from 'mantine-datatable';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { EnabledSwitch } from './EnabledSwitch';
 const PAGE_SIZE = 15;
 
 export function LocationsTable() {
@@ -193,13 +194,12 @@ export function LocationsTable() {
         {
           accessor: 'enabled',
           title: t('enabled'),
-          render: ({ enabled }) => (
-            <Badge
-              radius="xs"
-              variant={enabled ? 'filled' : 'light'}
-              color={enabled ? 'green' : 'gray'}>
-              {enabled ? t('yes') : t('no')}
-            </Badge>
+          render: ({ locode, enabled }) => (
+            <EnabledSwitch
+              displayError={displayError}
+              enabled={enabled}
+              locode={locode}
+            />
           ),
         },
       ]}
