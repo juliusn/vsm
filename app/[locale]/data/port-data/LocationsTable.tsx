@@ -1,5 +1,7 @@
 'use client';
 
+import { ProgressBarLink } from '@/app/components/ProgressBar';
+import { usePathname } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
 import { ActionIcon, Badge, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
@@ -27,6 +29,7 @@ export function LocationsTable() {
   });
   const [records, setRecords] = useState<AppTypes.Location[]>([]);
   const [totalRecords, setTotalRecords] = useState<number | undefined>();
+  const pathname = usePathname();
 
   const displayError = useCallback(
     (status: number) => {
@@ -120,6 +123,11 @@ export function LocationsTable() {
         {
           accessor: 'locode',
           title: t('locode'),
+          render: ({ locode }) => (
+            <ProgressBarLink href={`${pathname}/${locode}`}>
+              {locode}
+            </ProgressBarLink>
+          ),
           filter: (
             <TextInput
               leftSection={<IconSearch size={16} />}
