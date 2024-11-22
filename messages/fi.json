@@ -207,11 +207,13 @@
     "title": "Alueet"
   },
   "LocationsTable": {
-    "caption": "Valitse alueet, jotka haluat liittää palvelunhallintaan.",
-    "select": "Valitse",
-    "country": "Maa",
-    "locationName": "Alueen nimi",
+    "noResults": "Ei tuloksia",
     "locode": "Geokoodi",
+    "locationName": "Alueen nimi",
+    "country": "Maa",
+    "enabled": "Lisätty",
+    "yes": "Kyllä",
+    "no": "Ei",
     "errorTitle": "Virhe",
     "errorMessage": "Pyyntöä ei voitu toteuttaa. Palvelin vastasi statuskoodilla {status}."
   },

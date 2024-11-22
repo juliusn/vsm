@@ -207,11 +207,13 @@
     "title": "Locations"
   },
   "LocationsTable": {
-    "caption": "Select locations that you want to include in service management.",
-    "select": "Select",
-    "country": "Country",
-    "locationName": "Location name",
+    "noResults": "No results",
     "locode": "Locode",
+    "locationName": "Location name",
+    "country": "Country",
+    "enabled": "Enabled",
+    "yes": "Yes",
+    "no": "No",
     "errorTitle": "Error",
     "errorMessage": "The request could not be completed. Server responded with status code {status}."
   },
