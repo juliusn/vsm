@@ -10,7 +10,7 @@ import { IconExclamationMark, IconSearch, IconX } from '@tabler/icons-react';
 import { DataTable } from 'mantine-datatable';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { EnabledSwitch } from './EnabledSwitch';
+import { ControlledSwitch } from '../../../components/ControlledSwitch';
 const PAGE_SIZE = 15;
 
 export function LocationsTable() {
@@ -195,10 +195,21 @@ export function LocationsTable() {
           accessor: 'enabled',
           title: t('enabled'),
           render: ({ locode, enabled }) => (
-            <EnabledSwitch
-              displayError={displayError}
-              enabled={enabled}
-              locode={locode}
+            <ControlledSwitch
+              initialChecked={enabled}
+              onUpdate={async (checked) => {
+                const { error, status } = await supabase
+                  .from('locations')
+                  .update({ enabled: checked })
+                  .eq('locode', locode);
+
+                if (error) {
+                  displayError(status);
+                  return { updateState: false };
+                }
+
+                return { updateState: true };
+              }}
             />
           ),
         },
