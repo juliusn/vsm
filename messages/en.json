@@ -212,21 +212,24 @@
     "locationName": "Location name",
     "country": "Country",
     "enabled": "Enabled",
+    "all": "All",
     "yes": "Yes",
-    "no": "No",
-    "errorTitle": "Error",
-    "errorMessage": "The request could not be completed. Server responded with status code {status}."
+    "no": "No"
   },
   "ServiceAlert": {
     "alertTitle": "Alert",
     "alertMessage": "This feature uses data from a service that is currently unavailable."
   },
+  "LocodeLayout": {
+    "locode": "Locode",
+    "alertTitle": "Error",
+    "alertMessage": "Could not load data."
+  },
   "LocodePage": {
-    "title": "Port areas",
-    "caption": "Select port areas that you want to include in service management.",
-    "select": "Select",
-    "portAreaCode": "Port area code",
-    "portName": "Port name"
+    "title": "Port areas"
+  },
+  "LocodeSwitch": {
+    "label": "Enabled"
   },
   "ErrorNotification": {
     "errorTitle": "Error",
@@ -238,5 +241,26 @@
     "select": "Select",
     "berthCode": "Berth code",
     "berthName": "Berth name"
+  },
+  "PortAreaSwitch": {
+    "label": "Enabled"
+  },
+  "PortAreasTable": {
+    "noResults": "No results",
+    "portAreaCode": "Port area code",
+    "portName": "Port name",
+    "enabled": "Enabled",
+    "all": "All",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "BerthsTable": {
+    "noResults": "No results",
+    "berthCode": "Berth code",
+    "berthName": "Berth name",
+    "enabled": "Enabled",
+    "all": "All",
+    "yes": "Yes",
+    "no": "No"
   }
 }

@@ -18,7 +18,6 @@ import {
 } from 'next-intl';
 import { useState } from 'react';
 import { DeleteAllButton } from './DeleteAllButton';
-import { usePortDataContext } from './PortDataContext';
 import { UpdateAllButton } from './UpdateAllButton';
 type DatasetName = 'port_data' | 'locations' | 'port_areas' | 'berths';
 type DateComparisonResult = {
@@ -41,7 +40,6 @@ export function UpdatePortData() {
   const [rows, setRows] = useState<DatasetRow[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [apiData, setApiData] = useState<PortsApiResponse>();
-  const { setLocations } = usePortDataContext();
   const apiLocations =
     apiData?.ssnLocations.features.map((location) => ({
       enabled: true,
@@ -180,19 +178,13 @@ export function UpdatePortData() {
       {
         label: t('locations'),
         query: async () => {
-          const { data, error, status } = await supabase
-            .from('locations')
-            .upsert(
-              apiLocations.map(({ country, location_name, locode }) => ({
-                country,
-                location_name,
-                locode,
-              }))
-            )
-            .select();
-          if (data) {
-            setLocations(data);
-          }
+          const { error, status } = await supabase.from('locations').upsert(
+            apiLocations.map(({ country, location_name, locode }) => ({
+              country,
+              location_name,
+              locode,
+            }))
+          );
           return { error, status };
         },
       },
@@ -273,14 +265,10 @@ export function UpdatePortData() {
       {
         label: t('locations'),
         query: async () => {
-          const { data, error, status } = await supabase
+          const { error, status } = await supabase
             .from('locations')
             .delete()
-            .neq('locode', null)
-            .select();
-          if (data) {
-            setLocations(data);
-          }
+            .neq('locode', null);
           return { error, status };
         },
       },

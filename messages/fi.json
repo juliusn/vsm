@@ -211,22 +211,24 @@
     "locode": "Geokoodi",
     "locationName": "Alueen nimi",
     "country": "Maa",
-    "enabled": "Lisätty",
+    "enabled": "Tuettu",
+    "all": "Kaikki",
     "yes": "Kyllä",
-    "no": "Ei",
-    "errorTitle": "Virhe",
-    "errorMessage": "Pyyntöä ei voitu toteuttaa. Palvelin vastasi statuskoodilla {status}."
+    "no": "Ei"
   },
   "ServiceAlert": {
     "alertTitle": "Varoitus",
     "alertMessage": "Tämä ominaisuus käyttää dataa palvelusta, joka ei tällä hetkellä ole käytettävissä."
   },
+  "LocodeLayout": {
+    "alertTitle": "Virhe",
+    "alertMessage": "Tietojen lataaminen epäonnistui."
+  },
   "LocodePage": {
-    "title": "Satama-alueet",
-    "caption": "Valitse satama-alueet, jotka haluat liittää palvelunhallintaan.",
-    "select": "Valitse",
-    "portAreaCode": "Satama-alueen tunnus",
-    "portAreaName": "Satama-alueen nimi"
+    "title": "Satama-alueet"
+  },
+  "LocodeSwitch": {
+    "label": "Tuettu"
   },
   "ErrorNotification": {
     "errorTitle": "Virhe",
@@ -238,5 +240,26 @@
     "select": "Select",
     "berthCode": "Laituritunnus",
     "berthName": "Laiturin nimi"
+  },
+  "PortAreaSwitch": {
+    "label": "Tuettu"
+  },
+  "PortAreasTable": {
+    "noResults": "Ei tuloksia",
+    "portAreaCode": "Satama-alueen tunnus",
+    "portName": "Satama-alueen nimi",
+    "enabled": "Tuettu",
+    "all": "Kaikki",
+    "yes": "Kyllä",
+    "no": "Ei"
+  },
+  "BerthsTable": {
+    "noResults": "Ei tuloksia",
+    "berthCode": "Laituritunnus",
+    "berthName": "Laiturin nimi",
+    "enabled": "Tuettu",
+    "all": "Kaikki",
+    "yes": "Kyllä",
+    "no": "Ei"
   }
 }

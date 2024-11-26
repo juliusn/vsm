@@ -1,68 +1,67 @@
 'use client';
 
 import { ProgressBarLink } from '@/app/components/ProgressBar';
+import { useErrorNotification } from '@/app/hooks/useErrorNotification';
 import { usePathname } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
-import { ActionIcon, TextInput } from '@mantine/core';
+import { ActionIcon, Group, Radio, Switch, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
-import { IconExclamationMark, IconSearch, IconX } from '@tabler/icons-react';
+import { IconSearch, IconX } from '@tabler/icons-react';
 import { DataTable } from 'mantine-datatable';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ControlledSwitch } from '../../../components/ControlledSwitch';
+import { useEffect, useRef, useState } from 'react';
 const PAGE_SIZE = 15;
 
 export function LocationsTable() {
   const t = useTranslations('LocationsTable');
+  const getErrorNotification = useErrorNotification();
   const supabase = createClient();
   const [page, setPage] = useState(1);
   const [locodeQuery, setLocodeQuery] = useState('');
   const [locationNameQuery, setLocationNameQuery] = useState('');
   const [countryQuery, setCountryQuery] = useState('');
+  const [enabledQuery, setEnabledQuery] = useState<string>('all');
   const [dbLocodeQuery] = useDebouncedValue(locodeQuery, 200);
   const [dblocationNameQuery] = useDebouncedValue(locationNameQuery, 200);
   const [dbcountryQuery] = useDebouncedValue(countryQuery, 200);
+  const [dbEnabledQuery] = useDebouncedValue(enabledQuery, 200);
   const queriesRef = useRef({
     locode: '',
     locationName: '',
     country: '',
+    dbEnabledQuery: 'all',
   });
   const [records, setRecords] = useState<AppTypes.Location[]>([]);
   const [totalRecords, setTotalRecords] = useState<number | undefined>();
   const pathname = usePathname();
-
-  const displayError = useCallback(
-    (status: number) => {
-      showNotification({
-        title: t('errorTitle'),
-        message: t.rich('errorMessage', {
-          status,
-        }),
-        icon: <IconExclamationMark stroke={1.5} />,
-        color: 'red',
-      });
-    },
-    [t]
-  );
 
   useEffect(() => {
     queriesRef.current = {
       locode: dbLocodeQuery,
       locationName: dblocationNameQuery,
       country: dbcountryQuery,
+      dbEnabledQuery: dbEnabledQuery,
     };
 
     const queryCount = async () => {
-      const { count, error, status } = await supabase
+      let query = supabase
         .from('locations')
         .select('*', { count: 'exact', head: true })
         .ilike('locode', `%${dbLocodeQuery}%`)
         .ilike('location_name', `%${dblocationNameQuery}%`)
         .ilike('country', `%${dbcountryQuery}%`);
 
+      if (dbEnabledQuery === 'enabled') {
+        query = query.eq('enabled', true);
+      } else if (dbEnabledQuery === 'disabled') {
+        query = query.eq('enabled', false);
+      }
+
+      const { count, error, status } = await query;
+
       if (error) {
-        displayError(status);
+        showNotification(getErrorNotification(status));
         setTotalRecords(0);
         setRecords([]);
         return;
@@ -75,7 +74,8 @@ export function LocationsTable() {
     dbLocodeQuery,
     dblocationNameQuery,
     dbcountryQuery,
-    displayError,
+    dbEnabledQuery,
+    getErrorNotification,
   ]);
 
   useEffect(() => {
@@ -95,16 +95,25 @@ export function LocationsTable() {
     }
 
     const dataQuery = async () => {
-      const { data, error, status } = await supabase
+      let query = supabase
         .from('locations')
         .select('*')
+        .order('locode')
         .ilike('locode', `%${queriesRef.current.locode}%`)
         .ilike('location_name', `%${queriesRef.current.locationName}%`)
         .ilike('country', `%${queriesRef.current.country}%`)
         .range(from, to);
 
+      if (queriesRef.current.dbEnabledQuery === 'enabled') {
+        query = query.eq('enabled', true);
+      } else if (queriesRef.current.dbEnabledQuery === 'disabled') {
+        query = query.eq('enabled', false);
+      }
+
+      const { data, error, status } = await query;
+
       if (error) {
-        displayError(status);
+        showNotification(getErrorNotification(status));
         return;
       }
 
@@ -112,14 +121,20 @@ export function LocationsTable() {
     };
 
     dataQuery();
-  }, [totalRecords, page, supabase, displayError]);
+  }, [totalRecords, page, supabase, getErrorNotification]);
 
   return (
     <DataTable
       withTableBorder
+      borderRadius="sm"
       minHeight={records.length ? 0 : 180}
       noRecordsText={t('noResults')}
       records={records}
+      totalRecords={totalRecords}
+      recordsPerPage={PAGE_SIZE}
+      idAccessor="locode"
+      page={page}
+      onPageChange={setPage}
       columns={[
         {
           accessor: 'locode',
@@ -184,9 +199,7 @@ export function LocationsTable() {
                 </ActionIcon>
               }
               value={countryQuery}
-              onChange={(e) => {
-                setCountryQuery(e.currentTarget.value);
-              }}
+              onChange={(e) => setCountryQuery(e.currentTarget.value)}
             />
           ),
           filtering: countryQuery !== '',
@@ -194,31 +207,44 @@ export function LocationsTable() {
         {
           accessor: 'enabled',
           title: t('enabled'),
+          filter: (
+            <Radio.Group value={enabledQuery} onChange={setEnabledQuery}>
+              <Group>
+                <Radio value="all" label={t('all')} />
+                <Radio value="enabled" label={t('yes')} />
+                <Radio value="disabled" label={t('no')} />
+              </Group>
+            </Radio.Group>
+          ),
           render: ({ locode, enabled }) => (
-            <ControlledSwitch
-              initialChecked={enabled}
-              onUpdate={async (checked) => {
-                const { error, status } = await supabase
+            <Switch
+              checked={enabled}
+              onChange={async (event) => {
+                const newChecked = event.currentTarget.checked;
+                const { data, error, status } = await supabase
                   .from('locations')
-                  .update({ enabled: checked })
-                  .eq('locode', locode);
+                  .update({ enabled: newChecked })
+                  .eq('locode', locode)
+                  .select()
+                  .single();
 
                 if (error) {
-                  displayError(status);
-                  return { updateState: false };
+                  showNotification(getErrorNotification(status));
+                  return;
                 }
-
-                return { updateState: true };
+                setRecords((oldState) =>
+                  oldState.map((location) =>
+                    location.locode === locode
+                      ? { ...location, enabled: data.enabled }
+                      : location
+                  )
+                );
               }}
             />
           ),
+          filtering: enabledQuery !== 'all',
         },
       ]}
-      idAccessor="locode"
-      totalRecords={totalRecords}
-      recordsPerPage={PAGE_SIZE}
-      page={page}
-      onPageChange={setPage}
     />
   );
 }
