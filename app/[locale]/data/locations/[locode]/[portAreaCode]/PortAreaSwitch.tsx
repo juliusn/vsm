@@ -20,7 +20,7 @@ export function PortAreaSwitch({
     (portArea) =>
       portArea.locode === locode && portArea.port_area_code === portAreaCode
   );
-  const t = useTranslations('PortAreaSwitch');
+  const t = useTranslations('EnabledSwitch');
   const getErrorNotification = useErrorNotification();
 
   return (

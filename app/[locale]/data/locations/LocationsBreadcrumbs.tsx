@@ -1,0 +1,24 @@
+'use client';
+
+import { ProgressBarAnchor } from '@/app/components/ProgressBar';
+import { usePathname } from '@/i18n/routing';
+import { Breadcrumbs } from '@mantine/core';
+import { useTranslations } from 'use-intl';
+
+export function LocationsBreadcrumbs() {
+  const pathname = usePathname();
+  const t = useTranslations('DataBreadCrumbs');
+
+  const segments = pathname.split('/').slice(1);
+  const currentIndex = pathname.split('/').length - 1;
+  const items = [t('dataMenu'), t('locations'), t('portAreas'), t('berths')]
+    .slice(0, currentIndex)
+    .map((title, index) => (
+      <ProgressBarAnchor
+        href={`/${segments.slice(0, index + 1).join('/')}`}
+        key={index}>
+        {title}
+      </ProgressBarAnchor>
+    ));
+  return <Breadcrumbs>{items}</Breadcrumbs>;
+}

@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import { Alert, Group, Title } from '@mantine/core';
+import { Alert, SimpleGrid } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import { getTranslations } from 'next-intl/server';
 import { LocationProvider } from './LocationContext';
@@ -34,10 +34,12 @@ export default async function LocodeLayout({
 
   return location && portAreas && berths ? (
     <LocationProvider initialState={{ location, portAreas, berths }}>
-      <Group>
-        <Title size="h2">{location.locode}</Title>
-        <LocodeSwitch locode={locode} />
-      </Group>
+      <SimpleGrid cols={{ base: 2, sm: 4 }}>
+        <div>{`${t('title')}: ${locode}`}</div>
+        <div>
+          <LocodeSwitch locode={locode} />
+        </div>
+      </SimpleGrid>
       {children}
     </LocationProvider>
   ) : (

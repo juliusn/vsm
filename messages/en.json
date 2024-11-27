@@ -1,4 +1,7 @@
 {
+  "NotFound": {
+    "message": "Requested page <code></code> could not be found."
+  },
   "LanguageSelect": {
     "language": "Language",
     "english": "English",
@@ -147,31 +150,15 @@
     "estimatedEndTime": "Estimated end time",
     "overtimeThreshold": "Overtime threshold"
   },
-  "Data": {
+  "DataPage": {
+    "locations": "Locations",
+    "vessels": "Vessels"
+  },
+  "DataBreadCrumbs": {
     "dataMenu": "Data menu",
-    "dataAlertTitle": "Request failed",
-    "dataAlertMessage": "Could not load data. Sever responded with status code {status} ({statusText}).",
-    "portsAndBerths": "Ports and berths",
-    "ports": "Ports",
-    "portsCaption": "Include these port areas in service management:",
-    "portsSelect": "Select",
-    "locode": "Locode",
-    "portAreaName": "Port area name",
-    "portAreaCode": "Port area code",
-    "coordinates": "Coordinates",
-    "berths": "Berths",
-    "berthsCaption": "Include these berths in service management:",
-    "berthsSelect": "Select berth",
-    "berthCode": "Berth code",
-    "berthName": "Berth name",
-    "vessels": "Vessels",
-    "searchByMmsi": "Search by MMSI",
-    "searchByName": "Search by name",
-    "search": "Search",
-    "vesselsCaption": "Include these vessels in service management:",
-    "vesselsSelect": "Select vessel",
-    "mmsi": "MMSI",
-    "name": "Name"
+    "locations": "Locations",
+    "portAreas": "Port areas",
+    "berths": "Berths"
   },
   "UpdatePortData": {
     "updateDatabase": "Update Database",
@@ -221,14 +208,14 @@
     "alertMessage": "This feature uses data from a service that is currently unavailable."
   },
   "LocodeLayout": {
-    "locode": "Locode",
+    "title": "Location",
     "alertTitle": "Error",
     "alertMessage": "Could not load data."
   },
   "LocodePage": {
     "title": "Port areas"
   },
-  "LocodeSwitch": {
+  "EnabledSwitch": {
     "label": "Enabled"
   },
   "ErrorNotification": {
@@ -242,9 +229,6 @@
     "berthCode": "Berth code",
     "berthName": "Berth name"
   },
-  "PortAreaSwitch": {
-    "label": "Enabled"
-  },
   "PortAreasTable": {
     "noResults": "No results",
     "portAreaCode": "Port area code",
@@ -254,6 +238,9 @@
     "yes": "Yes",
     "no": "No"
   },
+  "PortAreaCodeLayout": {
+    "title": "Port area"
+  },
   "BerthsTable": {
     "noResults": "No results",
     "berthCode": "Berth code",
@@ -262,5 +249,9 @@
     "all": "All",
     "yes": "Yes",
     "no": "No"
+  },
+  "BerthCodeLayout": {
+    "title": "Berth",
+    "enabled": "Enabled"
   }
 }

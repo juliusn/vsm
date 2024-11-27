@@ -1,4 +1,7 @@
 {
+  "NotFound": {
+    "message": "Haettua sivua <code></code> ei löytynyt."
+  },
   "LanguageSelect": {
     "language": "Kieli",
     "english": "Englanti",
@@ -147,31 +150,15 @@
     "estimatedEndTime": "Arvioitu lopetusaika",
     "overtimeThreshold": "Ylityökynnys"
   },
-  "Data": {
+  "DataPage": {
+    "locations": "Sijainnit",
+    "vessels": "Alukset"
+  },
+  "DataBreadCrumbs": {
     "dataMenu": "Datavalikko",
-    "dataAlertTitle": "Pyyntö epäonnistui",
-    "dataAlertMessage": "Tietoja ei voitu ladata. Palvelin vastasi statuksella {status} ({statusText}).",
-    "portsAndBerths": "Satamat ja laiturit",
-    "ports": "Satamat",
-    "portsCaption": "Käytä näitä satama-alueita palvelunhallinnassa:",
-    "portsSelect": "Valitse",
-    "locode": "Geokoodi",
-    "portAreaName": "Satama-alueen nimi",
-    "portAreaCode": "Satama-alueen tunnus",
-    "coordinates": "Koordinaatit",
-    "berths": "Laiturit",
-    "berthsCaption": "Käytä näitä laitureita palvelunhallinnassa:",
-    "berthsSelect": "Valitse laituri",
-    "berthCode": "Laituritunnus",
-    "berthName": "Laiturin nimi",
-    "vessels": "Alukset",
-    "searchByMmsi": "Etsi MMSI-tunnuksella",
-    "searchByName": "Etsi nimellä",
-    "search": "Etsi",
-    "vesselsCaption": "Käytä näitä aluksia palvelunhallinnassa:",
-    "vesselsSelect": "Valitse alus",
-    "mmsi": "MMSI",
-    "name": "Nimi"
+    "locations": "Sijainnit",
+    "portAreas": "Satama-alueet",
+    "berths": "Laiturit"
   },
   "UpdatePortData": {
     "updateDatabase": "Päivitä tietokanta",
@@ -221,13 +208,14 @@
     "alertMessage": "Tämä ominaisuus käyttää dataa palvelusta, joka ei tällä hetkellä ole käytettävissä."
   },
   "LocodeLayout": {
+    "title": "Sijainti",
     "alertTitle": "Virhe",
     "alertMessage": "Tietojen lataaminen epäonnistui."
   },
   "LocodePage": {
     "title": "Satama-alueet"
   },
-  "LocodeSwitch": {
+  "EnabledSwitch": {
     "label": "Tuettu"
   },
   "ErrorNotification": {
@@ -241,9 +229,6 @@
     "berthCode": "Laituritunnus",
     "berthName": "Laiturin nimi"
   },
-  "PortAreaSwitch": {
-    "label": "Tuettu"
-  },
   "PortAreasTable": {
     "noResults": "Ei tuloksia",
     "portAreaCode": "Satama-alueen tunnus",
@@ -253,6 +238,9 @@
     "yes": "Kyllä",
     "no": "Ei"
   },
+  "PortAreaCodeLayout": {
+    "title": "Satama-alue"
+  },
   "BerthsTable": {
     "noResults": "Ei tuloksia",
     "berthCode": "Laituritunnus",
@@ -261,5 +249,9 @@
     "all": "Kaikki",
     "yes": "Kyllä",
     "no": "Ei"
+  },
+  "BerthCodeLayout": {
+    "title": "Laituri",
+    "enabled": "Tuettu"
   }
 }
