@@ -134,10 +134,16 @@
     "rejected": "Rejected",
     "pending": "Pending"
   },
-  "Orders": {
-    "ordersTitle": "Orders",
-    "newOrder": "New Order",
-    "newOrderTitle": "Create a New Order",
+  "OrdersLayout": {
+    "title": "Orders"
+  },
+  "NewOrderContent": {
+    "buttonLabel": "New Order",
+    "modalTitle": "Create a new order"
+  },
+  "NewOrderForm": {
+    "location": "Location",
+    "selectLocation": "Select location",
     "portArea": "Port area",
     "selectPortArea": "Select port area",
     "berth": "Berth",

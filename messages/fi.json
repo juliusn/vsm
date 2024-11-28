@@ -134,10 +134,16 @@
     "rejected": "Hylätty",
     "pending": "Odottaa"
   },
-  "Orders": {
-    "ordersTitle": "Tilaukset",
-    "newOrder": "Uusi tilaus",
-    "newOrderTitle": "Luo uusi tilaus",
+  "OrdersLayout": {
+    "title": "Tilaukset"
+  },
+  "NewOrderContent": {
+    "buttonLabel": "Uusi tilaus",
+    "modalTitle": "Luo uusi tilaus"
+  },
+  "NewOrderForm": {
+    "location": "Sijainti",
+    "selectLocation": "Valitse sijainti",
     "portArea": "Satama-alue",
     "selectPortArea": "Valitse satama-alue",
     "berth": "Laituri",

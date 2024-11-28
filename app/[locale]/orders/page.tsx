@@ -1,63 +1,52 @@
+import { createClient } from '@/lib/supabase/server';
 import { NewOrderContent } from './NewOrderContent';
 import { NewOrderForm } from './NewOrderForm';
 
-export type Berth = {
-  locode: string;
-  portAreaCode: string;
-  berthCode: string;
-  berthName: string;
-};
-
-export type Ship = {
-  name: string;
-  timestamp: number;
-  destination: string;
-  draught: number;
-  eta: number;
-  posType: number;
-  referencePointA: number;
-  referencePointB: number;
-  referencePointC: number;
-  referencePointD: number;
-  shipType: number;
-  mmsi: number;
-  callSign: string;
-  imo: number;
-};
-
-export type PortArea = {
-  locode: string;
-  type: string;
-  geometry: null;
-  properties: {
-    locode: string;
-    portAreaName: string;
-  };
-  portAreaCode: string;
-};
-
 export default async function OrdersPage() {
-  const res = await fetch('https://meri.digitraffic.fi/api/port-call/v1/ports');
-  if (!res.ok) {
-    throw new Error(`No port data.`);
+  const supabase = createClient();
+
+  const locationsResponse = await supabase
+    .from('locations')
+    .select()
+    .eq('enabled', true);
+
+  if (locationsResponse.error) {
+    return null;
   }
-  const supportedPortAreaCodes = ['LS', 'ES', 'VUOS'];
-  const data: {
-    portAreas: { features: PortArea[] };
-    berths: { berths: Berth[] };
-  } = await res.json();
-  const portAreas: PortArea[] = data.portAreas.features.filter((portArea) =>
-    supportedPortAreaCodes.includes(portArea.portAreaCode)
+  const locodes = locationsResponse.data.map((location) => location.locode);
+
+  const portAreasResponse = await supabase
+    .from('port_areas')
+    .select()
+    .eq('enabled', true)
+    .in('locode', locodes);
+
+  if (portAreasResponse.error) {
+    return null;
+  }
+
+  const portAreaCodes = portAreasResponse.data.map(
+    (portArea) => portArea.port_area_code
   );
-  const berths: Berth[] = data.berths.berths.filter(
-    (berth) =>
-      berth.locode === 'FIHEL' &&
-      supportedPortAreaCodes.includes(berth.portAreaCode)
-  );
+
+  const berthsResponse = await supabase
+    .from('berths')
+    .select()
+    .eq('enabled', true)
+    .in('locode', locodes)
+    .in('port_area_code', portAreaCodes);
+
+  if (berthsResponse.error) {
+    return null;
+  }
 
   return (
     <NewOrderContent>
-      <NewOrderForm portAreas={portAreas} berths={berths} />
+      <NewOrderForm
+        locations={locationsResponse.data}
+        portAreas={portAreasResponse.data}
+        berths={berthsResponse.data}
+      />
     </NewOrderContent>
   );
 }
