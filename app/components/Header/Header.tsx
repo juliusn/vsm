@@ -1,12 +1,12 @@
 'use client';
 
-import { Container, AppShell } from '@mantine/core';
+import { AppShell, Container } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { HeaderTopShelf } from '../HeaderTopShelf';
-import { HeaderTabs } from '../HeaderTabs/HeaderTabs';
-import { HeaderNavbarLinks } from '../HeaderNavbarLinks';
-import classes from './Header.module.css';
 import { useTranslations } from 'next-intl';
+import { HeaderNavbarLinks } from '../HeaderNavbarLinks';
+import { HeaderTabs } from '../HeaderTabs/HeaderTabs';
+import { HeaderTopShelf } from '../HeaderTopShelf';
+import classes from './Header.module.css';
 
 export function Header({ children }: { children: React.ReactNode }) {
   const t = useTranslations('Header');

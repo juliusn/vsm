@@ -14,11 +14,12 @@ export function HeaderTabs({
   const router = useRouter();
   const progress = useProgressBar();
   const pathname = usePathname();
-  const [activeTab, setActiveTab] = useState<string | null>(pathname);
+  const current = `/${pathname.split('/')[1]}`;
+  const [activeTab, setActiveTab] = useState<string | null>(current);
 
   useEffect(() => {
-    setActiveTab(pathname);
-  }, [pathname]);
+    setActiveTab(current);
+  }, [current]);
 
   return (
     <Tabs

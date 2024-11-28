@@ -14,12 +14,14 @@ export function HeaderNavbarLinks({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const current = `/${pathname.split('/')[1]}`;
   const progress = useProgressBar();
+
   return navItems.map(({ label, href }) => (
     <NavLink
       key={label}
       label={label}
-      active={pathname === href}
+      active={current === href}
       onClick={(event) => {
         event.preventDefault();
         toggle();
