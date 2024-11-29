@@ -214,9 +214,7 @@
     "alertMessage": "This feature uses data from a service that is currently unavailable."
   },
   "LocodeLayout": {
-    "title": "Location",
-    "alertTitle": "Error",
-    "alertMessage": "Could not load data."
+    "title": "Location"
   },
   "LocodePage": {
     "title": "Port areas"
@@ -259,5 +257,9 @@
   "BerthCodeLayout": {
     "title": "Berth",
     "enabled": "Enabled"
+  },
+  "DataUnavailableAlert": {
+    "title": "Error",
+    "message": "Could not load data for this content from the server."
   }
 }

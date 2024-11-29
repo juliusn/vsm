@@ -1,6 +1,6 @@
+import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
 import { createClient } from '@/lib/supabase/server';
-import { Alert, SimpleGrid } from '@mantine/core';
-import { IconExclamationCircle } from '@tabler/icons-react';
+import { SimpleGrid } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
 import { LocationProvider } from './LocationContext';
 import { LocodeSwitch } from './LocodeSwitch';
@@ -43,12 +43,6 @@ export default async function LocodeLayout({
       {children}
     </LocationProvider>
   ) : (
-    <Alert
-      variant="outline"
-      color="red"
-      title={t('alertTitle')}
-      icon={<IconExclamationCircle stroke={1.5} />}>
-      {t('alertMessage')}
-    </Alert>
+    <DataUnavailableAlert />
   );
 }

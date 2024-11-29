@@ -214,9 +214,7 @@
     "alertMessage": "Tämä ominaisuus käyttää dataa palvelusta, joka ei tällä hetkellä ole käytettävissä."
   },
   "LocodeLayout": {
-    "title": "Sijainti",
-    "alertTitle": "Virhe",
-    "alertMessage": "Tietojen lataaminen epäonnistui."
+    "title": "Sijainti"
   },
   "LocodePage": {
     "title": "Satama-alueet"
@@ -259,5 +257,9 @@
   "BerthCodeLayout": {
     "title": "Laituri",
     "enabled": "Tuettu"
+  },
+  "DataUnavailableAlert": {
+    "title": "Virhe",
+    "message": "Sisällön tietojen lataaminen palvelimelta epäonnistui."
   }
 }
