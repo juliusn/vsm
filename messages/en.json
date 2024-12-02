@@ -134,10 +134,8 @@
     "rejected": "Rejected",
     "pending": "Pending"
   },
-  "OrdersLayout": {
-    "title": "Orders"
-  },
   "NewOrderContent": {
+    "title": "Orders",
     "buttonLabel": "New Order",
     "modalTitle": "Create a new order"
   },

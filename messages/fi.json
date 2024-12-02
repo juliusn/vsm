@@ -134,10 +134,8 @@
     "rejected": "Hylätty",
     "pending": "Odottaa"
   },
-  "OrdersLayout": {
-    "title": "Tilaukset"
-  },
   "NewOrderContent": {
+    "title": "Tilaukset",
     "buttonLabel": "Uusi tilaus",
     "modalTitle": "Luo uusi tilaus"
   },
