@@ -1,15 +1,35 @@
-import BerthDetails from './BerthDetails';
+import { Group, Title } from '@mantine/core';
+import { getTranslations } from 'next-intl/server';
+import { ServicesTable } from './ServicesTable';
+import { NewBerthServiceContent } from '../NewBerthServiceContent';
+import { DeleteServiceModalProvider } from './DeleteServiceModalProvider';
+import { EditServiceModalProvider } from './EditServiceModalProvider';
 
 export default async function BerthCodePage({
   params: { locode, portAreaCode, berthCode },
 }: {
   params: { locode: string; portAreaCode: string; berthCode: string };
 }) {
+  const t = await getTranslations('BerthCodePage');
   return (
-    <BerthDetails
-      locode={locode}
-      portAreaCode={portAreaCode}
-      berthCode={berthCode}
-    />
+    <>
+      <Group justify="space-between">
+        <Title size="h2">{t('title')}</Title>
+        <NewBerthServiceContent
+          locode={locode}
+          portAreaCode={portAreaCode}
+          berthCode={berthCode}
+        />
+      </Group>
+      <DeleteServiceModalProvider berthCode={berthCode}>
+        <EditServiceModalProvider>
+          <ServicesTable
+            locode={locode}
+            portAreaCode={portAreaCode}
+            berthCode={berthCode}
+          />
+        </EditServiceModalProvider>
+      </DeleteServiceModalProvider>
+    </>
   );
 }

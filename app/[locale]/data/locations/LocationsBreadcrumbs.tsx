@@ -7,11 +7,16 @@ import { useTranslations } from 'use-intl';
 
 export function LocationsBreadcrumbs() {
   const pathname = usePathname();
-  const t = useTranslations('DataBreadCrumbs');
-
+  const t = useTranslations('LocationsBreadCrumbs');
   const segments = pathname.split('/').slice(1);
   const currentIndex = pathname.split('/').length - 1;
-  const items = [t('dataMenu'), t('locations'), t('portAreas'), t('berths')]
+  const items = [
+    t('dataMenu'),
+    t('locations'),
+    t('portAreas'),
+    t('berths'),
+    t('services'),
+  ]
     .slice(0, currentIndex)
     .map((title, index) => (
       <ProgressBarAnchor

@@ -6,6 +6,10 @@ export enum ActionTypes {
   UPDATE_LOCATION_ENABLED = 'UPDATE_LOCATION_ENABLED',
   UPDATE_PORT_AREA_ENABLED = 'UPDATE_PORT_AREA_ENABLED',
   UPDATE_BERTH_ENABLED = 'UPDATE_BERTH_ENABLED',
+  UPDATE_SERVICE_ENABLED = 'UPDATE_SERVICE_ENABLED',
+  REMOVE_SERVICE = 'REMOVE_SERVICE',
+  UPDATE_SERVICE = 'UPDATE_SERVICE',
+  INSERT_SERVICE = 'INSERT_SERVICE',
 }
 
 type UpdateLocationEnabled = {
@@ -28,16 +32,50 @@ type UpdateBerthEnabled = {
   };
 };
 
+type UpdateServiceEnabled = {
+  type: ActionTypes.UPDATE_SERVICE_ENABLED;
+  payload: {
+    id: string;
+    enabled: boolean;
+  };
+};
+
+type RemoveService = {
+  type: ActionTypes.REMOVE_SERVICE;
+  payload: {
+    id: string;
+  };
+};
+
+type UpdateService = {
+  type: ActionTypes.UPDATE_SERVICE;
+  payload: {
+    service: AppTypes.BerthService;
+  };
+};
+
+type InsertService = {
+  type: ActionTypes.INSERT_SERVICE;
+  payload: {
+    service: AppTypes.BerthService;
+  };
+};
+
 type State = {
   location: AppTypes.Location;
   portAreas: AppTypes.PortArea[];
   berths: AppTypes.Berth[];
+  berthServices: AppTypes.BerthService[];
 };
 
 type Actions =
   | UpdateLocationEnabled
   | UpdatePortAreaEnabled
-  | UpdateBerthEnabled;
+  | UpdateBerthEnabled
+  | UpdateServiceEnabled
+  | RemoveService
+  | UpdateService
+  | InsertService;
 
 type LocationContextType = {
   state: State;
@@ -85,6 +123,44 @@ const reducer = (state: State, action: Actions): State => {
             ? { ...berth, enabled: action.payload.enabled }
             : berth
         ),
+      };
+    }
+
+    case ActionTypes.UPDATE_SERVICE_ENABLED: {
+      return {
+        ...state,
+        berthServices: state.berthServices.map((service) =>
+          service.id === action.payload.id
+            ? { ...service, enabled: action.payload.enabled }
+            : service
+        ),
+      };
+    }
+
+    case ActionTypes.REMOVE_SERVICE: {
+      return {
+        ...state,
+        berthServices: state.berthServices.filter(
+          (service) => service.id !== action.payload.id
+        ),
+      };
+    }
+
+    case ActionTypes.UPDATE_SERVICE: {
+      return {
+        ...state,
+        berthServices: state.berthServices.map((service) =>
+          service.id === action.payload.service.id
+            ? { ...action.payload.service }
+            : service
+        ),
+      };
+    }
+
+    case ActionTypes.INSERT_SERVICE: {
+      return {
+        ...state,
+        berthServices: [...state.berthServices, action.payload.service],
       };
     }
   }

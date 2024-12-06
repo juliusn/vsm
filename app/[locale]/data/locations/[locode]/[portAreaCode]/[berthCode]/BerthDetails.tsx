@@ -2,6 +2,7 @@
 
 import { notFound } from 'next/navigation';
 import { useLocation } from '../../LocationContext';
+import { ServicesTable } from './ServicesTable';
 
 export default function BerthDetails({
   locode,
@@ -22,5 +23,11 @@ export default function BerthDetails({
   if (!berth) {
     notFound();
   }
-  return berth.berth_name;
+  return (
+    <ServicesTable
+      locode={locode}
+      portAreaCode={portAreaCode}
+      berthCode={berthCode}
+    />
+  );
 }

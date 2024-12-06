@@ -158,11 +158,12 @@
     "locations": "Sijainnit",
     "vessels": "Alukset"
   },
-  "DataBreadCrumbs": {
+  "LocationsBreadCrumbs": {
     "dataMenu": "Datavalikko",
     "locations": "Sijainnit",
     "portAreas": "Satama-alueet",
-    "berths": "Laiturit"
+    "berths": "Laiturit",
+    "services": "Palvelut"
   },
   "UpdatePortData": {
     "updateDatabase": "Päivitä tietokanta",
@@ -259,5 +260,53 @@
   "DataUnavailableAlert": {
     "title": "Virhe",
     "message": "Sisällön tietojen lataaminen palvelimelta epäonnistui."
+  },
+  "BerthCodePage": { "title": "Laituripalvelut" },
+  "ServicesTable": {
+    "noResults": "Ei tuloksia",
+    "title": "Nimike",
+    "enabled": "Tuettu",
+    "all": "Kaikki",
+    "yes": "Kyllä",
+    "no": "Ei",
+    "delete": "Poista",
+    "edit": "Muokkaa",
+    "titleEn": "Nimike englanniksi",
+    "titleFi": "Nimike suomeksi"
+  },
+  "NewBerthServiceContent": {
+    "buttonLabel": "Uusi laituripalvelu",
+    "modalTitle": "Luo uusi laituripalvelu"
+  },
+  "DeleteServiceModalProvider": {
+    "modalTitle": "Poista laituripalvelu?",
+    "confirmationMessage": "Oletko varma, että haluat poistaa tämän palvelun laiturista {berthCode}?",
+    "deleteButtonLabel": "Poista",
+    "cancelButtonLabel": "Peru",
+    "successTitle": "Valmis!",
+    "successMessage": "Laituripalvelu on poistettu palvelusta."
+  },
+  "EditServiceModalProvider": {
+    "modalTitle": "Muokkaa laituripalvelua",
+    "titleInputLabelEn": "Palvelun nimike englanniksi",
+    "titleInputLabelFi": "Palvelun nimike suomeksi",
+    "saveButtonLabel": "Tallenna",
+    "cancelButtonLabel": "Peru",
+    "successTitle": "Valmis!",
+    "successMessage": "Laituripalvelun muutokset on tallennettu."
+  },
+  "NewBerthServiceForm": {
+    "title": "Luo uusi laituripalvelu",
+    "berth": "Laituri",
+    "titleAddedError": "Tämä nimike on jo lisätty laiturin {berthCode} palveluihin.",
+    "fieldRequiredError": "Tämä kenttä vaaditaan.",
+    "selectDescription": "Valitse yleisistä palvelunimikkeistä",
+    "selectPlaceholder": "Valitse nimike",
+    "titleInputLabelEn": "Palvelun nimike englanniksi",
+    "titleInputLabelFi": "Palvelun nimike suomeksi",
+    "saveButtonLabel": "Tallenna",
+    "cancelButtonLabel": "Peru",
+    "successTitle": "Valmis!",
+    "successMessage": "Uusi laituripalvelu on tallennettu."
   }
 }

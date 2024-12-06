@@ -7,23 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  _supavisor: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      [_ in never]: never
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -49,8 +32,67 @@ export type Database = {
       [_ in never]: never
     }
   }
+  pgbouncer: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      get_auth: {
+        Args: {
+          p_usename: string
+        }
+        Returns: {
+          username: string
+          password: string
+        }[]
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
+      berth_services: {
+        Row: {
+          berth_code: string
+          enabled: boolean
+          id: string
+          locode: string
+          port_area_code: string
+          titles: Json
+        }
+        Insert: {
+          berth_code: string
+          enabled?: boolean
+          id?: string
+          locode: string
+          port_area_code: string
+          titles: Json
+        }
+        Update: {
+          berth_code?: string
+          enabled?: boolean
+          id?: string
+          locode?: string
+          port_area_code?: string
+          titles?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "berth_services_locode_port_area_code_berth_code_fkey"
+            columns: ["locode", "port_area_code", "berth_code"]
+            referencedRelation: "berths"
+            referencedColumns: ["locode", "port_area_code", "berth_code"]
+          },
+        ]
+      }
       berths: {
         Row: {
           berth_code: string
@@ -87,6 +129,21 @@ export type Database = {
             referencedColumns: ["locode", "port_area_code"]
           },
         ]
+      }
+      common_services: {
+        Row: {
+          id: string
+          titles: Json
+        }
+        Insert: {
+          id?: string
+          titles: Json
+        }
+        Update: {
+          id?: string
+          titles?: Json
+        }
+        Relationships: []
       }
       locations: {
         Row: {
@@ -180,14 +237,7 @@ export type Database = {
           last_name?: string | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       spatial_ref_sys: {
         Row: {
@@ -303,12 +353,6 @@ export type Database = {
           "": unknown
         }
         Returns: number
-      }
-      _st_concavehull: {
-        Args: {
-          param_inputgeom: unknown
-        }
-        Returns: unknown
       }
       _st_contains: {
         Args: {
@@ -3389,6 +3433,7 @@ export type Database = {
           owner_id: string | null
           path_tokens: string[] | null
           updated_at: string | null
+          user_metadata: Json | null
           version: string | null
         }
         Insert: {
@@ -3402,6 +3447,7 @@ export type Database = {
           owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          user_metadata?: Json | null
           version?: string | null
         }
         Update: {
@@ -3415,6 +3461,7 @@ export type Database = {
           owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          user_metadata?: Json | null
           version?: string | null
         }
         Relationships: [
@@ -3435,6 +3482,7 @@ export type Database = {
           key: string
           owner_id: string | null
           upload_signature: string
+          user_metadata: Json | null
           version: string
         }
         Insert: {
@@ -3445,6 +3493,7 @@ export type Database = {
           key: string
           owner_id?: string | null
           upload_signature: string
+          user_metadata?: Json | null
           version: string
         }
         Update: {
@@ -3455,6 +3504,7 @@ export type Database = {
           key?: string
           owner_id?: string | null
           upload_signature?: string
+          user_metadata?: Json | null
           version?: string
         }
         Relationships: [
@@ -3702,4 +3752,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
