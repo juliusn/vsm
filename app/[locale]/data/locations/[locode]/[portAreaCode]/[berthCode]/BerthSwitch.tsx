@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/useErrorNotification';
+import { useErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import { Switch } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';

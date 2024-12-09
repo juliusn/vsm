@@ -1,7 +1,7 @@
 'use client';
 
 import { ProgressBarLink } from '@/app/components/ProgressBar';
-import { useErrorNotification } from '@/app/hooks/useErrorNotification';
+import { useErrorNotification } from '@/app/hooks/notifications';
 import { usePathname } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
 import { ActionIcon, Group, Radio, Switch, TextInput } from '@mantine/core';

@@ -156,7 +156,8 @@
   },
   "DataPage": {
     "locations": "Locations",
-    "vessels": "Vessels"
+    "vessels": "Vessels",
+    "commonServices": "Common services"
   },
   "LocationsBreadCrumbs": {
     "dataMenu": "Data menu",
@@ -222,8 +223,16 @@
     "label": "Enabled"
   },
   "ErrorNotification": {
-    "errorTitle": "Error",
-    "errorMessage": "Request could not be completed. Server responded with status {status}."
+    "title": "Error",
+    "message": "Request could not be completed. Server responded with status {status}."
+  },
+  "ServiceDeletedNotification": {
+    "title": "Done!",
+    "message": "Service has been removed from the system."
+  },
+  "ServiceSavedNotification": {
+    "title": "Done!",
+    "message": "Service has been saved."
   },
   "PortAreaCodePage": {
     "title": "Berths",
@@ -271,6 +280,7 @@
     "no": "No",
     "delete": "Delete",
     "edit": "Edit",
+    "editModalTitle": "Edit service",
     "titleEn": "Title in English",
     "titleFi": "Title in Finnish"
   },
@@ -279,21 +289,16 @@
     "modalTitle": "Create a new berth service"
   },
   "DeleteServiceModalProvider": {
-    "modalTitle": "Delete berth service?",
-    "confirmationMessage": "Are you sure you want to delete this service from berth {berthCode}?",
+    "modalTitle": "Delete service",
+    "confirmationMessage": "Are you sure you want to delete this service from the system?",
     "deleteButtonLabel": "Delete",
-    "cancelButtonLabel": "Cancel",
-    "successTitle": "Done!",
-    "successMessage": "Berth service has been deleted from the service."
+    "cancelButtonLabel": "Cancel"
   },
   "EditServiceModalProvider": {
-    "modalTitle": "Edit berth service",
     "titleInputLabelEn": "Service title in English",
     "titleInputLabelFi": "Service title in Finnish",
     "saveButtonLabel": "Save",
-    "cancelButtonLabel": "Cancel",
-    "successTitle": "Done!",
-    "successMessage": "Berth service edits have been saved."
+    "cancelButtonLabel": "Cancel"
   },
   "NewBerthServiceForm": {
     "title": "Create a new berth service",
@@ -308,5 +313,23 @@
     "cancelButtonLabel": "Cancel",
     "successTitle": "Done!",
     "successMessage": "New berth service has been saved."
+  },
+  "CommonServicesLayout": {
+    "dataMenu": "Data menu"
+  },
+  "CommonServicesPage": {
+    "title": "Common services"
+  },
+  "CommonServicesTable": {
+    "noResults": "No results",
+    "delete": "Delete",
+    "edit": "Edit",
+    "editModalTitle": "Edit service",
+    "titleEn": "Title in English",
+    "titleFi": "Title in Finnish"
+  },
+  "NewCommonServiceButton": {
+    "buttonLabel": "New service",
+    "modalTitle": "Create a new common service"
   }
 }

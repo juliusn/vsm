@@ -8,6 +8,9 @@ export default function DataPage() {
     <Stack>
       <ProgressBarLink href="/data/locations">{t('locations')}</ProgressBarLink>
       <ProgressBarLink href="/data/vessels">{t('vessels')}</ProgressBarLink>
+      <ProgressBarLink href="/data/common-services">
+        {t('commonServices')}
+      </ProgressBarLink>
     </Stack>
   );
 }

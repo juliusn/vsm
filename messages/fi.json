@@ -156,7 +156,8 @@
   },
   "DataPage": {
     "locations": "Sijainnit",
-    "vessels": "Alukset"
+    "vessels": "Alukset",
+    "commonServices": "Yleiset palvelut"
   },
   "LocationsBreadCrumbs": {
     "dataMenu": "Datavalikko",
@@ -222,8 +223,16 @@
     "label": "Tuettu"
   },
   "ErrorNotification": {
-    "errorTitle": "Virhe",
-    "errorMessage": "Pyyntöä ei voitu toteuttaa. Palvelin vastasi statuskoodilla {status}."
+    "title": "Virhe",
+    "message": "Pyyntöä ei voitu toteuttaa. Palvelin vastasi statuskoodilla {status}."
+  },
+  "ServiceDeletedNotification": {
+    "title": "Valmis!",
+    "message": "Palvelu on poistettu järjestelmästä."
+  },
+  "ServiceSavedNotification": {
+    "title": "Valmis!",
+    "message": "Palvelu on tallennettu."
   },
   "PortAreaCodePage": {
     "title": "Laiturit",
@@ -271,6 +280,7 @@
     "no": "Ei",
     "delete": "Poista",
     "edit": "Muokkaa",
+    "editModalTitle": "Muokkaa palvelua",
     "titleEn": "Nimike englanniksi",
     "titleFi": "Nimike suomeksi"
   },
@@ -279,21 +289,16 @@
     "modalTitle": "Luo uusi laituripalvelu"
   },
   "DeleteServiceModalProvider": {
-    "modalTitle": "Poista laituripalvelu?",
-    "confirmationMessage": "Oletko varma, että haluat poistaa tämän palvelun laiturista {berthCode}?",
+    "modalTitle": "Poista palvelu",
+    "confirmationMessage": "Oletko varma, että haluat poistaa tämän palvelun järjestelmästä?",
     "deleteButtonLabel": "Poista",
-    "cancelButtonLabel": "Peru",
-    "successTitle": "Valmis!",
-    "successMessage": "Laituripalvelu on poistettu palvelusta."
+    "cancelButtonLabel": "Peru"
   },
   "EditServiceModalProvider": {
-    "modalTitle": "Muokkaa laituripalvelua",
     "titleInputLabelEn": "Palvelun nimike englanniksi",
     "titleInputLabelFi": "Palvelun nimike suomeksi",
     "saveButtonLabel": "Tallenna",
-    "cancelButtonLabel": "Peru",
-    "successTitle": "Valmis!",
-    "successMessage": "Laituripalvelun muutokset on tallennettu."
+    "cancelButtonLabel": "Peru"
   },
   "NewBerthServiceForm": {
     "title": "Luo uusi laituripalvelu",
@@ -308,5 +313,23 @@
     "cancelButtonLabel": "Peru",
     "successTitle": "Valmis!",
     "successMessage": "Uusi laituripalvelu on tallennettu."
+  },
+  "CommonServicesLayout": {
+    "dataMenu": "Datavalikko"
+  },
+  "CommonServicesPage": {
+    "title": "Yleiset palvelut"
+  },
+  "CommonServicesTable": {
+    "noResults": "Ei tuloksia",
+    "delete": "Poista",
+    "edit": "Muokkaa",
+    "editModalTitle": "Muokkaa palvelua",
+    "titleEn": "Nimike englanniksi",
+    "titleFi": "Nimike suomeksi"
+  },
+  "NewCommonServiceButton": {
+    "buttonLabel": "Uusi palvelu",
+    "modalTitle": "Luo uusi yleinen palvelu"
   }
 }

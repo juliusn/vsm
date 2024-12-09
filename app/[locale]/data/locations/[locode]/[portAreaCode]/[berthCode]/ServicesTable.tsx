@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/useErrorNotification';
+import { useErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import {
   ActionIcon,
@@ -18,7 +18,7 @@ import { DataTable } from 'mantine-datatable';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { ActionTypes, useLocation } from '../../LocationContext';
-import { useDeleteServiceModal } from './DeleteServiceModalProvider';
+import { useDeleteServiceModal } from './DeleteServiceModalContext';
 import { useEditServiceModal } from './EditServiceModalProvider';
 
 const PAGE_SIZE = 15;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/useErrorNotification';
+import { useErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import { Button, Group, Modal, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
