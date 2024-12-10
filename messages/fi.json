@@ -331,5 +331,9 @@
   "NewCommonServiceButton": {
     "buttonLabel": "Uusi palvelu",
     "modalTitle": "Luo uusi yleinen palvelu"
+  },
+  "ServicePreview": {
+    "titleEn": "Nimike englanniksi",
+    "titleFi": "Nimike suomeksi"
   }
 }

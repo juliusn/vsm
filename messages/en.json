@@ -331,5 +331,9 @@
   "NewCommonServiceButton": {
     "buttonLabel": "New service",
     "modalTitle": "Create a new common service"
+  },
+  "ServicePreview": {
+    "titleEn": "Title in English",
+    "titleFi": "Title in Finnish"
   }
 }
