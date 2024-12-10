@@ -1,9 +1,7 @@
 import { Group, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
-import { ServicesTable } from './ServicesTable';
 import { NewBerthServiceContent } from '../NewBerthServiceContent';
-import { DeleteServiceModalProvider } from './DeleteServiceModalContext';
-import { EditServiceModalProvider } from './EditServiceModalProvider';
+import { ServicesTable } from './ServicesTable';
 
 export default async function BerthCodePage({
   params: { locode, portAreaCode, berthCode },
@@ -21,15 +19,12 @@ export default async function BerthCodePage({
           berthCode={berthCode}
         />
       </Group>
-      <DeleteServiceModalProvider berthCode={berthCode}>
-        <EditServiceModalProvider>
-          <ServicesTable
-            locode={locode}
-            portAreaCode={portAreaCode}
-            berthCode={berthCode}
-          />
-        </EditServiceModalProvider>
-      </DeleteServiceModalProvider>
+
+      <ServicesTable
+        locode={locode}
+        portAreaCode={portAreaCode}
+        berthCode={berthCode}
+      />
     </>
   );
 }

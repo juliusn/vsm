@@ -1,14 +1,19 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/notifications';
+import { useDeleteServiceModal } from '@/app/[locale]/data/DeleteServiceModalContext';
+import { useEditServiceModal } from '@/app/[locale]/data/EditServicesModalContext';
+import { ServicePreview } from '@/app/components/ServicePreview';
+import {
+  useErrorNotification,
+  useServiceDeletedNotification,
+  useServiceSavedNotification,
+} from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import {
   ActionIcon,
   Group,
-  Paper,
   Radio,
   Switch,
-  Table,
   Text,
   TextInput,
 } from '@mantine/core';
@@ -18,8 +23,6 @@ import { DataTable } from 'mantine-datatable';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { ActionTypes, useLocation } from '../../LocationContext';
-import { useDeleteServiceModal } from './DeleteServiceModalContext';
-import { useEditServiceModal } from './EditServiceModalProvider';
 
 const PAGE_SIZE = 15;
 
@@ -35,13 +38,15 @@ export function ServicesTable({
   const t = useTranslations('ServicesTable');
   const locale = useLocale() as AppTypes.Locale;
   const getErrorNotification = useErrorNotification();
+  const getServiceDeletedNotification = useServiceDeletedNotification();
+  const getServiceSavedNotification = useServiceSavedNotification();
   const supabase = createClient();
   const [page, setPage] = useState(1);
   const [titleEnQuery, setTitleEnQuery] = useState('');
   const [titleFiQuery, setTitleFiQuery] = useState('');
   const [enabledQuery, setEnabledQuery] = useState('all');
-  const { showDeleteModal } = useDeleteServiceModal();
-  const { showEditModal } = useEditServiceModal();
+  const { openDeleteModal, closeDeleteModal } = useDeleteServiceModal();
+  const { openEditModal, closeEditModal } = useEditServiceModal();
   const {
     state: { berthServices },
     dispatch,
@@ -170,25 +175,30 @@ export function ServicesTable({
               color="red"
               aria-label={t('delete')}
               onClick={() => {
-                showDeleteModal(
-                  id,
-                  <Paper withBorder shadow="sm">
-                    <Table>
-                      <Table.Thead>
-                        <Table.Tr>
-                          <Table.Th>{t('titleEn')}</Table.Th>
-                          <Table.Th>{t('titleFi')}</Table.Th>
-                        </Table.Tr>
-                      </Table.Thead>
-                      <Table.Tbody>
-                        <Table.Tr>
-                          <Table.Td>{titles['en']}</Table.Td>
-                          <Table.Td>{titles['fi']}</Table.Td>
-                        </Table.Tr>
-                      </Table.Tbody>
-                    </Table>
-                  </Paper>
-                );
+                openDeleteModal({
+                  previewContent: <ServicePreview titles={titles} />,
+                  onConfirm: async () => {
+                    const { error, status } = await supabase
+                      .from('berth_services')
+                      .delete()
+                      .eq('id', id);
+
+                    if (error) {
+                      showNotification(getErrorNotification(status));
+                      return;
+                    }
+
+                    dispatch({
+                      type: ActionTypes.REMOVE_SERVICE,
+                      payload: {
+                        id,
+                      },
+                    });
+
+                    showNotification(getServiceDeletedNotification());
+                    closeDeleteModal();
+                  },
+                });
               }}>
               <IconTrash stroke={1.5} />
             </ActionIcon>
@@ -197,11 +207,39 @@ export function ServicesTable({
         {
           accessor: 'edit',
           title: t('edit'),
-          render: (service) => (
+          render: ({ id, titles }) => (
             <ActionIcon
               variant="transparent"
               aria-label={t('edit')}
-              onClick={() => showEditModal(service)}>
+              onClick={() => {
+                openEditModal({
+                  title: t('editModalTitle'),
+                  serviceTitles: titles,
+                  onSave: async (titles) => {
+                    const { data, error, status } = await supabase
+                      .from('berth_services')
+                      .update({
+                        titles,
+                      })
+                      .eq('id', id)
+                      .select()
+                      .single();
+
+                    if (error) {
+                      showNotification(getErrorNotification(status));
+                      return;
+                    }
+
+                    dispatch({
+                      type: ActionTypes.UPDATE_SERVICE,
+                      payload: { service: data as AppTypes.BerthService },
+                    });
+
+                    showNotification(getServiceSavedNotification());
+                    closeEditModal();
+                  },
+                });
+              }}>
               <IconPencil stroke={1.5} />
             </ActionIcon>
           ),

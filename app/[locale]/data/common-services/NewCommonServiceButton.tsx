@@ -10,7 +10,7 @@ import { showNotification } from '@mantine/notifications';
 import { IconPlus } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { ActionTypes, useCommonServices } from './CommonServicesContext';
-import { useEditServiceModal } from './EditServicesModalContext';
+import { useEditServiceModal } from '../EditServicesModalContext';
 
 export function NewCommonServiceButton() {
   const { openEditModal, closeEditModal } = useEditServiceModal();

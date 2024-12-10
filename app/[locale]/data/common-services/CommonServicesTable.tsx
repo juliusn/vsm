@@ -1,20 +1,21 @@
 'use client';
 
+import { ServicePreview } from '@/app/components/ServicePreview';
 import {
   useErrorNotification,
   useServiceDeletedNotification,
   useServiceSavedNotification,
 } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
-import { ActionIcon, Paper, Table, Text, TextInput } from '@mantine/core';
+import { ActionIcon, Text, TextInput } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconPencil, IconSearch, IconTrash, IconX } from '@tabler/icons-react';
 import { DataTable } from 'mantine-datatable';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import { useDeleteServiceModal } from '../DeleteServiceModalContext';
+import { useEditServiceModal } from '../EditServicesModalContext';
 import { ActionTypes, useCommonServices } from './CommonServicesContext';
-import { useDeleteServiceModal } from './DeleteServiceModalContext';
-import { useEditServiceModal } from './EditServicesModalContext';
 
 const PAGE_SIZE = 15;
 
@@ -125,24 +126,7 @@ export function CommonServicesTable() {
               aria-label={t('delete')}
               onClick={() => {
                 openDeleteModal({
-                  previewContent: (
-                    <Paper withBorder shadow="sm">
-                      <Table>
-                        <Table.Thead>
-                          <Table.Tr>
-                            <Table.Th>{t('titleEn')}</Table.Th>
-                            <Table.Th>{t('titleFi')}</Table.Th>
-                          </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                          <Table.Tr>
-                            <Table.Td>{titles['en']}</Table.Td>
-                            <Table.Td>{titles['fi']}</Table.Td>
-                          </Table.Tr>
-                        </Table.Tbody>
-                      </Table>
-                    </Paper>
-                  ),
+                  previewContent: <ServicePreview titles={titles} />,
                   onConfirm: async () => {
                     const { error, status } = await supabase
                       .from('common_services')
@@ -181,14 +165,11 @@ export function CommonServicesTable() {
                 openEditModal({
                   title: t('editModalTitle'),
                   serviceTitles: service.titles,
-                  onSave: async ({ en, fi }) => {
+                  onSave: async (titles) => {
                     const { data, error, status } = await supabase
                       .from('common_services')
                       .update({
-                        titles: {
-                          en,
-                          fi,
-                        },
+                        titles,
                       })
                       .eq('id', service.id)
                       .select()
