@@ -28,5 +28,10 @@
       var(--mantine-color-dark-7)
     );
     border-bottom-color: transparent;
+
+    &::before,
+    &::after {
+      display: none;
+    }
   }
 }
