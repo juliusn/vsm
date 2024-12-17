@@ -181,6 +181,30 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          service_titles: Json | null
+          time: string | null
+          vessel_mmsi: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          service_titles?: Json | null
+          time?: string | null
+          vessel_mmsi?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          service_titles?: Json | null
+          time?: string | null
+          vessel_mmsi?: number | null
+        }
+        Relationships: []
+      }
       port_areas: {
         Row: {
           enabled: boolean

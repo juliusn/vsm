@@ -148,11 +148,34 @@
     "selectBerth": "Select berth",
     "vessel": "Vessel",
     "selectVessel": "Select vessel",
+    "service": "Service",
+    "selectService": "Select service",
+    "time": "Time",
+    "selectTime": "Select time",
+    "cancelButtonLabel": "Cancel",
+    "saveButtonLabel": "Save"
+  },
+  "BerthServiceSelect": {
     "tasks": "Tasks",
-    "addTask": "Add task",
-    "beginTime": "Begin time",
-    "estimatedEndTime": "Estimated end time",
-    "overtimeThreshold": "Overtime threshold"
+    "addTask": "Add task"
+  },
+  "VesselDetails": {
+    "caption": "Vessel details",
+    "notAvailable": "Not available",
+    "name": "Name",
+    "timestamp": "Updated",
+    "destination": "Destination",
+    "shipType": "Ship type",
+    "mmsi": "MMSI",
+    "callSign": "Call sign",
+    "imo": "IMO",
+    "draught": "Draught",
+    "eta": "ETA",
+    "posType": "Position type",
+    "referencePointA": "Reference point A",
+    "referencePointB": "Reference point B",
+    "referencePointC": "Reference point C",
+    "referencePointD": "Reference point D"
   },
   "DataPage": {
     "locations": "Locations",

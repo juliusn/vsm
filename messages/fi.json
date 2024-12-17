@@ -148,11 +148,34 @@
     "selectBerth": "Valitse laituri",
     "vessel": "Alus",
     "selectVessel": "Valitse alus",
+    "service": "Palvelu",
+    "selectService": "Valitse palvelu",
+    "time": "Aika",
+    "selectTime": "Valitse aika",
+    "cancelButtonLabel": "Peru",
+    "saveButtonLabel": "Tallenna"
+  },
+  "BerthServiceSelect": {
     "tasks": "Tehtävät",
-    "addTask": "Lisää tehtävä",
-    "beginTime": "Aloitusaika",
-    "estimatedEndTime": "Arvioitu lopetusaika",
-    "overtimeThreshold": "Ylityökynnys"
+    "addTask": "Lisää tehtävä"
+  },
+  "VesselDetails": {
+    "caption": "Aluksen tiedot",
+    "notAvailable": "Ei tiedossa",
+    "name": "Nimi",
+    "timestamp": "Päivitetty",
+    "destination": "Määränpää",
+    "shipType": "Alustyyppi",
+    "mmsi": "MMSI",
+    "callSign": "Kutsumerkki",
+    "imo": "IMO",
+    "draught": "Syväys",
+    "eta": "ETA",
+    "posType": "Sijaintityyppi",
+    "referencePointA": "Viitepiste A",
+    "referencePointB": "Viitepiste B",
+    "referencePointC": "Viitepiste C",
+    "referencePointD": "Viitepiste D"
   },
   "DataPage": {
     "locations": "Sijainnit",

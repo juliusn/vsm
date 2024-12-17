@@ -1,61 +1,22 @@
 'use client';
 
 import {
+  Button,
   ComboboxItem,
   ComboboxItemGroup,
-  MultiSelect,
+  Group,
   Select,
   Stack,
   useComputedColorScheme,
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import 'dayjs/locale/fi';
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-
-const shipItems: ComboboxItem[] = [
-  { value: '230705000', label: 'VIKING XPRS' },
-  { value: '230713000', label: 'VIKING CINDERELLA' },
-  { value: '230361000', label: 'GABRIELLA' },
-  { value: '276807000', label: 'SILJA EUROPA' },
-  { value: '276829000', label: 'MEGASTAR' },
-  { value: '276859000', label: 'MYSTAR' },
-  { value: '265004000', label: 'SILJA SYMPHONY' },
-  { value: '230184000', label: 'SILJA SERENADE' },
-].sort((a, b) => a.label.localeCompare(b.label));
-
-const taskItems: ComboboxItemGroup<ComboboxItem>[] = [
-  {
-    group: 'XPRS',
-    items: [
-      { value: 'Bow lines mooring', label: 'Bow lines mooring' },
-      { value: 'Stern lines mooring', label: 'Stern lines mooring' },
-      {
-        value: 'Upper gangway deployment',
-        label: 'Upper gangway deployment',
-      },
-      {
-        value: 'Lower gangway deployment',
-        label: 'Lower gangway deployment',
-      },
-      {
-        value: 'Disembarkation supervision',
-        label: 'Disembarkation supervision',
-      },
-      { value: 'Embarkation supervision', label: 'Embarkation supervision' },
-      {
-        value: 'Upper gangway retraction',
-        label: 'Upper gangway retraction',
-      },
-      {
-        value: 'Lower gangway retraction',
-        label: 'Lower gangway retraction',
-      },
-      { value: 'Bow lines unmooring', label: 'Bow lines unmooring' },
-      { value: 'Stern lines unmooring', label: 'Stern lines unmooring' },
-    ],
-  },
-];
+import { useLocale, useTranslations } from 'next-intl';
+import { useEffect, useState, useTransition } from 'react';
+import { VesselDetails } from './VesselDetails';
+import { createClient } from '@/lib/supabase/client';
+import { useErrorNotification } from '@/app/hooks/notifications';
+import { showNotification } from '@mantine/notifications';
 
 type PortAreaIdentifier = {
   locode: string;
@@ -72,12 +33,19 @@ export function NewOrderForm({
   locations,
   portAreas,
   berths,
+  services,
+  close,
 }: {
   locations: AppTypes.Location[];
   portAreas: AppTypes.PortArea[];
   berths: AppTypes.Berth[];
+  services: AppTypes.CommonService[];
+  close: () => void;
 }) {
   const t = useTranslations('NewOrderForm');
+  const locale = useLocale() as AppTypes.Locale;
+  const getErrorNotification = useErrorNotification();
+  const supabase = createClient();
   const colorScheme = useComputedColorScheme();
   const [locode, setLocode] = useState<string | null>(null);
   const locationsData = locations.map(
@@ -145,19 +113,61 @@ export function NewOrderForm({
     })
   );
 
-  const allTaskItems = taskItems.flatMap((group) => group.items);
-  const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-  const handleTaskOptionsChange = (values: string[]) => {
-    const orderedValues = values.sort(
-      (a, b) =>
-        allTaskItems.findIndex((item) => item.value === a) -
-        allTaskItems.findIndex((item) => item.value === b)
-    );
-    setSelectedTasks(orderedValues);
+  const [vessels, setVessels] = useState<AppTypes.Vessel[]>([]);
+  const [selectedVessel, setSelectedVessel] = useState<string | null>(null);
+  const vesselItems = vessels.map(
+    (vessel): ComboboxItem => ({
+      value: JSON.stringify(vessel),
+      label: vessel.name,
+    })
+  );
+
+  const serviceItems = services.map(
+    (service): ComboboxItem => ({
+      value: JSON.stringify(service.titles),
+      label: service.titles[locale],
+    })
+  );
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+
+  const [insertIsPending, startInsert] = useTransition();
+  const handleSubmit: React.FormEventHandler = (event) => {
+    event.preventDefault();
+    const vesselMmsi = selectedVessel
+      ? (JSON.parse(selectedVessel) as AppTypes.Vessel).mmsi
+      : null;
+
+    startInsert(async () => {
+      const { error, status } = await supabase.from('orders').insert({
+        vessel_mmsi: vesselMmsi,
+        service_titles: selectedService,
+        time: selectedTime?.toString(),
+      });
+
+      if (error) {
+        showNotification(getErrorNotification(status));
+        return;
+      }
+
+      close();
+    });
   };
 
+  useEffect(() => {
+    const fetchVessels = async () => {
+      const vesselsResponse = await fetch(
+        'https://meri.digitraffic.fi/api/ais/v1/vessels'
+      );
+      if (vesselsResponse.ok) {
+        setVessels(await vesselsResponse.json());
+      }
+    };
+    fetchVessels();
+  }, []);
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <Stack>
         <Select
           data={locationsData}
@@ -232,46 +242,42 @@ export function NewOrderForm({
           })}
         />
         <Select
-          data={shipItems}
           label={t('vessel')}
           placeholder={t('selectVessel')}
+          data={vesselItems}
+          limit={20}
           searchable
           clearable
+          value={selectedVessel}
+          onChange={setSelectedVessel}
         />
-        <MultiSelect
-          data={taskItems}
-          label={t('tasks')}
-          placeholder={t('addTask')}
-          searchable
+        {selectedVessel && (
+          <VesselDetails vessel={JSON.parse(selectedVessel)} />
+        )}
+        <Select
+          label={t('service')}
+          placeholder={t('selectService')}
+          data={serviceItems}
+          value={selectedService}
+          onChange={setSelectedService}
+        />
+        <DateTimePicker
+          valueFormat="DD.M.YYYY HH:mm"
+          highlightToday={true}
+          label={t('time')}
+          placeholder={t('selectTime')}
           clearable
-          styles={{
-            pillsList: {
-              display: 'inline',
-            },
-            pill: { justifyContent: 'space-between' },
-          }}
-          value={selectedTasks}
-          onChange={handleTaskOptionsChange}
+          value={selectedTime}
+          onChange={setSelectedTime}
         />
-        <DateTimePicker
-          valueFormat="DD.M.YYYY HH:mm"
-          highlightToday={true}
-          label={t('beginTime')}
-          placeholder={t('beginTime')}
-          clearable
-        />
-        <DateTimePicker
-          valueFormat="DD.M.YYYY HH:mm"
-          highlightToday={true}
-          label={t('estimatedEndTime')}
-          placeholder={t('estimatedEndTime')}
-        />
-        <DateTimePicker
-          valueFormat="DD.M.YYYY HH:mm"
-          highlightToday={true}
-          label={t('overtimeThreshold')}
-          placeholder={t('overtimeThreshold')}
-        />
+        <Group grow>
+          <Button variant="outline" onClick={close}>
+            {t('cancelButtonLabel')}
+          </Button>
+          <Button type="submit" loading={insertIsPending}>
+            {t('saveButtonLabel')}
+          </Button>
+        </Group>
       </Stack>
     </form>
   );
