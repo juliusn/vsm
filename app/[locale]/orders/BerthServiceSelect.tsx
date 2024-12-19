@@ -1,3 +1,5 @@
+'use client';
+
 import { ComboboxItem, ComboboxItemGroup, MultiSelect } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';

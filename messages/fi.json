@@ -9,6 +9,7 @@
   },
   "Header": {
     "home": "Koti",
+    "portTraffic": "Satamaliikenne",
     "orders": "Tilaukset",
     "data": "Data"
   },
@@ -358,5 +359,52 @@
   "ServicePreview": {
     "titleEn": "Nimike englanniksi",
     "titleFi": "Nimike suomeksi"
+  },
+  "PortTrafficLayout": {
+    "title": "Laituroinnit"
+  },
+  "NewDockingContent": {
+    "buttonLabel": "Uusi laiturointi",
+    "modalTitle": "Luo uusi laiturointi"
+  },
+  "NewDockingForm": {
+    "vessel": "Alus",
+    "imoRequiredError": "Aluksen IMO-tunnus vaaditaan.",
+    "imoLengthError": "Aluksen IMO-tunnus täytyy olla 7 numeroa pitkä.",
+    "berth": "Laituri",
+    "arrival": "Saapuminen",
+    "departure": "Lähtö",
+    "date": "Päivämäärä",
+    "selectDate": "Valitse päivämäärä",
+    "time": "Aika",
+    "cancelButtonLabel": "Peru",
+    "clearButtonLabel": "Tyhjennä",
+    "saveButtonLabel": "Tallenna"
+  },
+  "EditDockingModalProvider": {},
+  "DockingsTable": {
+    "noResults": "Ei tuloksia",
+    "created": "Luotu",
+    "vesselImo": "Aluksen IMO"
+  },
+  "VesselNameInput": {
+    "vesselName": "Aluksen nimi",
+    "selectVessel": "Valitse alus"
+  },
+  "ImoInput": {
+    "imo": "IMO",
+    "enterImo": "Syötä IMO"
+  },
+  "LocodeInput": {
+    "location": "Sijainti",
+    "selectLocation": "Valitse sijainti"
+  },
+  "PortAreaInput": {
+    "portArea": "Satama-alue",
+    "selectPortArea": "Valitse satama-alue"
+  },
+  "BerthInput": {
+    "berth": "Laituri",
+    "selectBerth": "Valitse laituri"
   }
 }

@@ -64,8 +64,8 @@ export function VesselDetails({ vessel }: { vessel: AppTypes.Vessel }) {
           <Table.Td>{vessel.shipType}</Table.Td>
         </Table.Tr>
         <Table.Tr>
-          <Table.Th>{t('mmsi')}</Table.Th>
-          <Table.Td>{vessel.mmsi}</Table.Td>
+          <Table.Th>{t('imo')}</Table.Th>
+          <Table.Td>{vessel.imo}</Table.Td>
         </Table.Tr>
         <Table.Tr>
           <Table.Th>{t('callSign')}</Table.Th>

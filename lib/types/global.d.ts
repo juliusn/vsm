@@ -36,6 +36,8 @@ declare global {
       referencePointC: number;
       referencePointD: number;
     };
+    type Docking = Database['public']['Tables']['dockings']['Row'];
+    type DockingEvent = Database['public']['Tables']['docking_events']['Row'];
   }
 }
 

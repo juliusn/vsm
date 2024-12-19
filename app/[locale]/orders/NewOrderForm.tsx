@@ -134,13 +134,13 @@ export function NewOrderForm({
   const [insertIsPending, startInsert] = useTransition();
   const handleSubmit: React.FormEventHandler = (event) => {
     event.preventDefault();
-    const vesselMmsi = selectedVessel
-      ? (JSON.parse(selectedVessel) as AppTypes.Vessel).mmsi
+    const vesselImo = selectedVessel
+      ? (JSON.parse(selectedVessel) as AppTypes.Vessel).imo
       : null;
 
     startInsert(async () => {
       const { error, status } = await supabase.from('orders').insert({
-        vessel_mmsi: vesselMmsi,
+        vessel_imo: vesselImo,
         service_titles: selectedService,
         time: selectedTime?.toString(),
       });

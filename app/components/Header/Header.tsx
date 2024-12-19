@@ -13,6 +13,7 @@ export function Header({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure(false);
   const navItems = [
     { label: t('home'), href: '/' },
+    { label: t('portTraffic'), href: '/port-traffic' },
     { label: t('orders'), href: '/orders' },
     { label: t('data'), href: '/data' },
   ];

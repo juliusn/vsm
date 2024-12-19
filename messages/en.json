@@ -9,6 +9,7 @@
   },
   "Header": {
     "home": "Home",
+    "portTraffic": "Port Traffic",
     "orders": "Orders",
     "data": "Data"
   },
@@ -358,5 +359,52 @@
   "ServicePreview": {
     "titleEn": "Title in English",
     "titleFi": "Title in Finnish"
+  },
+  "PortTrafficLayout": {
+    "title": "Dockings"
+  },
+  "NewDockingContent": {
+    "buttonLabel": "New docking",
+    "modalTitle": "Create a new docking"
+  },
+  "NewDockingForm": {
+    "vessel": "Vessel",
+    "imoRequiredError": "Vessel IMO number is required.",
+    "imoLengthError": "Vessel IMO number must be 7 digits.",
+    "berth": "Berth",
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "date": "Date",
+    "selectDate": "Select date",
+    "time": "Time",
+    "cancelButtonLabel": "Cancel",
+    "clearButtonLabel": "Clear",
+    "saveButtonLabel": "Save"
+  },
+  "EditDockingModalProvider": {},
+  "DockingsTable": {
+    "noResults": "No results",
+    "created": "Created",
+    "vesselImo": "Vessel IMO"
+  },
+  "VesselNameInput": {
+    "vesselName": "Vessel name",
+    "selectVessel": "Select vessel"
+  },
+  "ImoInput": {
+    "imo": "IMO",
+    "enterImo": "Enter IMO"
+  },
+  "LocodeInput": {
+    "location": "Location",
+    "selectLocation": "Select location"
+  },
+  "PortAreaInput": {
+    "portArea": "Port area",
+    "selectPortArea": "Select port area"
+  },
+  "BerthInput": {
+    "berth": "Berth",
+    "selectBerth": "Select berth"
   }
 }

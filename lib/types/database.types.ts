@@ -145,6 +145,77 @@ export type Database = {
         }
         Relationships: []
       }
+      docking_events: {
+        Row: {
+          created_at: string
+          docking: string
+          estimated_date: string | null
+          estimated_time: string | null
+          id: string
+          type: Database["public"]["Enums"]["docking_event_enum"]
+        }
+        Insert: {
+          created_at?: string
+          docking: string
+          estimated_date?: string | null
+          estimated_time?: string | null
+          id?: string
+          type: Database["public"]["Enums"]["docking_event_enum"]
+        }
+        Update: {
+          created_at?: string
+          docking?: string
+          estimated_date?: string | null
+          estimated_time?: string | null
+          id?: string
+          type?: Database["public"]["Enums"]["docking_event_enum"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "docking_events_docking_fkey"
+            columns: ["docking"]
+            referencedRelation: "dockings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dockings: {
+        Row: {
+          berth_code: string | null
+          created_at: string
+          id: string
+          locode: string | null
+          port_area_code: string | null
+          vessel_imo: number
+          vessel_name: string | null
+        }
+        Insert: {
+          berth_code?: string | null
+          created_at?: string
+          id?: string
+          locode?: string | null
+          port_area_code?: string | null
+          vessel_imo: number
+          vessel_name?: string | null
+        }
+        Update: {
+          berth_code?: string | null
+          created_at?: string
+          id?: string
+          locode?: string | null
+          port_area_code?: string | null
+          vessel_imo?: number
+          vessel_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dockings_locode_port_area_code_berth_code_fkey"
+            columns: ["locode", "port_area_code", "berth_code"]
+            referencedRelation: "berths"
+            referencedColumns: ["locode", "port_area_code", "berth_code"]
+          },
+        ]
+      }
       locations: {
         Row: {
           country: string
@@ -187,21 +258,21 @@ export type Database = {
           id: string
           service_titles: Json | null
           time: string | null
-          vessel_mmsi: number | null
+          vessel_imo: number | null
         }
         Insert: {
           created_at?: string
           id?: string
           service_titles?: Json | null
           time?: string | null
-          vessel_mmsi?: number | null
+          vessel_imo?: number | null
         }
         Update: {
           created_at?: string
           id?: string
           service_titles?: Json | null
           time?: string | null
-          vessel_mmsi?: number | null
+          vessel_imo?: number | null
         }
         Relationships: []
       }
@@ -3370,6 +3441,7 @@ export type Database = {
     }
     Enums: {
       approval_status_enum: "pending" | "approved" | "rejected"
+      docking_event_enum: "arrival" | "departure" | "shifting"
     }
     CompositeTypes: {
       geometry_dump: {
