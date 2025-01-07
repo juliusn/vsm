@@ -1,6 +1,6 @@
 import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
 import { createClient } from '@/lib/supabase/server';
-import { ComboboxItem, Group, Stack, Title } from '@mantine/core';
+import { Group, Stack, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
 import { NewDockingContent } from './NewDockingContent';
 
@@ -43,19 +43,14 @@ export default async function PortTrafficLayout({
       !berthsResponse.error;
 
     if (success) {
-      const vessels = (await vesselsResponse.json()) as AppTypes.Vessel[];
-      const vesselItems = vessels
+      const vesselsData = (await vesselsResponse.json()) as AppTypes.Vessel[];
+      const vessels = vesselsData
         .filter((vessel) => vessel.imo !== 0)
         .filter(
           (vessel, index, array) =>
             array.findIndex((v) => v.imo === vessel.imo) === index
         )
-        .map(
-          (vessel): ComboboxItem => ({
-            value: vessel.imo.toString(),
-            label: vessel.name,
-          })
-        );
+        .sort((a, b) => a.timestamp - b.timestamp);
       const locations = locationsResponse.data;
       const locodes = locations.map((location) => location.locode);
       const filteredPortAreas = portAreasResponse.data.filter((portArea) =>
@@ -68,7 +63,7 @@ export default async function PortTrafficLayout({
         filteredPortAreaCodes.includes(berth.port_area_code)
       );
       return {
-        vesselItems,
+        vessels,
         locations,
         portAreas: filteredPortAreas,
         berths: filteredBerths,
@@ -85,7 +80,7 @@ export default async function PortTrafficLayout({
       <Group justify="space-between">
         <Title size="h2">{t('title')}</Title>
         <NewDockingContent
-          vesselItems={data.vesselItems}
+          vessels={data.vessels}
           locations={data.locations}
           portAreas={data.portAreas}
           berths={data.berths}

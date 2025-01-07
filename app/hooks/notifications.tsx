@@ -43,3 +43,16 @@ export const useServiceSavedNotification = () => {
     [t]
   );
 };
+
+export const useDockingSavedNotification = () => {
+  const t = useTranslations('DockingSavedNotification');
+  return useCallback(
+    (): NotificationData => ({
+      title: t('title'),
+      message: t('message'),
+      icon: <IconCheck stroke={1.5} />,
+      color: 'green',
+    }),
+    [t]
+  );
+};

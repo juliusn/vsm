@@ -176,7 +176,32 @@
     "referencePointA": "Reference point A",
     "referencePointB": "Reference point B",
     "referencePointC": "Reference point C",
-    "referencePointD": "Reference point D"
+    "referencePointD": "Reference point D",
+    "shipTypes": {
+      "notAvailable": "Not available",
+      "reservedForFutureUse": "Reserved for future use",
+      "wig": "Wing in ground craft",
+      "towing": "Towing",
+      "towingLarge": "Towing (underway)",
+      "dredgingOrUnderwaterOps": "Dredging/underwater operations",
+      "divingOps": "Diving operations",
+      "militaryOps": "Military operations",
+      "sailing": "Sailing vessel",
+      "pleasureCraft": "Pleasure craft",
+      "hsc": "High-speed craft",
+      "pilotVessel": "Pilot vessel",
+      "searchAndRescue": "Search and rescue vessel",
+      "tug": "Tug",
+      "portTender": "Port tender",
+      "antiPollutionEquipment": "Anti-pollution equipment",
+      "lawEnforcement": "Law enforcement",
+      "otherType30Series": "Other type (30 series)",
+      "otherType50Series": "Other type (50 series)",
+      "passengerShip": "Passenger ship",
+      "cargoShip": "Cargo ship",
+      "tanker": "Tanker",
+      "otherShip": "Other ship"
+    }
   },
   "DataPage": {
     "locations": "Locations",
@@ -257,6 +282,10 @@
   "ServiceSavedNotification": {
     "title": "Done!",
     "message": "Service has been saved."
+  },
+  "DockingSavedNotification": {
+    "title": "Done!",
+    "message": "Docking event has been saved."
   },
   "PortAreaCodePage": {
     "title": "Berths",
@@ -365,12 +394,15 @@
   },
   "NewDockingContent": {
     "buttonLabel": "New docking",
-    "modalTitle": "Create a new docking"
+    "modalTitle": "Create a new docking event"
   },
   "NewDockingForm": {
     "vessel": "Vessel",
     "imoRequiredError": "Vessel IMO number is required.",
     "imoLengthError": "Vessel IMO number must be 7 digits.",
+    "timeWithoutDateError": "Time without date.",
+    "etaAfterEtdError": "ETA after ETD.",
+    "etdBeforeEtaError": "ETD before ETA.",
     "berth": "Berth",
     "arrival": "Arrival",
     "departure": "Departure",

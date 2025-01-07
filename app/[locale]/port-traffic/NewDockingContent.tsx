@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ComboboxItem, Modal } from '@mantine/core';
+import { Button, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconPlus } from '@tabler/icons-react';
 import 'dayjs/locale/fi';
@@ -9,14 +9,14 @@ import { LocationInputsContextProvider } from './LocationInputContext';
 import { NewDockingForm } from './NewDockingForm';
 
 interface NewDockingContentProps {
-  vesselItems: ComboboxItem[];
+  vessels: AppTypes.Vessel[];
   locations: AppTypes.Location[];
   portAreas: AppTypes.PortArea[];
   berths: AppTypes.Berth[];
 }
 
 export function NewDockingContent({
-  vesselItems,
+  vessels,
   locations,
   portAreas,
   berths,
@@ -32,10 +32,11 @@ export function NewDockingContent({
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
         <LocationInputsContextProvider locations={locations}>
           <NewDockingForm
-            vesselItems={vesselItems}
+            vessels={vessels}
             locations={locations}
             portAreas={portAreas}
             berths={berths}
+            close={close}
           />
         </LocationInputsContextProvider>
       </Modal>

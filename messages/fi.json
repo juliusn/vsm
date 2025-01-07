@@ -176,7 +176,32 @@
     "referencePointA": "Viitepiste A",
     "referencePointB": "Viitepiste B",
     "referencePointC": "Viitepiste C",
-    "referencePointD": "Viitepiste D"
+    "referencePointD": "Viitepiste D",
+    "shipTypes": {
+      "notAvailable": "Alustyyppi ei ole käytössä",
+      "reservedForFutureUse": "Varattu tulevaisuuden laajennuksille",
+      "wig": "Patosiipialus",
+      "towing": "Hinaaja",
+      "towingLarge": "Hinaaja (hinaus käynnissä)",
+      "dredgingOrUnderwaterOps": "Ruoppaus/vedenalainen toiminta",
+      "divingOps": "Sukellustoiminta",
+      "militaryOps": "Sota-alus",
+      "sailing": "Purjealus",
+      "pleasureCraft": "Huvialus",
+      "hsc": "Pika-alus",
+      "pilotVessel": "Luotsi",
+      "searchAndRescue": "Pelastusalus",
+      "tug": "Hinaaja",
+      "portTender": "Yhteysalus",
+      "antiPollutionEquipment": "Ympäristövahinkojen torjunta",
+      "lawEnforcement": "Viranomainen",
+      "otherType30Series": "Muu alus (30-sarja)",
+      "otherType50Series": "Muu alus (50-sarja)",
+      "passengerShip": "Matkustajalaiva",
+      "cargoShip": "Rahtialus",
+      "tanker": "Tankkeri",
+      "otherShip": "Muu alus"
+    }
   },
   "DataPage": {
     "locations": "Sijainnit",
@@ -257,6 +282,10 @@
   "ServiceSavedNotification": {
     "title": "Valmis!",
     "message": "Palvelu on tallennettu."
+  },
+  "DockingSavedNotification": {
+    "title": "Valmis!",
+    "message": "Laiturointitapahtuma on tallennettu."
   },
   "PortAreaCodePage": {
     "title": "Laiturit",
@@ -365,12 +394,15 @@
   },
   "NewDockingContent": {
     "buttonLabel": "Uusi laiturointi",
-    "modalTitle": "Luo uusi laiturointi"
+    "modalTitle": "Luo uusi laiturointitapahtuma"
   },
   "NewDockingForm": {
     "vessel": "Alus",
     "imoRequiredError": "Aluksen IMO-tunnus vaaditaan.",
     "imoLengthError": "Aluksen IMO-tunnus täytyy olla 7 numeroa pitkä.",
+    "timeWithoutDateError": "Aika ilman päivämäärää.",
+    "etaAfterEtdError": "Saapumisaika lähtöajan jälkeen.",
+    "etdBeforeEtaError": "Lähtöaika ennen saapumisaikaa.",
     "berth": "Laituri",
     "arrival": "Saapuminen",
     "departure": "Lähtö",

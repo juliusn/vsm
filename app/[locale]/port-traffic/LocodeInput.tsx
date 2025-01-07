@@ -1,15 +1,13 @@
 'use client';
 
-import { ComboboxItem, Select } from '@mantine/core';
+import { ComboboxItem, Select, SelectProps } from '@mantine/core';
 import { useTranslations } from 'next-intl';
-import { useLocationInputs } from './LocationInputContext';
 
-interface LocodeInputProps {
+interface LocodeInputProps extends SelectProps {
   locations: AppTypes.Location[];
 }
 
-export function LocodeInput({ locations }: LocodeInputProps) {
-  const { locode, setLocode, setPortArea, setBerth } = useLocationInputs();
+export function LocodeInput({ locations, ...others }: LocodeInputProps) {
   const t = useTranslations('LocodeInput');
   const locationsData = locations.map(
     ({ locode, location_name }): ComboboxItem => ({
@@ -25,14 +23,7 @@ export function LocodeInput({ locations }: LocodeInputProps) {
       placeholder={t('selectLocation')}
       searchable
       clearable
-      value={locode}
-      onChange={(value) => {
-        setLocode(value);
-        if (!value) {
-          setPortArea(null);
-          setBerth(null);
-        }
-      }}
+      {...others}
     />
   );
 }
