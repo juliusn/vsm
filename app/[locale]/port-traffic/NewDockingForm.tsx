@@ -106,6 +106,7 @@ export function NewDockingForm({
     validateInputOnBlur: true,
     transformValues: (values) => ({
       ...values,
+      vesselName: vessel?.name || '',
       portArea:
         values.portArea &&
         (JSON.parse(values.portArea) as PortAreaIdentifier).port_area_code,
