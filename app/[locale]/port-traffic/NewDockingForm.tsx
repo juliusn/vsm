@@ -35,6 +35,7 @@ import { LocodeInput } from './LocodeInput';
 import { PortAreaInput } from './PortAreaInput';
 import { VesselNameInput } from './VesselNameInput';
 import { FormValidateInput } from '@mantine/form/lib/types';
+import { useDockingsStore } from '@/app/store';
 
 export interface FormValues {
   vesselName: string;
@@ -68,7 +69,7 @@ interface NewDockingContentProps {
   close: () => void;
 }
 
-export type PortAreaIdentifier = {
+type PortAreaIdentifier = {
   locode: string;
   port_area_code: string;
 };
@@ -78,9 +79,6 @@ type BerthIdentifier = {
   port_area_code: string;
   berth_code: string;
 };
-
-const isSevenDigits = (errorMessage: string) => (value: number | '') =>
-  value.toString().length !== 7 ? errorMessage : null;
 
 export function NewDockingForm({
   vessels,
@@ -97,8 +95,8 @@ export function NewDockingForm({
   const supabase = createClient();
   const getErrorNotification = useErrorNotification();
   const getDockingSavedNotification = useDockingSavedNotification();
+  const { insertDocking, insertDockingEvent } = useDockingsStore();
   const validate = useValidate();
-
   const form = useForm<FormValues>({
     mode: 'uncontrolled',
     initialValues,
@@ -208,36 +206,51 @@ export function NewDockingForm({
 
     if (etaDate) {
       dockingEventsQueries.push(
-        supabase.from('docking_events').insert({
-          docking: dockingsResponse.data.id,
-          type: 'arrival',
-          estimated_date: etaDate.toISOString(),
-          estimated_time: etaTime || null,
-        })
+        supabase
+          .from('docking_events')
+          .insert({
+            docking: dockingsResponse.data.id,
+            type: 'arrival',
+            estimated_date: etaDate.toISOString(),
+            estimated_time: etaTime || null,
+          })
+          .select()
+          .single()
       );
     }
 
     if (etdDate) {
       dockingEventsQueries.push(
-        supabase.from('docking_events').insert({
-          docking: dockingsResponse.data.id,
-          type: 'departure',
-          estimated_date: etdDate.toISOString(),
-          estimated_time: etdTime || null,
-        })
+        supabase
+          .from('docking_events')
+          .insert({
+            docking: dockingsResponse.data.id,
+            type: 'departure',
+            estimated_date: etdDate.toISOString(),
+            estimated_time: etdTime || null,
+          })
+          .select()
+          .single()
       );
     }
 
-    const dockingEventsResponses = await Promise.all(dockingEventsQueries);
-    const errorResponse = dockingEventsResponses.find(
-      (response) => response.error
-    );
+    const [etaResponse, etdResponse] = await Promise.all(dockingEventsQueries);
 
-    if (errorResponse) {
-      showNotification(getErrorNotification(errorResponse.status));
+    insertDocking(dockingsResponse.data);
+
+    if (etaResponse.error) {
+      showNotification(getErrorNotification(etaResponse.status));
       return;
     }
 
+    insertDockingEvent(etaResponse.data);
+
+    if (etdResponse.error) {
+      showNotification(getErrorNotification(etdResponse.status));
+      return;
+    }
+
+    insertDockingEvent(etdResponse.data);
     showNotification(getDockingSavedNotification());
     close();
   };
@@ -432,6 +445,9 @@ export function NewDockingForm({
 
 function useValidate(): FormValidateInput<FormValues> {
   const t = useTranslations('NewDockingForm');
+  const isSevenDigits = (errorMessage: string) => (value: number | '') =>
+    value.toString().length !== 7 ? errorMessage : null;
+
   return {
     imo: (value: number | '') =>
       isNotEmpty(t('imoRequiredError'))(value) ??

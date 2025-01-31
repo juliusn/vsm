@@ -149,7 +149,7 @@ export type Database = {
         Row: {
           created_at: string
           docking: string
-          estimated_date: string | null
+          estimated_date: string
           estimated_time: string | null
           id: string
           type: Database["public"]["Enums"]["docking_event_enum"]
@@ -157,7 +157,7 @@ export type Database = {
         Insert: {
           created_at?: string
           docking: string
-          estimated_date?: string | null
+          estimated_date: string
           estimated_time?: string | null
           id?: string
           type: Database["public"]["Enums"]["docking_event_enum"]
@@ -165,7 +165,7 @@ export type Database = {
         Update: {
           created_at?: string
           docking?: string
-          estimated_date?: string | null
+          estimated_date?: string
           estimated_time?: string | null
           id?: string
           type?: Database["public"]["Enums"]["docking_event_enum"]

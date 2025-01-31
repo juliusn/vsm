@@ -413,11 +413,18 @@
     "clearButtonLabel": "Tyhjennä",
     "saveButtonLabel": "Tallenna"
   },
-  "EditDockingModalProvider": {},
   "DockingsTable": {
     "noResults": "Ei tuloksia",
     "created": "Luotu",
-    "vesselImo": "Aluksen IMO"
+    "vesselImo": "IMO",
+    "vesselName": "Nimi",
+    "locode": "Geokoodi",
+    "portAreaCode": "Satama-alueen tunnus",
+    "berthCode": "Laituritunnus",
+    "berth": "Laituri",
+    "arrival": "Tulo",
+    "departure": "Lähtö",
+    "unknown": "Ei tiedossa"
   },
   "VesselNameInput": {
     "vesselName": "Aluksen nimi",

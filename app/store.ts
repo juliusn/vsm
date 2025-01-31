@@ -24,3 +24,43 @@ export const useEmailStore = create<EmailStore>((set) => ({
     set(() => ({ email }));
   },
 }));
+
+type DockingsStore = {
+  dockings: AppTypes.Docking[];
+  setDockings: (dockings: AppTypes.Docking[]) => void;
+  insertDocking: (docking: AppTypes.Docking) => void;
+  removeDocking: (id: string) => void;
+  dockingEvents: AppTypes.DockingEvent[];
+  setDockingEvents: (dockingsEvents: AppTypes.DockingEvent[]) => void;
+  insertDockingEvent: (docking: AppTypes.DockingEvent) => void;
+  removeDockingEvent: (id: string) => void;
+};
+
+export const useDockingsStore = create<DockingsStore>((set) => ({
+  dockings: [],
+  setDockings: (dockings) => {
+    set(() => ({ dockings }));
+  },
+  insertDocking: (docking) => {
+    set((state) => ({ dockings: [...state.dockings, docking] }));
+  },
+  removeDocking: (id) => {
+    set((state) => ({
+      dockings: state.dockings.filter((docking) => docking.id !== id),
+    }));
+  },
+  dockingEvents: [],
+  setDockingEvents: (dockingEvents) => {
+    set(() => ({ dockingEvents }));
+  },
+  insertDockingEvent: (dockingEvent) => {
+    set((state) => ({ dockingEvents: [...state.dockingEvents, dockingEvent] }));
+  },
+  removeDockingEvent: (id) => {
+    set((state) => ({
+      dockingEvents: state.dockingEvents.filter(
+        (dockingEvent) => dockingEvent.id !== id
+      ),
+    }));
+  },
+}));

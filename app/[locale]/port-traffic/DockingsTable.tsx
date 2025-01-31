@@ -1,49 +1,58 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/notifications';
-import { createClient } from '@/lib/supabase/client';
-import { showNotification } from '@mantine/notifications';
 import { DataTable } from 'mantine-datatable';
-import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import {
+  DateTimeFormatOptions,
+  useFormatter,
+  useTranslations,
+} from 'next-intl';
+import { useEffect, useMemo, useState } from 'react';
 
 const PAGE_SIZE = 15;
 
-export function DockingsTable() {
+const dateTimeFormatOptions: DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+};
+
+const dateFormatOptions: DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+};
+
+interface DockingRow extends AppTypes.Docking {
+  eta: string;
+  etd: string;
+}
+
+interface DockingsTableProps {
+  dockings: AppTypes.Docking[];
+  dockingEvents: AppTypes.DockingEvent[];
+  loading: boolean;
+}
+
+export function DockingsTable({
+  dockings,
+  dockingEvents,
+  loading,
+}: DockingsTableProps) {
   const t = useTranslations('DockingsTable');
-  const supabase = createClient();
-  const getErrorNotification = useErrorNotification();
+  const dockingRows = useDockingRows(dockings, dockingEvents);
   const [page, setPage] = useState(1);
-  const [records, setRecords] = useState<AppTypes.Docking[]>([]);
-  const totalRecords = records.length;
+  const [records, setRecords] = useState<DockingRow[]>(
+    dockingRows.slice(0, PAGE_SIZE)
+  );
 
   useEffect(() => {
-    const totalPages = totalRecords ? Math.ceil(totalRecords / PAGE_SIZE) : 0;
-    const lastFrom = (totalPages - 1) * PAGE_SIZE;
     const from = (page - 1) * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
+    const to = from + PAGE_SIZE;
+    setRecords(dockingRows.slice(from, to));
+  }, [page, dockingRows]);
 
-    if (from > lastFrom) {
-      setPage(totalPages || 1);
-      return;
-    }
-
-    const fetchDockings = async () => {
-      const { data, error, status } = await supabase
-        .from('dockings')
-        .select('*')
-        .range(from, to);
-
-      if (error) {
-        showNotification(getErrorNotification(status));
-        return;
-      }
-
-      setRecords(data);
-    };
-
-    fetchDockings();
-  }, [totalRecords, page, supabase, getErrorNotification]);
   return (
     <DataTable
       withTableBorder
@@ -51,14 +60,98 @@ export function DockingsTable() {
       minHeight={records.length ? 0 : 180}
       noRecordsText={t('noResults')}
       records={records}
-      totalRecords={totalRecords}
+      totalRecords={dockings.length}
       recordsPerPage={PAGE_SIZE}
       page={page}
       onPageChange={setPage}
+      fetching={loading}
       columns={[
-        { accessor: 'created_at', title: t('created') },
+        {
+          accessor: 'created_at',
+          title: t('created'),
+        },
         { accessor: 'vessel_imo', title: t('vesselImo') },
+        { accessor: 'vessel_name', title: t('vesselName') },
+        {
+          accessor: 'berth_code',
+          title: t('berth'),
+        },
+        {
+          accessor: 'eta',
+          title: t('arrival'),
+        },
+        {
+          accessor: 'etd',
+          title: t('departure'),
+        },
       ]}
     />
   );
+}
+
+function useDockingRows(
+  dockings: AppTypes.Docking[],
+  dockingEvents: AppTypes.DockingEvent[]
+) {
+  const t = useTranslations('DockingsTable');
+  const format = useFormatter();
+  const dockingRows = useMemo(
+    () =>
+      dockings
+        .map((docking): DockingRow => {
+          const arrival = dockingEvents.find(
+            (event) => event.docking === docking.id && event.type === 'arrival'
+          );
+
+          const departure = dockingEvents.find(
+            (event) =>
+              event.docking === docking.id && event.type === 'departure'
+          );
+
+          const eta = arrival
+            ? arrival.estimated_time
+              ? format.dateTime(
+                  new Date(
+                    `${arrival.estimated_date}T${arrival.estimated_time}`
+                  ),
+                  dateTimeFormatOptions
+                )
+              : format.dateTime(
+                  new Date(arrival.estimated_date),
+                  dateFormatOptions
+                )
+            : t('unknown');
+
+          const etd = departure
+            ? departure.estimated_time
+              ? format.dateTime(
+                  new Date(
+                    `${departure.estimated_date}T${departure.estimated_time}`
+                  ),
+                  dateTimeFormatOptions
+                )
+              : format.dateTime(
+                  new Date(departure.estimated_date),
+                  dateFormatOptions
+                )
+            : t('unknown');
+
+          return {
+            ...docking,
+            created_at: format.dateTime(
+              new Date(docking.created_at),
+              dateTimeFormatOptions
+            ),
+            eta,
+            etd,
+          };
+        })
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        ),
+    [dockings, dockingEvents, t, format]
+  );
+
+  return dockingRows;
 }

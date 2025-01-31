@@ -413,11 +413,18 @@
     "clearButtonLabel": "Clear",
     "saveButtonLabel": "Save"
   },
-  "EditDockingModalProvider": {},
   "DockingsTable": {
     "noResults": "No results",
     "created": "Created",
-    "vesselImo": "Vessel IMO"
+    "vesselImo": "IMO",
+    "vesselName": "Name",
+    "locode": "Locode",
+    "portAreaCode": "Port area code",
+    "berthCode": "Berth code",
+    "berth": "Berth",
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "unknown": "Unknown"
   },
   "VesselNameInput": {
     "vesselName": "Vessel name",
