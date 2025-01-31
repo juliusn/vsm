@@ -44,7 +44,10 @@ export function VesselDetails({ vessel }: { vessel: AppTypes.Vessel }) {
   const midLocale = midToLocale[mid];
 
   return (
-    <Table captionSide="top" variant="vertical">
+    <Table
+      captionSide="top"
+      variant="vertical"
+      styles={{ th: { backgroundColor: 'transparent' } }}>
       <Table.Caption>{t('caption')}</Table.Caption>
       <Table.Tbody>
         <Table.Tr>
