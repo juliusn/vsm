@@ -27,7 +27,7 @@ import {
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { VesselDetails } from '../orders/VesselDetails';
 import { BerthInput } from './BerthInput';
 import { ImoInput } from './ImoInput';
@@ -89,9 +89,6 @@ export function NewDockingForm({
 }: NewDockingContentProps) {
   const t = useTranslations('NewDockingForm');
   const [updateIsPending] = useTransition();
-  const [mostRecentVessel, setMostRecentVessel] = useState<
-    AppTypes.Vessel | undefined
-  >(undefined);
   const supabase = createClient();
   const getErrorNotification = useErrorNotification();
   const getDockingSavedNotification = useDockingSavedNotification();
@@ -114,9 +111,16 @@ export function NewDockingForm({
     }),
   });
 
-  const { locode, portArea } = form.getValues();
+  const [mostRecentVessel, setMostRecentVessel] = useState<
+    AppTypes.Vessel | undefined
+  >(undefined);
   const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>();
-  const { portAreaData, berthsData } = getInputData(locode, portArea);
+  const [locode, setLocode] = useState(initialValues.locode);
+  const [portArea, setPortArea] = useState(initialValues.portArea);
+  const { portAreaItems, berthsItems } = useMemo(
+    () => getInputItems(locations, portAreas, berths, locode, portArea),
+    [locations, portAreas, berths, locode, portArea]
+  );
   const imoRef = useRef<HTMLInputElement>(null);
   const vesselItems = vessels.map(
     (vessel): ComboboxItem => ({
@@ -142,20 +146,22 @@ export function NewDockingForm({
     setVessel(match);
   });
 
-  form.watch('locode', ({ value }) => {
-    if (!value) {
+  form.watch('locode', ({ previousValue, value }) => {
+    setLocode(value);
+    if (previousValue && previousValue !== value) {
       form.setFieldValue('portArea', '');
       form.setFieldValue('berth', '');
     }
   });
 
-  form.watch('portArea', ({ value }) => {
+  form.watch('portArea', ({ previousValue, value }) => {
+    setPortArea(value);
+    if (previousValue && previousValue !== value) {
+      form.setFieldValue('berth', '');
+    }
     if (value) {
       const { locode }: PortAreaIdentifier = JSON.parse(value);
       form.setFieldValue('locode', locode);
-    } else {
-      form.setFieldValue('portArea', '');
-      form.setFieldValue('berth', '');
     }
   });
 
@@ -165,8 +171,6 @@ export function NewDockingForm({
       form.setFieldValue('locode', locode);
       const portArea: PortAreaIdentifier = { locode, port_area_code };
       form.setFieldValue('portArea', JSON.stringify(portArea));
-    } else {
-      form.setFieldValue('berth', '');
     }
   });
 
@@ -202,6 +206,8 @@ export function NewDockingForm({
       return;
     }
 
+    insertDocking(dockingsResponse.data);
+
     const dockingEventsQueries = [];
 
     if (etaDate) {
@@ -234,23 +240,17 @@ export function NewDockingForm({
       );
     }
 
-    const [etaResponse, etdResponse] = await Promise.all(dockingEventsQueries);
-
-    insertDocking(dockingsResponse.data);
-
-    if (etaResponse.error) {
-      showNotification(getErrorNotification(etaResponse.status));
-      return;
+    if (dockingEventsQueries.length) {
+      const responses = await Promise.all(dockingEventsQueries);
+      responses.forEach((response) => {
+        if (response.error) {
+          showNotification(getErrorNotification(response.status));
+          return;
+        }
+        insertDockingEvent(response.data);
+      });
     }
 
-    insertDockingEvent(etaResponse.data);
-
-    if (etdResponse.error) {
-      showNotification(getErrorNotification(etdResponse.status));
-      return;
-    }
-
-    insertDockingEvent(etdResponse.data);
     showNotification(getDockingSavedNotification());
     close();
   };
@@ -297,12 +297,12 @@ export function NewDockingForm({
               {...form.getInputProps('locode')}
             />
             <PortAreaInput
-              data={portAreaData}
+              data={portAreaItems}
               key={form.key('portArea')}
               {...form.getInputProps('portArea')}
             />
             <BerthInput
-              data={berthsData}
+              data={berthsItems}
               key={form.key('berth')}
               {...form.getInputProps('berth')}
             />
@@ -381,66 +381,77 @@ export function NewDockingForm({
       </Stack>
     </form>
   );
+}
 
-  function getInputData(locode: string, portArea: string) {
-    const filteredPortAreas = portAreas.filter((portArea) =>
-      locode ? portArea.locode === locode : true
-    );
+function getInputItems(
+  locations: AppTypes.Location[],
+  portAreas: AppTypes.PortArea[],
+  berths: AppTypes.Berth[],
+  locode: string,
+  portArea: string
+) {
+  const filteredPortAreas = portAreas.filter((portArea) =>
+    locode ? portArea.locode === locode : true
+  );
 
-    const portAreaData = locations.map(
-      ({ location_name }): ComboboxItemGroup => ({
-        group: location_name,
-        items: filteredPortAreas.map(
+  const portAreaItems = locations.map(
+    ({ locode, location_name }): ComboboxItemGroup => ({
+      group: location_name,
+      items: filteredPortAreas
+        .filter((portArea) => portArea.locode === locode)
+        .map(
           ({ locode, port_area_code, port_area_name }): ComboboxItem => ({
             value: JSON.stringify({ locode, port_area_code }),
             label: `${port_area_code} - ${port_area_name}`,
           })
         ),
-      })
-    );
+    })
+  );
 
-    const portAreaId = portArea
-      ? (JSON.parse(portArea) as PortAreaIdentifier)
-      : null;
+  const portAreaId = portArea
+    ? (JSON.parse(portArea) as PortAreaIdentifier)
+    : null;
 
-    const filteredPortAreaLocationNames = filteredPortAreas.map(
-      ({ locode }) =>
-        locations.find((location) => location.locode === locode)?.location_name
-    );
+  const filteredPortAreaLocationNames = filteredPortAreas.map(
+    ({ locode }) =>
+      locations.find((location) => location.locode === locode)?.location_name
+  );
 
-    const filteredBerths = berths.filter(
-      (berth) =>
-        (locode ? berth.locode === locode : true) &&
-        (portAreaId
-          ? portAreaId.locode === berth.locode &&
-            portAreaId.port_area_code === berth.port_area_code
-          : true)
-    );
+  const filteredBerths = berths.filter(
+    (berth) =>
+      (locode ? berth.locode === locode : true) &&
+      (portAreaId
+        ? portAreaId.locode === berth.locode &&
+          portAreaId.port_area_code === berth.port_area_code
+        : true)
+  );
 
-    const berthsData = filteredPortAreas.map(
-      ({ port_area_code, port_area_name }, index): ComboboxItemGroup => ({
-        group: `${filteredPortAreaLocationNames[index]} ${port_area_name}`,
-        items: filteredBerths
-          .filter((berth) => berth.port_area_code === port_area_code)
-          .map(
-            ({
-              locode,
-              port_area_code,
-              berth_code,
-              berth_name,
-            }): ComboboxItem => ({
-              value: JSON.stringify({ locode, port_area_code, berth_code }),
-              label:
-                berth_code === berth_name
-                  ? berth_code
-                  : `${berth_code} - ${berth_name}`,
-            })
-          ),
-      })
-    );
+  const berthsItems = filteredPortAreas.map(
+    ({ locode, port_area_code, port_area_name }, index): ComboboxItemGroup => ({
+      group: `${filteredPortAreaLocationNames[index]} ${port_area_name}`,
+      items: filteredBerths
+        .filter(
+          (berth) =>
+            berth.locode === locode && berth.port_area_code === port_area_code
+        )
+        .map(
+          ({
+            locode,
+            port_area_code,
+            berth_code,
+            berth_name,
+          }): ComboboxItem => ({
+            value: JSON.stringify({ locode, port_area_code, berth_code }),
+            label:
+              berth_code === berth_name
+                ? berth_code
+                : `${berth_code} - ${berth_name}`,
+          })
+        ),
+    })
+  );
 
-    return { portAreaData, berthsData };
-  }
+  return { portAreaItems, berthsItems };
 }
 
 function useValidate(): FormValidateInput<FormValues> {
