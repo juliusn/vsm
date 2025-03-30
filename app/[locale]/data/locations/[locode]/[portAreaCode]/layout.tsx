@@ -2,13 +2,16 @@ import { SimpleGrid } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
 import { PortAreaSwitch } from './PortAreaSwitch';
 
-export default async function PortAreaCodeLayout({
-  children,
-  params: { locode, portAreaCode },
-}: {
+export default async function PortAreaCodeLayout(props: {
   children: React.ReactNode;
-  params: { locode: string; portAreaCode: string };
+  params: Promise<{ locode: string; portAreaCode: string }>;
 }) {
+  const params = await props.params;
+
+  const { locode, portAreaCode } = params;
+
+  const { children } = props;
+
   const t = await getTranslations('PortAreaCodeLayout');
   return (
     <>

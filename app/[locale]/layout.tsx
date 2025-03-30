@@ -1,4 +1,9 @@
-import { ColorSchemeScript, Container, MantineProvider } from '@mantine/core';
+import {
+  ColorSchemeScript,
+  Container,
+  mantineHtmlProps,
+  MantineProvider,
+} from '@mantine/core';
 import '@mantine/core/styles.css';
 import { DatesProvider } from '@mantine/dates';
 import '@mantine/dates/styles.css';
@@ -19,17 +24,20 @@ export const metadata: Metadata = {
   description: 'Vanaheim Service Management',
 };
 
-export default async function RootLayout({
-  children,
-  params: { locale },
-}: {
+export default async function RootLayout(props: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
+  const params = await props.params;
+
+  const { locale } = params;
+
+  const { children } = props;
+
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} {...mantineHtmlProps}>
       <head>
         <link rel="shortcut icon" href="/favicon.svg" />
         <meta

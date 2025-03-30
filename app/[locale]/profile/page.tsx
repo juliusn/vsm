@@ -4,11 +4,13 @@ import { getTranslations } from 'next-intl/server';
 import { ProfileContent } from './ProfileContent';
 import { redirect } from '@/i18n/routing';
 
-export default async function ProfilePage({
-  params: { locale },
-}: {
-  params: { locale: string };
+export default async function ProfilePage(props: {
+  params: Promise<{ locale: string }>;
 }) {
+  const params = await props.params;
+
+  const { locale } = params;
+
   const t = await getTranslations('ProfilePage');
   const supabase = createClient();
   const { data, error } = await supabase.auth.getUser();

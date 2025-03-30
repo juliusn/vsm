@@ -5,13 +5,16 @@ import { getTranslations } from 'next-intl/server';
 import { LocationProvider } from './LocationContext';
 import { LocodeSwitch } from './LocodeSwitch';
 
-export default async function LocodeLayout({
-  children,
-  params: { locode },
-}: {
+export default async function LocodeLayout(props: {
   children: React.ReactNode;
-  params: { locode: string };
+  params: Promise<{ locode: string }>;
 }) {
+  const params = await props.params;
+
+  const { locode } = params;
+
+  const { children } = props;
+
   const t = await getTranslations('LocodeLayout');
   const supabase = createClient();
   const [

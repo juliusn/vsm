@@ -2,13 +2,16 @@ import { SimpleGrid, Stack } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
 import { BerthSwitch } from './BerthSwitch';
 
-export default async function BerthCodeLayout({
-  children,
-  params: { locode, portAreaCode, berthCode },
-}: {
+export default async function BerthCodeLayout(props: {
   children: React.ReactNode;
-  params: { locode: string; portAreaCode: string; berthCode: string };
+  params: Promise<{ locode: string; portAreaCode: string; berthCode: string }>;
 }) {
+  const params = await props.params;
+
+  const { locode, portAreaCode, berthCode } = params;
+
+  const { children } = props;
+
   const t = await getTranslations('BerthCodeLayout');
 
   return (

@@ -3,11 +3,13 @@ import { getTranslations } from 'next-intl/server';
 import { NewBerthServiceContent } from '../NewBerthServiceContent';
 import { ServicesTable } from './ServicesTable';
 
-export default async function BerthCodePage({
-  params: { locode, portAreaCode, berthCode },
-}: {
-  params: { locode: string; portAreaCode: string; berthCode: string };
+export default async function BerthCodePage(props: {
+  params: Promise<{ locode: string; portAreaCode: string; berthCode: string }>;
 }) {
+  const params = await props.params;
+
+  const { locode, portAreaCode, berthCode } = params;
+
   const t = await getTranslations('BerthCodePage');
   return (
     <>

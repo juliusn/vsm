@@ -10,7 +10,7 @@ export default async function PortTrafficLayout({
   children: React.ReactNode;
 }) {
   const t = await getTranslations('PortTrafficLayout');
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const fetchData = async () => {
     const vesselsResponse = await fetch(
