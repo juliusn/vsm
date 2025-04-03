@@ -5,7 +5,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconPlus } from '@tabler/icons-react';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
-import { LocationInputsContextProvider } from './LocationInputContext';
 import { NewDockingForm } from './NewDockingForm';
 
 interface NewDockingContentProps {
@@ -30,15 +29,13 @@ export function NewDockingContent({
         {t('buttonLabel')}
       </Button>
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
-        <LocationInputsContextProvider locations={locations}>
-          <NewDockingForm
-            vessels={vessels}
-            locations={locations}
-            portAreas={portAreas}
-            berths={berths}
-            close={close}
-          />
-        </LocationInputsContextProvider>
+        <NewDockingForm
+          vessels={vessels}
+          locations={locations}
+          portAreas={portAreas}
+          berths={berths}
+          close={close}
+        />
       </Modal>
     </>
   );
