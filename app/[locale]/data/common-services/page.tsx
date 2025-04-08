@@ -8,7 +8,7 @@ import { NewCommonServiceButton } from './NewCommonServiceButton';
 
 export default async function CommonServicesPage() {
   const t = await getTranslations('CommonServicesPage');
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.from('common_services').select();
 
   if (error) {

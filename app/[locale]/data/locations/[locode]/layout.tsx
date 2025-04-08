@@ -16,7 +16,7 @@ export default async function LocodeLayout(props: {
   const { children } = props;
 
   const t = await getTranslations('LocodeLayout');
-  const supabase = createClient();
+  const supabase = await createClient();
   const [
     locationsResponse,
     portAreasResponse,

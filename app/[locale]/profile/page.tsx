@@ -12,7 +12,7 @@ export default async function ProfilePage(props: {
   const { locale } = params;
 
   const t = await getTranslations('ProfilePage');
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 
   if (error) {
