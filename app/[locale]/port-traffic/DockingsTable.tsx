@@ -98,6 +98,10 @@ function useDockingRows(
   const dockingRows = useMemo(
     () =>
       dockings
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
         .map((docking): DockingRow => {
           const arrival = dockingEvents.find(
             (event) => event.docking === docking.id && event.type === 'arrival'
@@ -145,11 +149,7 @@ function useDockingRows(
             eta,
             etd,
           };
-        })
-        .sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        ),
+        }),
     [dockings, dockingEvents, t, format]
   );
 
