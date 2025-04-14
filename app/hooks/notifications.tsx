@@ -3,8 +3,8 @@ import { IconCheck, IconExclamationMark } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 
-export const useErrorNotification = () => {
-  const t = useTranslations('ErrorNotification');
+export const usePostgresErrorNotification = () => {
+  const t = useTranslations('PostgresErrorNotification');
   return useCallback(
     (status: number): NotificationData => ({
       title: t('title'),

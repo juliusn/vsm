@@ -271,7 +271,7 @@
   "EnabledSwitch": {
     "label": "Tuettu"
   },
-  "ErrorNotification": {
+  "PostgresErrorNotification": {
     "title": "Virhe",
     "message": "Pyyntöä ei voitu toteuttaa. Palvelin vastasi statuskoodilla {status}."
   },

@@ -271,7 +271,7 @@
   "EnabledSwitch": {
     "label": "Enabled"
   },
-  "ErrorNotification": {
+  "PostgresErrorNotification": {
     "title": "Error",
     "message": "Request could not be completed. Server responded with status {status}."
   },
