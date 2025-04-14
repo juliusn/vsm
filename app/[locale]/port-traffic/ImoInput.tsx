@@ -2,8 +2,11 @@
 
 import { NumberInput, NumberInputProps } from '@mantine/core';
 import { useTranslations } from 'next-intl';
+interface ImoInputProps extends NumberInputProps {
+  ref?: React.Ref<HTMLInputElement>;
+}
 
-export function ImoInput({ ...props }: NumberInputProps) {
+export function ImoInput({ ref, ...props }: ImoInputProps) {
   const t = useTranslations('ImoInput');
 
   return (
@@ -14,6 +17,7 @@ export function ImoInput({ ...props }: NumberInputProps) {
       maxLength={7}
       required
       {...props}
+      ref={ref}
     />
   );
 }

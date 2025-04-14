@@ -2,21 +2,13 @@
 
 import {
   useDockingSavedNotification,
-  useErrorNotification,
+  usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
+import { useDockingsStore } from '@/app/store';
 import { createClient } from '@/lib/supabase/client';
-import {
-  Button,
-  Collapse,
-  ComboboxItem,
-  ComboboxItemGroup,
-  Fieldset,
-  Group,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { Button, Fieldset, Group, Stack, Text } from '@mantine/core';
 import { DateInput, TimeInput } from '@mantine/dates';
-import { isNotEmpty, useForm } from '@mantine/form';
+import { FormValidateInput, isNotEmpty, useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import {
   IconAnchor,
@@ -27,15 +19,9 @@ import {
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
-import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
-import { VesselDetails } from '../orders/VesselDetails';
-import { BerthInput } from './BerthInput';
-import { ImoInput } from './ImoInput';
-import { LocodeInput } from './LocodeInput';
-import { PortAreaInput } from './PortAreaInput';
-import { VesselNameInput } from './VesselNameInput';
-import { FormValidateInput } from '@mantine/form/lib/types';
-import { useDockingsStore } from '@/app/store';
+import { useRef, useState, useTransition } from 'react';
+import { LocationInputs } from './LocationInputs';
+import { VesselInputs } from './VesselInputs';
 
 export interface FormValues {
   vesselName: string;
@@ -69,12 +55,12 @@ interface NewDockingContentProps {
   close: () => void;
 }
 
-type PortAreaIdentifier = {
+export type PortAreaIdentifier = {
   locode: string;
   port_area_code: string;
 };
 
-type BerthIdentifier = {
+export type BerthIdentifier = {
   locode: string;
   port_area_code: string;
   berth_code: string;
@@ -88,12 +74,17 @@ export function NewDockingForm({
   close,
 }: NewDockingContentProps) {
   const t = useTranslations('NewDockingForm');
-  const [updateIsPending] = useTransition();
   const supabase = createClient();
-  const getErrorNotification = useErrorNotification();
+  const [updateIsPending] = useTransition();
+  const getErrorNotification = usePostgresErrorNotification();
   const getDockingSavedNotification = useDockingSavedNotification();
   const { insertDocking, insertDockingEvent } = useDockingsStore();
+  const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>();
+  const [locode, setLocode] = useState(initialValues.locode);
+  const [portArea, setPortArea] = useState(initialValues.portArea);
   const validate = useValidate();
+  const imoRef = useRef<HTMLInputElement>(null);
+
   const form = useForm<FormValues>({
     mode: 'uncontrolled',
     initialValues,
@@ -111,24 +102,6 @@ export function NewDockingForm({
     }),
   });
 
-  const [mostRecentVessel, setMostRecentVessel] = useState<
-    AppTypes.Vessel | undefined
-  >(undefined);
-  const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>();
-  const [locode, setLocode] = useState(initialValues.locode);
-  const [portArea, setPortArea] = useState(initialValues.portArea);
-  const { portAreaItems, berthsItems } = useMemo(
-    () => getInputItems(locations, portAreas, berths, locode, portArea),
-    [locations, portAreas, berths, locode, portArea]
-  );
-  const imoRef = useRef<HTMLInputElement>(null);
-  const vesselItems = vessels.map(
-    (vessel): ComboboxItem => ({
-      value: vessel.imo.toString(),
-      label: vessel.name,
-    })
-  );
-
   form.watch('vesselName', ({ value }) => {
     if (value) {
       form.setFieldValue('imo', Number(value));
@@ -144,6 +117,9 @@ export function NewDockingForm({
   form.watch('imo', ({ value }) => {
     const match = vessels.find((vessel) => vessel.imo === value);
     setVessel(match);
+    if (match) {
+      form.setFieldValue('vesselName', match.imo.toString());
+    }
   });
 
   form.watch('locode', ({ previousValue, value }) => {
@@ -174,7 +150,7 @@ export function NewDockingForm({
     }
   });
 
-  const handleSubmit = async ({
+  const newDockingSubmitHandler = async ({
     imo,
     vesselName,
     locode,
@@ -201,12 +177,14 @@ export function NewDockingForm({
       .select()
       .single();
 
+    if (dockingsResponse.data) {
+      insertDocking(dockingsResponse.data);
+    }
+
     if (dockingsResponse.error) {
       showNotification(getErrorNotification(dockingsResponse.status));
       return;
     }
-
-    insertDocking(dockingsResponse.data);
 
     const dockingEventsQueries = [];
 
@@ -240,29 +218,26 @@ export function NewDockingForm({
       );
     }
 
-    if (dockingEventsQueries.length) {
-      const responses = await Promise.all(dockingEventsQueries);
-      responses.forEach((response) => {
-        if (response.error) {
-          showNotification(getErrorNotification(response.status));
-          return;
-        }
+    const responses = await Promise.all(dockingEventsQueries);
+    responses.forEach((response) => {
+      if (response.data) {
         insertDockingEvent(response.data);
-      });
-    }
+      }
+    });
+
+    responses.forEach((response) => {
+      if (response.error) {
+        showNotification(getErrorNotification(dockingsResponse.status));
+        return;
+      }
+    });
 
     showNotification(getDockingSavedNotification());
     close();
   };
 
-  useEffect(() => {
-    if (vessel) {
-      setMostRecentVessel(vessel);
-    }
-  }, [vessel]);
-
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
+    <form onSubmit={form.onSubmit(newDockingSubmitHandler)}>
       <Stack>
         <Fieldset
           legend={
@@ -272,15 +247,12 @@ export function NewDockingForm({
             </Group>
           }>
           <Stack>
-            <VesselNameInput
-              data={vesselItems}
-              key={form.key('vesselName')}
-              {...form.getInputProps('vesselName')}
+            <VesselInputs
+              form={form}
+              vessel={vessel}
+              vessels={vessels}
+              imoRef={imoRef}
             />
-            <ImoInput key={form.key('imo')} {...form.getInputProps('imo')} />
-            <Collapse in={!!vessel}>
-              {mostRecentVessel && <VesselDetails vessel={mostRecentVessel} />}
-            </Collapse>
           </Stack>
         </Fieldset>
         <Fieldset
@@ -291,20 +263,13 @@ export function NewDockingForm({
             </Group>
           }>
           <Stack>
-            <LocodeInput
+            <LocationInputs
+              form={form}
+              locode={locode}
+              portArea={portArea}
               locations={locations}
-              key={form.key('locode')}
-              {...form.getInputProps('locode')}
-            />
-            <PortAreaInput
-              data={portAreaItems}
-              key={form.key('portArea')}
-              {...form.getInputProps('portArea')}
-            />
-            <BerthInput
-              data={berthsItems}
-              key={form.key('berth')}
-              {...form.getInputProps('berth')}
+              portAreas={portAreas}
+              berths={berths}
             />
           </Stack>
         </Fieldset>
@@ -381,77 +346,6 @@ export function NewDockingForm({
       </Stack>
     </form>
   );
-}
-
-function getInputItems(
-  locations: AppTypes.Location[],
-  portAreas: AppTypes.PortArea[],
-  berths: AppTypes.Berth[],
-  locode: string,
-  portArea: string
-) {
-  const filteredPortAreas = portAreas.filter((portArea) =>
-    locode ? portArea.locode === locode : true
-  );
-
-  const portAreaItems = locations.map(
-    ({ locode, location_name }): ComboboxItemGroup => ({
-      group: location_name,
-      items: filteredPortAreas
-        .filter((portArea) => portArea.locode === locode)
-        .map(
-          ({ locode, port_area_code, port_area_name }): ComboboxItem => ({
-            value: JSON.stringify({ locode, port_area_code }),
-            label: `${port_area_code} - ${port_area_name}`,
-          })
-        ),
-    })
-  );
-
-  const portAreaId = portArea
-    ? (JSON.parse(portArea) as PortAreaIdentifier)
-    : null;
-
-  const filteredPortAreaLocationNames = filteredPortAreas.map(
-    ({ locode }) =>
-      locations.find((location) => location.locode === locode)?.location_name
-  );
-
-  const filteredBerths = berths.filter(
-    (berth) =>
-      (locode ? berth.locode === locode : true) &&
-      (portAreaId
-        ? portAreaId.locode === berth.locode &&
-          portAreaId.port_area_code === berth.port_area_code
-        : true)
-  );
-
-  const berthsItems = filteredPortAreas.map(
-    ({ locode, port_area_code, port_area_name }, index): ComboboxItemGroup => ({
-      group: `${filteredPortAreaLocationNames[index]} ${port_area_name}`,
-      items: filteredBerths
-        .filter(
-          (berth) =>
-            berth.locode === locode && berth.port_area_code === port_area_code
-        )
-        .map(
-          ({
-            locode,
-            port_area_code,
-            berth_code,
-            berth_name,
-          }): ComboboxItem => ({
-            value: JSON.stringify({ locode, port_area_code, berth_code }),
-            label:
-              berth_code === berth_name
-                ? berth_code
-                : `${berth_code} - ${berth_name}`,
-          })
-        ),
-    })
-  );
-
-  return { portAreaItems, berthsItems };
 }
 
 function useValidate(): FormValidateInput<FormValues> {
