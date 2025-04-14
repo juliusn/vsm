@@ -10,7 +10,7 @@ export function VesselNameInput({ ...props }: SelectProps) {
     <Select
       label={t('vesselName')}
       placeholder={t('selectVessel')}
-      limit={20}
+      limit={100}
       searchable
       clearable
       {...props}
