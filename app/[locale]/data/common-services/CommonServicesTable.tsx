@@ -2,7 +2,7 @@
 
 import { ServicePreview } from '@/app/components/ServicePreview';
 import {
-  useErrorNotification,
+  usePostgresErrorNotification,
   useServiceDeletedNotification,
   useServiceSavedNotification,
 } from '@/app/hooks/notifications';
@@ -22,7 +22,7 @@ const PAGE_SIZE = 15;
 export function CommonServicesTable() {
   const t = useTranslations('CommonServicesTable');
   const locale = useLocale() as AppTypes.Locale;
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
   const getServiceDeletedNotification = useServiceDeletedNotification();
   const getServiceUpdatedNotification = useServiceSavedNotification();
   const supabase = createClient();

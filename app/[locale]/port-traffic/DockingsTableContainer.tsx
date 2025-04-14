@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/notifications';
+import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { useDockingsStore } from '@/app/store';
 import { createClient } from '@/lib/supabase/client';
 import { showNotification } from '@mantine/notifications';
@@ -12,7 +12,7 @@ export function DockingsTableContainer() {
   const { dockings, setDockings, dockingEvents, setDockingEvents } =
     useDockingsStore();
   const [loading, setLoading] = useState(true);
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
 
   useEffect(() => {
     const fetchData = async () => {

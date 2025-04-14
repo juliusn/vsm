@@ -1,7 +1,7 @@
 'use client';
 
 import { ProgressBarLink } from '@/app/components/ProgressBar';
-import { useErrorNotification } from '@/app/hooks/notifications';
+import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { usePathname } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
 import { ActionIcon, Group, Radio, Switch, TextInput } from '@mantine/core';
@@ -16,7 +16,7 @@ const PAGE_SIZE = 15;
 
 export function BerthsTable({ portAreaCode }: { portAreaCode: string }) {
   const t = useTranslations('BerthsTable');
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
   const supabase = createClient();
   const [page, setPage] = useState(1);
   const [berthCodeQuery, setBerthCodeQuery] = useState('');

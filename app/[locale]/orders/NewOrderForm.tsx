@@ -15,7 +15,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState, useTransition } from 'react';
 import { VesselDetails } from './VesselDetails';
 import { createClient } from '@/lib/supabase/client';
-import { useErrorNotification } from '@/app/hooks/notifications';
+import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { showNotification } from '@mantine/notifications';
 
 type PortAreaIdentifier = {
@@ -44,7 +44,7 @@ export function NewOrderForm({
 }) {
   const t = useTranslations('NewOrderForm');
   const locale = useLocale() as AppTypes.Locale;
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
   const supabase = createClient();
   const colorScheme = useComputedColorScheme();
   const [locode, setLocode] = useState<string | null>(null);

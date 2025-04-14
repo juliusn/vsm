@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  useErrorNotification,
+  usePostgresErrorNotification,
   useServiceSavedNotification,
 } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
@@ -16,7 +16,7 @@ export function NewCommonServiceButton() {
   const { openEditModal, closeEditModal } = useEditServiceModal();
   const t = useTranslations('NewCommonServiceButton');
   const supabase = createClient();
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
   const getServiceSavedNotification = useServiceSavedNotification();
   const { dispatch } = useCommonServices();
 

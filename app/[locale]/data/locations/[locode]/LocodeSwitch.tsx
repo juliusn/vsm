@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/notifications';
+import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import { Switch } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
@@ -11,7 +11,7 @@ export function LocodeSwitch({ locode }: { locode: string }) {
   const supabase = createClient();
   const { state, dispatch } = useLocation();
   const t = useTranslations('EnabledSwitch');
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
 
   return (
     <Switch

@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/notifications';
+import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import { Switch } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
@@ -21,7 +21,7 @@ export function PortAreaSwitch({
       portArea.locode === locode && portArea.port_area_code === portAreaCode
   );
   const t = useTranslations('EnabledSwitch');
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
 
   return (
     <Switch

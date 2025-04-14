@@ -4,7 +4,7 @@ import { useDeleteServiceModal } from '@/app/[locale]/data/DeleteServiceModalCon
 import { useEditServiceModal } from '@/app/[locale]/data/EditServicesModalContext';
 import { ServicePreview } from '@/app/components/ServicePreview';
 import {
-  useErrorNotification,
+  usePostgresErrorNotification,
   useServiceDeletedNotification,
   useServiceSavedNotification,
 } from '@/app/hooks/notifications';
@@ -37,7 +37,7 @@ export function ServicesTable({
 }) {
   const t = useTranslations('ServicesTable');
   const locale = useLocale() as AppTypes.Locale;
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
   const getServiceDeletedNotification = useServiceDeletedNotification();
   const getServiceSavedNotification = useServiceSavedNotification();
   const supabase = createClient();

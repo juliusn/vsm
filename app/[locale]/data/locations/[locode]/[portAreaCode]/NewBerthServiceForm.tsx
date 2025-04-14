@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/notifications';
+import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import {
   Button,
@@ -63,7 +63,7 @@ export function NewBerthServiceForm({
     )
     .map((service) => JSON.stringify(service.titles));
 
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
   const t = useTranslations('NewBerthServiceForm');
   const titleLabels: Record<AppTypes.Locale, string> = {
     en: t('titleInputLabelEn'),

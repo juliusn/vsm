@@ -1,6 +1,6 @@
 'use client';
 
-import { useErrorNotification } from '@/app/hooks/notifications';
+import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import { Button, Group, Modal, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -25,7 +25,7 @@ export function DeleteServiceModalProvider({
   berthCode: string;
 }) {
   const t = useTranslations('DeleteServiceModalProvider');
-  const getErrorNotification = useErrorNotification();
+  const getErrorNotification = usePostgresErrorNotification();
   const { dispatch } = useLocation();
   const [id, setId] = useState<string>('');
   const [deleteIsPending, startDelete] = useTransition();
