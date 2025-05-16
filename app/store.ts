@@ -29,9 +29,11 @@ type DockingsStore = {
   dockings: AppTypes.Docking[];
   setDockings: (dockings: AppTypes.Docking[]) => void;
   insertDocking: (docking: AppTypes.Docking) => void;
+  updateDocking: (docking: AppTypes.Docking) => void;
   removeDocking: (id: string) => void;
   dockingEvents: AppTypes.DockingEvent[];
   setDockingEvents: (dockingsEvents: AppTypes.DockingEvent[]) => void;
+  updateDockingEvent: (docking: AppTypes.DockingEvent) => void;
   insertDockingEvent: (docking: AppTypes.DockingEvent) => void;
   removeDockingEvent: (id: string) => void;
 };
@@ -44,6 +46,13 @@ export const useDockingsStore = create<DockingsStore>((set) => ({
   insertDocking: (docking) => {
     set((state) => ({ dockings: [...state.dockings, docking] }));
   },
+  updateDocking: (newDocking) => {
+    set((state) => ({
+      dockings: state.dockings.map((docking) =>
+        docking.id === newDocking.id ? newDocking : docking
+      ),
+    }));
+  },
   removeDocking: (id) => {
     set((state) => ({
       dockings: state.dockings.filter((docking) => docking.id !== id),
@@ -55,6 +64,13 @@ export const useDockingsStore = create<DockingsStore>((set) => ({
   },
   insertDockingEvent: (dockingEvent) => {
     set((state) => ({ dockingEvents: [...state.dockingEvents, dockingEvent] }));
+  },
+  updateDockingEvent: (newDockingEvent) => {
+    set((state) => ({
+      dockingEvents: state.dockingEvents.map((dockingEvent) =>
+        dockingEvent.id === newDockingEvent.id ? newDockingEvent : dockingEvent
+      ),
+    }));
   },
   removeDockingEvent: (id) => {
     set((state) => ({
