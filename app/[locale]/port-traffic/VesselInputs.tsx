@@ -5,20 +5,23 @@ import { UseFormReturnType } from '@mantine/form';
 import { useEffect, useMemo, useState } from 'react';
 import { VesselDetails } from '../orders/VesselDetails';
 import { ImoInput } from './ImoInput';
-import { FormValues } from './NewDockingForm';
 import { VesselNameInput } from './VesselNameInput';
+import { usePortData } from './PortDataContext';
+import { DockingFormValues } from '@/lib/types/docking';
 
 export function VesselInputs({
   vessel,
   form,
-  vessels,
   imoRef,
 }: {
-  form: UseFormReturnType<FormValues, (values: FormValues) => FormValues>;
+  form: UseFormReturnType<
+    DockingFormValues,
+    (values: DockingFormValues) => DockingFormValues
+  >;
   vessel: AppTypes.Vessel | undefined;
-  vessels: AppTypes.Vessel[];
   imoRef: React.RefObject<HTMLInputElement | null>;
 }) {
+  const { vessels } = usePortData();
   const vesselItems = useMemo(
     () =>
       vessels.map(

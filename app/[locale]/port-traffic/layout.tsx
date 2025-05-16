@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Group, Stack, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
 import { NewDockingContent } from './NewDockingContent';
+import { PortDataProvider } from './PortDataContext';
 
 export default async function PortTrafficLayout({
   children,
@@ -105,16 +106,17 @@ export default async function PortTrafficLayout({
 
   return data ? (
     <Stack>
-      <Group justify="space-between">
-        <Title size="h2">{t('title')}</Title>
-        <NewDockingContent
-          vessels={data.vessels}
-          locations={data.locations}
-          portAreas={data.portAreas}
-          berths={data.berths}
-        />
-      </Group>
-      {children}
+      <PortDataProvider
+        vessels={data.vessels}
+        locations={data.locations}
+        portAreas={data.portAreas}
+        berths={data.berths}>
+        <Group justify="space-between">
+          <Title size="h2">{t('title')}</Title>
+          <NewDockingContent />
+        </Group>
+        {children}
+      </PortDataProvider>
     </Stack>
   ) : (
     <DataUnavailableAlert />

@@ -5,24 +5,23 @@ import { UseFormReturnType } from '@mantine/form';
 import { useMemo } from 'react';
 import { BerthInput } from './BerthInput';
 import { LocodeInput } from './LocodeInput';
-import { FormValues, PortAreaIdentifier } from './NewDockingForm';
 import { PortAreaInput } from './PortAreaInput';
+import { usePortData } from './PortDataContext';
+import { DockingFormValues, PortAreaIdentifier } from '@/lib/types/docking';
 
 export function LocationInputs({
   locode,
   portArea,
   form,
-  locations,
-  portAreas,
-  berths,
 }: {
-  form: UseFormReturnType<FormValues, (values: FormValues) => FormValues>;
+  form: UseFormReturnType<
+    DockingFormValues,
+    (values: DockingFormValues) => DockingFormValues
+  >;
   locode: string;
   portArea: string;
-  locations: AppTypes.Location[];
-  portAreas: AppTypes.PortArea[];
-  berths: AppTypes.Berth[];
 }) {
+  const { locations, portAreas, berths } = usePortData();
   const { portAreaItems, berthsItems } = useMemo(
     () => getInputItems(locations, portAreas, berths, locode, portArea),
     [locations, portAreas, berths, locode, portArea]

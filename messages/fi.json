@@ -287,6 +287,10 @@
     "title": "Valmis!",
     "message": "Laiturointitapahtuma on tallennettu."
   },
+  "DockingDeletedNotification": {
+    "title": "Valmis!",
+    "message": "Laiturointi on poistettu."
+  },
   "PortAreaCodePage": {
     "title": "Laiturit",
     "caption": "Valitse laiturit, jotka haluat liittää palvelunhallintaan.",
@@ -400,7 +404,10 @@
     "vessel": "Alus",
     "imoRequiredError": "Aluksen IMO-tunnus vaaditaan.",
     "imoLengthError": "Aluksen IMO-tunnus täytyy olla 7 numeroa pitkä.",
+    "enterDateOrRemoveTimeError": "Syötä päivämäärä tai poista aika.",
     "timeWithoutDateError": "Aika ilman päivämäärää.",
+    "etaDateAfterEtdDateError": "Saapumispäivä lähtöpäivän jälkeen.",
+    "etdDateBeforeEtaDateError": "Lähtöpäivä ennen saapumispäivää.",
     "etaAfterEtdError": "Saapumisaika lähtöajan jälkeen.",
     "etdBeforeEtaError": "Lähtöaika ennen saapumisaikaa.",
     "berth": "Laituri",
@@ -410,8 +417,18 @@
     "selectDate": "Valitse päivämäärä",
     "time": "Aika",
     "cancelButtonLabel": "Peru",
-    "clearButtonLabel": "Tyhjennä",
+    "resetButtonLabel": "Palauta",
     "saveButtonLabel": "Tallenna"
+  },
+  "FormButtons": {
+    "cancel": "Peru",
+    "reset": "Palauta",
+    "save": "Tallenna"
+  },
+  "DeleteDockingContent": {
+    "label": "Poista laiturointi",
+    "modalMessage": "Haluatko varmasti poistaa tämän laituroinnin?",
+    "dockingDetails": "Laituroinnin tiedot"
   },
   "DockingsTable": {
     "noResults": "Ei tuloksia",
@@ -424,7 +441,8 @@
     "berth": "Laituri",
     "arrival": "Tulo",
     "departure": "Lähtö",
-    "unknown": "Ei tiedossa"
+    "unknown": "Ei tiedossa",
+    "modalTitle": "Muokkaa laiturointia"
   },
   "VesselNameInput": {
     "vesselName": "Aluksen nimi",
@@ -445,5 +463,9 @@
   "BerthInput": {
     "berth": "Laituri",
     "selectBerth": "Valitse laituri"
+  },
+  "ConfirmDeleteModal": {
+    "cancel": "Peru",
+    "delete": "Poista"
   }
 }

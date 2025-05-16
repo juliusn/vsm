@@ -6,36 +6,23 @@ import {
 } from '@/app/hooks/notifications';
 import { useDockingsStore } from '@/app/store';
 import { createClient } from '@/lib/supabase/client';
-import { Button, Fieldset, Group, Stack, Text } from '@mantine/core';
-import { DateInput, TimeInput } from '@mantine/dates';
-import { FormValidateInput, isNotEmpty, useForm } from '@mantine/form';
-import { showNotification } from '@mantine/notifications';
 import {
-  IconAnchor,
-  IconArrowBarRight,
-  IconArrowBarToRight,
-  IconShip,
-} from '@tabler/icons-react';
-import dayjs from 'dayjs';
+  BerthIdentifier,
+  DockingFormValues,
+  PortAreaIdentifier,
+} from '@/lib/types/docking';
+import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import 'dayjs/locale/fi';
-import { useTranslations } from 'next-intl';
-import { useRef, useState, useTransition } from 'react';
-import { LocationInputs } from './LocationInputs';
-import { VesselInputs } from './VesselInputs';
+import { useRef, useState } from 'react';
+import { DockingFormFields } from './DockingFormFields';
+import { usePortData } from './PortDataContext';
+import useDockingFormValidation from './useDockingFormValidation';
+import { Group, Stack } from '@mantine/core';
+import { FormButtons } from '@/app/components/FormButtons';
+import dayjs from 'dayjs';
 
-export interface FormValues {
-  vesselName: string;
-  imo: number | '';
-  locode: string;
-  portArea: string;
-  berth: string;
-  etaDate: Date | '';
-  etaTime: string;
-  etdDate: Date | '';
-  etdTime: string;
-}
-
-const initialValues: FormValues = {
+const initialValues: DockingFormValues = {
   vesselName: '',
   imo: '',
   locode: '',
@@ -48,44 +35,24 @@ const initialValues: FormValues = {
 };
 
 interface NewDockingContentProps {
-  vessels: AppTypes.Vessel[];
-  locations: AppTypes.Location[];
-  portAreas: AppTypes.PortArea[];
-  berths: AppTypes.Berth[];
   close: () => void;
 }
 
-export type PortAreaIdentifier = {
-  locode: string;
-  port_area_code: string;
-};
-
-export type BerthIdentifier = {
-  locode: string;
-  port_area_code: string;
-  berth_code: string;
-};
-
-export function NewDockingForm({
-  vessels,
-  locations,
-  portAreas,
-  berths,
-  close,
-}: NewDockingContentProps) {
-  const t = useTranslations('NewDockingForm');
+export function NewDockingForm({ close }: NewDockingContentProps) {
   const supabase = createClient();
-  const [updateIsPending] = useTransition();
   const getErrorNotification = usePostgresErrorNotification();
   const getDockingSavedNotification = useDockingSavedNotification();
   const { insertDocking, insertDockingEvent } = useDockingsStore();
+  const { vessels } = usePortData();
+  const [loading, setLoading] = useState(false);
+  const [imoValue, setImoValue] = useState<DockingFormValues['imo']>('');
   const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>();
   const [locode, setLocode] = useState(initialValues.locode);
   const [portArea, setPortArea] = useState(initialValues.portArea);
-  const validate = useValidate();
+  const validate = useDockingFormValidation();
   const imoRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<FormValues>({
+  const form = useForm<DockingFormValues>({
     mode: 'uncontrolled',
     initialValues,
     validate,
@@ -115,6 +82,7 @@ export function NewDockingForm({
   });
 
   form.watch('imo', ({ value }) => {
+    setImoValue(value);
     const match = vessels.find((vessel) => vessel.imo === value);
     setVessel(match);
     if (match) {
@@ -150,6 +118,22 @@ export function NewDockingForm({
     }
   });
 
+  form.watch('etaDate', () => {
+    form.validateField('etdDate');
+  });
+
+  form.watch('etaTime', () => {
+    form.validateField('etdTime');
+  });
+
+  form.watch('etdDate', () => {
+    form.validateField('etaDate');
+  });
+
+  form.watch('etdTime', () => {
+    form.validateField('etaTime');
+  });
+
   const newDockingSubmitHandler = async ({
     imo,
     vesselName,
@@ -160,276 +144,115 @@ export function NewDockingForm({
     etaTime,
     etdDate,
     etdTime,
-  }: FormValues) => {
+  }: DockingFormValues) => {
     if (imo === '') {
       return;
     }
 
-    const dockingsResponse = await supabase
-      .from('dockings')
-      .insert({
-        vessel_imo: imo,
-        vessel_name: vesselName || null,
-        locode: locode || null,
-        port_area_code: portArea || null,
-        berth_code: berth || null,
-      })
-      .select()
-      .single();
+    setLoading(true);
 
-    if (dockingsResponse.data) {
-      insertDocking(dockingsResponse.data);
-    }
+    try {
+      const dockingsResponse = await supabase
+        .from('dockings')
+        .insert({
+          vessel_imo: imo,
+          vessel_name: vesselName || null,
+          locode: locode || null,
+          port_area_code: portArea || null,
+          berth_code: berth || null,
+        })
+        .select()
+        .single();
 
-    if (dockingsResponse.error) {
-      showNotification(getErrorNotification(dockingsResponse.status));
-      return;
-    }
-
-    const dockingEventsQueries = [];
-
-    if (etaDate) {
-      dockingEventsQueries.push(
-        supabase
-          .from('docking_events')
-          .insert({
-            docking: dockingsResponse.data.id,
-            type: 'arrival',
-            estimated_date: etaDate.toISOString(),
-            estimated_time: etaTime || null,
-          })
-          .select()
-          .single()
-      );
-    }
-
-    if (etdDate) {
-      dockingEventsQueries.push(
-        supabase
-          .from('docking_events')
-          .insert({
-            docking: dockingsResponse.data.id,
-            type: 'departure',
-            estimated_date: etdDate.toISOString(),
-            estimated_time: etdTime || null,
-          })
-          .select()
-          .single()
-      );
-    }
-
-    const responses = await Promise.all(dockingEventsQueries);
-    responses.forEach((response) => {
-      if (response.data) {
-        insertDockingEvent(response.data);
+      if (dockingsResponse.data) {
+        insertDocking(dockingsResponse.data);
       }
-    });
 
-    responses.forEach((response) => {
-      if (response.error) {
+      if (dockingsResponse.error) {
         showNotification(getErrorNotification(dockingsResponse.status));
         return;
       }
-    });
 
-    showNotification(getDockingSavedNotification());
-    close();
+      const queries = [];
+
+      if (etaDate) {
+        queries.push(
+          supabase
+            .from('docking_events')
+            .insert({
+              docking: dockingsResponse.data.id,
+              type: 'arrival',
+              estimated_date: dayjs(etaDate).format('YYYY-MM-DD'),
+              estimated_time: etaTime || null,
+            })
+            .select()
+            .single()
+        );
+      }
+
+      if (etdDate) {
+        queries.push(
+          supabase
+            .from('docking_events')
+            .insert({
+              docking: dockingsResponse.data.id,
+              type: 'departure',
+              estimated_date: dayjs(etaDate).format('YYYY-MM-DD'),
+              estimated_time: etdTime || null,
+            })
+            .select()
+            .single()
+        );
+      }
+
+      const responses = await Promise.all(queries);
+      responses.forEach((response) => {
+        if (response.data) {
+          insertDockingEvent(response.data);
+        }
+      });
+
+      for (const response of responses) {
+        if (response.error) {
+          showNotification(getErrorNotification(dockingsResponse.status));
+          return;
+        }
+      }
+
+      showNotification(getDockingSavedNotification());
+      close();
+    } catch {
+      showNotification(getErrorNotification(500));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <form onSubmit={form.onSubmit(newDockingSubmitHandler)}>
       <Stack>
-        <Fieldset
-          legend={
-            <Group>
-              <IconShip size={20} color="var(--mantine-color-blue-5)" />
-              <Text>{t('vessel')}</Text>
-            </Group>
-          }>
-          <Stack>
-            <VesselInputs
-              form={form}
-              vessel={vessel}
-              vessels={vessels}
-              imoRef={imoRef}
-            />
-          </Stack>
-        </Fieldset>
-        <Fieldset
-          legend={
-            <Group>
-              <IconAnchor size={20} color="var(--mantine-color-blue-5)" />
-              <Text>{t('berth')}</Text>
-            </Group>
-          }>
-          <Stack>
-            <LocationInputs
-              form={form}
-              locode={locode}
-              portArea={portArea}
-              locations={locations}
-              portAreas={portAreas}
-              berths={berths}
-            />
-          </Stack>
-        </Fieldset>
-        <Fieldset
-          legend={
-            <Group>
-              <IconArrowBarToRight
-                size={20}
-                color="var(--mantine-color-green-5)"
-              />
-              <Text>{t('arrival')}</Text>
-            </Group>
-          }>
-          <Stack>
-            <DateInput
-              valueFormat="DD.M.YYYY"
-              highlightToday={true}
-              label={t('date')}
-              placeholder={t('selectDate')}
-              clearable
-              key={form.key('etaDate')}
-              {...form.getInputProps('etaDate')}
-            />
-            <TimeInput
-              label={t('time')}
-              key={form.key('etaTime')}
-              {...form.getInputProps('etaTime')}
-            />
-          </Stack>
-        </Fieldset>
-        <Fieldset
-          legend={
-            <Group>
-              <IconArrowBarRight size={20} color="var(--mantine-color-red-5)" />
-              <Text>{t('departure')}</Text>
-            </Group>
-          }>
-          <Stack>
-            <DateInput
-              valueFormat="DD.M.YYYY"
-              highlightToday={true}
-              label={t('date')}
-              placeholder={t('selectDate')}
-              clearable
-              key={form.key('etdDate')}
-              {...form.getInputProps('etdDate')}
-            />
-            <TimeInput
-              label={t('time')}
-              key={form.key('etdTime')}
-              {...form.getInputProps('etdTime')}
-            />
-          </Stack>
-        </Fieldset>
+        <DockingFormFields
+          form={form}
+          vessel={vessel}
+          imoRef={imoRef}
+          locode={locode}
+          portArea={portArea}
+        />
         <Group grow>
-          <Button variant="outline" onClick={close}>
-            {t('cancelButtonLabel')}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
+          <FormButtons
+            cancelButtonClickHandler={close}
+            resetButtonClickHandler={() => {
               form.reset();
               setVessel(undefined);
-            }}>
-            {t('clearButtonLabel')}
-          </Button>
-          <Button
-            type="submit"
-            disabled={!form.isValid()}
-            loading={updateIsPending}>
-            {t('saveButtonLabel')}
-          </Button>
+            }}
+            resetButtonDisabled={!form.isDirty()}
+            submitButtonDisabled={
+              !imoValue || Boolean(Object.keys(form.errors).length)
+            }
+            submitButtonLoading={loading}
+          />
         </Group>
       </Stack>
     </form>
   );
-}
-
-function useValidate(): FormValidateInput<FormValues> {
-  const t = useTranslations('NewDockingForm');
-  const isSevenDigits = (errorMessage: string) => (value: number | '') =>
-    value.toString().length !== 7 ? errorMessage : null;
-
-  return {
-    imo: (value: number | '') =>
-      isNotEmpty(t('imoRequiredError'))(value) ??
-      isSevenDigits(t('imoLengthError'))(value),
-    etaDate: (value: Date | '', values: FormValues) => {
-      if (values.etaTime && !value) {
-        return t('timeWithoutDateError');
-      }
-      if (
-        value &&
-        values.etdDate &&
-        dayjs(value).isAfter(dayjs(values.etdDate))
-      ) {
-        return t('etaAfterEtdError');
-      }
-      return null;
-    },
-    etaTime: (value, values) => {
-      if (value && !values.etaDate) {
-        return t('timeWithoutDateError');
-      }
-      const etdDateTime = dayjs(
-        `${dayjs(values.etdDate).format('YYYY-MM-DD')}T${values.etdTime}`,
-        'YYYY-MM-DDTHH:mm',
-        true
-      );
-      const etaDateTime = dayjs(
-        `${dayjs(values.etaDate).format('YYYY-MM-DD')}T${value}`,
-        'YYYY-MM-DDTHH:mm',
-        true
-      );
-      if (
-        value &&
-        values.etdDate &&
-        values.etdTime &&
-        etdDateTime.isBefore(etaDateTime)
-      ) {
-        return t('etaAfterEtdError');
-      }
-      return null;
-    },
-    etdDate: (value, values) => {
-      if (values.etdTime && !value) {
-        return t('timeWithoutDateError');
-      }
-      if (
-        value &&
-        values.etaDate &&
-        dayjs(value).isBefore(dayjs(values.etaDate))
-      ) {
-        return t('etdBeforeEtaError');
-      }
-      return null;
-    },
-    etdTime: (value, values) => {
-      if (value && !values.etdDate) {
-        return t('timeWithoutDateError');
-      }
-      const etdDateTime = dayjs(
-        `${dayjs(values.etdDate).format('YYYY-MM-DD')}T${value}`,
-        'YYYY-MM-DDTHH:mm',
-        true
-      );
-      const etaDateTime = dayjs(
-        `${dayjs(values.etaDate).format('YYYY-MM-DD')}T${values.etaTime}`,
-        'YYYY-MM-DDTHH:mm',
-        true
-      );
-      if (
-        value &&
-        values.etaDate &&
-        values.etaTime &&
-        etdDateTime.isBefore(etaDateTime)
-      ) {
-        return t('etdBeforeEtaError');
-      }
-      return null;
-    },
-  };
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import { Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { DataTable } from 'mantine-datatable';
 import {
   DateTimeFormatOptions,
@@ -7,6 +9,7 @@ import {
   useTranslations,
 } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
+import { EditDockingForm } from './EditDockingForm';
 
 const PAGE_SIZE = 15;
 
@@ -24,9 +27,10 @@ const dateFormatOptions: DateTimeFormatOptions = {
   day: 'numeric',
 };
 
-interface DockingRow extends AppTypes.Docking {
-  eta: string;
-  etd: string;
+export interface DockingRowData extends AppTypes.Docking {
+  created: Date;
+  arrival: AppTypes.DockingEvent | null;
+  departure: AppTypes.DockingEvent | null;
 }
 
 interface DockingsTableProps {
@@ -41,117 +45,122 @@ export function DockingsTable({
   loading,
 }: DockingsTableProps) {
   const t = useTranslations('DockingsTable');
-  const dockingRows = useDockingRows(dockings, dockingEvents);
+  const format = useFormatter();
+  const dockingRowData = useDockingRowData(dockings, dockingEvents);
+  dockingRowData.sort((a, b) => b.created.getTime() - a.created.getTime());
   const [page, setPage] = useState(1);
-  const [records, setRecords] = useState<DockingRow[]>(
-    dockingRows.slice(0, PAGE_SIZE)
+  const [records, setRecords] = useState<DockingRowData[]>(
+    dockingRowData.slice(0, PAGE_SIZE)
   );
+  const [selectedRow, setSelectedRow] = useState<DockingRowData | null>(null);
+  const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
     const from = (page - 1) * PAGE_SIZE;
     const to = from + PAGE_SIZE;
-    setRecords(dockingRows.slice(from, to));
-  }, [page, dockingRows]);
+    setRecords(dockingRowData.slice(from, to));
+  }, [page, dockingRowData]);
 
   return (
-    <DataTable
-      withTableBorder
-      borderRadius="sm"
-      minHeight={records.length ? 0 : 180}
-      noRecordsText={t('noResults')}
-      records={records}
-      totalRecords={dockings.length}
-      recordsPerPage={PAGE_SIZE}
-      page={page}
-      onPageChange={setPage}
-      fetching={loading}
-      columns={[
-        {
-          accessor: 'created_at',
-          title: t('created'),
-        },
-        { accessor: 'vessel_imo', title: t('vesselImo') },
-        { accessor: 'vessel_name', title: t('vesselName') },
-        {
-          accessor: 'berth_code',
-          title: t('berth'),
-        },
-        {
-          accessor: 'eta',
-          title: t('arrival'),
-        },
-        {
-          accessor: 'etd',
-          title: t('departure'),
-        },
-      ]}
-    />
+    <>
+      <Modal opened={opened} onClose={close} title={t('modalTitle')}>
+        {selectedRow && (
+          <EditDockingForm dockingRow={selectedRow} close={close} />
+        )}
+      </Modal>
+      <DataTable
+        withTableBorder
+        borderRadius="sm"
+        minHeight={records.length ? 0 : 180}
+        noRecordsText={t('noResults')}
+        records={records}
+        totalRecords={dockings.length}
+        recordsPerPage={PAGE_SIZE}
+        page={page}
+        onPageChange={setPage}
+        fetching={loading}
+        columns={[
+          {
+            accessor: 'created_at',
+            title: t('created'),
+            render: ({ created }) =>
+              format.dateTime(created, dateTimeFormatOptions),
+          },
+          { accessor: 'vessel_imo', title: t('vesselImo') },
+          { accessor: 'vessel_name', title: t('vesselName') },
+          {
+            accessor: 'berth_code',
+            title: t('berth'),
+          },
+          {
+            accessor: 'eta',
+            title: t('arrival'),
+            render: ({ arrival }) =>
+              arrival
+                ? arrival.estimated_time
+                  ? format.dateTime(
+                      new Date(
+                        `${arrival.estimated_date}T${arrival.estimated_time}`
+                      ),
+                      dateTimeFormatOptions
+                    )
+                  : format.dateTime(
+                      new Date(arrival.estimated_date),
+                      dateFormatOptions
+                    )
+                : t('unknown'),
+          },
+          {
+            accessor: 'etd',
+            title: t('departure'),
+            render: ({ departure }) =>
+              departure
+                ? departure.estimated_time
+                  ? format.dateTime(
+                      new Date(
+                        `${departure.estimated_date}T${departure.estimated_time}`
+                      ),
+                      dateTimeFormatOptions
+                    )
+                  : format.dateTime(
+                      new Date(departure.estimated_date),
+                      dateFormatOptions
+                    )
+                : t('unknown'),
+          },
+        ]}
+        onRowClick={({ record }) => {
+          setSelectedRow(record);
+          open();
+        }}
+      />
+    </>
   );
 }
 
-function useDockingRows(
+function useDockingRowData(
   dockings: AppTypes.Docking[],
   dockingEvents: AppTypes.DockingEvent[]
 ) {
-  const t = useTranslations('DockingsTable');
-  const format = useFormatter();
-  const dockingRows = useMemo(
+  return useMemo(
     () =>
-      dockings
-        .sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        )
-        .map((docking): DockingRow => {
-          const arrival = dockingEvents.find(
+      dockings.map((docking): DockingRowData => {
+        const arrival =
+          dockingEvents.find(
             (event) => event.docking === docking.id && event.type === 'arrival'
-          );
-
-          const departure = dockingEvents.find(
+          ) || null;
+        const departure =
+          dockingEvents.find(
             (event) =>
               event.docking === docking.id && event.type === 'departure'
-          );
-
-          const eta = arrival
-            ? arrival.estimated_time
-              ? format.dateTime(
-                  new Date(
-                    `${arrival.estimated_date}T${arrival.estimated_time}`
-                  ),
-                  dateTimeFormatOptions
-                )
-              : format.dateTime(
-                  new Date(arrival.estimated_date),
-                  dateFormatOptions
-                )
-            : t('unknown');
-
-          const etd = departure
-            ? departure.estimated_time
-              ? format.dateTime(
-                  new Date(
-                    `${departure.estimated_date}T${departure.estimated_time}`
-                  ),
-                  dateTimeFormatOptions
-                )
-              : format.dateTime(
-                  new Date(departure.estimated_date),
-                  dateFormatOptions
-                )
-            : t('unknown');
-
-          return {
-            ...docking,
-            created_at: format.dateTime(
-              new Date(docking.created_at),
-              dateTimeFormatOptions
-            ),
-            eta,
-            etd,
-          };
-        }),
-    [dockings, dockingEvents, t, format]
+          ) || null;
+        return {
+          ...docking,
+          created: new Date(docking.created_at),
+          arrival,
+          departure,
+        };
+      }),
+    [dockings, dockingEvents]
   );
-
-  return dockingRows;
 }

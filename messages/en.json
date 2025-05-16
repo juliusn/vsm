@@ -287,6 +287,10 @@
     "title": "Done!",
     "message": "Docking event has been saved."
   },
+  "DockingDeletedNotification": {
+    "title": "Done!",
+    "message": "Docking has been deleted."
+  },
   "PortAreaCodePage": {
     "title": "Berths",
     "caption": "Select berths that you want to include in service management.",
@@ -400,7 +404,10 @@
     "vessel": "Vessel",
     "imoRequiredError": "Vessel IMO number is required.",
     "imoLengthError": "Vessel IMO number must be 7 digits.",
+    "enterDateOrRemoveTimeError": "Enter date or remove time.",
     "timeWithoutDateError": "Time without date.",
+    "etaDateAfterEtdDateError": "ETA date after ETD date.",
+    "etdDateBeforeEtaDateError": "ETD date before ETA date.",
     "etaAfterEtdError": "ETA after ETD.",
     "etdBeforeEtaError": "ETD before ETA.",
     "berth": "Berth",
@@ -408,10 +415,17 @@
     "departure": "Departure",
     "date": "Date",
     "selectDate": "Select date",
-    "time": "Time",
-    "cancelButtonLabel": "Cancel",
-    "clearButtonLabel": "Clear",
-    "saveButtonLabel": "Save"
+    "time": "Time"
+  },
+  "FormButtons": {
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "save": "Save"
+  },
+  "DeleteDockingContent": {
+    "label": "Delete docking",
+    "modalMessage": "Are you sure you want to delete this docking?",
+    "dockingDetails": "Docking details"
   },
   "DockingsTable": {
     "noResults": "No results",
@@ -424,7 +438,8 @@
     "berth": "Berth",
     "arrival": "Arrival",
     "departure": "Departure",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "modalTitle": "Edit docking"
   },
   "VesselNameInput": {
     "vesselName": "Vessel name",
@@ -445,5 +460,9 @@
   "BerthInput": {
     "berth": "Berth",
     "selectBerth": "Select berth"
+  },
+  "ConfirmDeleteModal": {
+    "cancel": "Cancel",
+    "delete": "Delete"
   }
 }
