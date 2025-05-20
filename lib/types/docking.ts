@@ -20,3 +20,9 @@ export type BerthIdentifier = {
   port_area_code: string;
   berth_code: string;
 };
+
+export interface DockingRowData extends AppTypes.Docking {
+  created: Date;
+  arrival: AppTypes.DockingEvent | null;
+  departure: AppTypes.DockingEvent | null;
+}
