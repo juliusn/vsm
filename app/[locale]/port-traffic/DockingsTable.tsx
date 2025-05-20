@@ -1,37 +1,17 @@
 'use client';
 
-import { Modal } from '@mantine/core';
+import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
+import { DockingRowData } from '@/lib/types/docking';
+import { ActionIcon, Center, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { DataTable } from 'mantine-datatable';
-import {
-  DateTimeFormatOptions,
-  useFormatter,
-  useTranslations,
-} from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
+import { DeleteDockingConfirmation } from './DeleteDockingConfirmation';
 import { EditDockingForm } from './EditDockingForm';
 
 const PAGE_SIZE = 15;
-
-const dateTimeFormatOptions: DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'numeric',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-};
-
-const dateFormatOptions: DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'numeric',
-  day: 'numeric',
-};
-
-export interface DockingRowData extends AppTypes.Docking {
-  created: Date;
-  arrival: AppTypes.DockingEvent | null;
-  departure: AppTypes.DockingEvent | null;
-}
 
 interface DockingsTableProps {
   dockings: AppTypes.Docking[];
@@ -53,7 +33,12 @@ export function DockingsTable({
     dockingRowData.slice(0, PAGE_SIZE)
   );
   const [selectedRow, setSelectedRow] = useState<DockingRowData | null>(null);
-  const [opened, { open, close }] = useDisclosure(false);
+  const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
+    useDisclosure(false);
+  const [
+    deleteModalOpened,
+    { open: openDeleteModal, close: closeDeleteModal },
+  ] = useDisclosure(false);
 
   useEffect(() => {
     const from = (page - 1) * PAGE_SIZE;
@@ -63,9 +48,24 @@ export function DockingsTable({
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title={t('modalTitle')}>
+      <Modal
+        opened={editModalOpened}
+        onClose={closeEditModal}
+        title={t('editDocking')}>
         {selectedRow && (
-          <EditDockingForm dockingRow={selectedRow} close={close} />
+          <EditDockingForm dockingRow={selectedRow} close={closeEditModal} />
+        )}
+      </Modal>
+      <Modal
+        opened={deleteModalOpened}
+        onClose={closeDeleteModal}
+        title={t('deleteDocking')}>
+        {selectedRow && (
+          <DeleteDockingConfirmation
+            cancel={closeDeleteModal}
+            data={selectedRow}
+            afterConfirm={closeDeleteModal}
+          />
         )}
       </Modal>
       <DataTable
@@ -128,11 +128,40 @@ export function DockingsTable({
                     )
                 : t('unknown'),
           },
+          {
+            accessor: 'edit',
+            title: t('edit'),
+            render: (dockingRow) => (
+              <Center>
+                <ActionIcon
+                  variant="subtle"
+                  onClick={() => {
+                    setSelectedRow(dockingRow);
+                    openEditModal();
+                  }}>
+                  <IconEdit stroke={1.5} />
+                </ActionIcon>
+              </Center>
+            ),
+          },
+          {
+            accessor: 'delete',
+            title: t('delete'),
+            render: (dockingRow) => (
+              <Center>
+                <ActionIcon
+                  variant="subtle"
+                  color="red"
+                  onClick={() => {
+                    setSelectedRow(dockingRow);
+                    openDeleteModal();
+                  }}>
+                  <IconTrash stroke={1.5} />
+                </ActionIcon>
+              </Center>
+            ),
+          },
         ]}
-        onRowClick={({ record }) => {
-          setSelectedRow(record);
-          open();
-        }}
       />
     </>
   );
