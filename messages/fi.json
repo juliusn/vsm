@@ -141,18 +141,10 @@
     "modalTitle": "Luo uusi tilaus"
   },
   "NewOrderForm": {
-    "location": "Sijainti",
-    "selectLocation": "Valitse sijainti",
-    "portArea": "Satama-alue",
-    "selectPortArea": "Valitse satama-alue",
-    "berth": "Laituri",
-    "selectBerth": "Valitse laituri",
-    "vessel": "Alus",
-    "selectVessel": "Valitse alus",
+    "docking": "Laiturointi",
+    "selectDocking": "Valitse laiturointi",
     "service": "Palvelu",
     "selectService": "Valitse palvelu",
-    "time": "Aika",
-    "selectTime": "Valitse aika",
     "cancelButtonLabel": "Peru",
     "saveButtonLabel": "Tallenna"
   },
@@ -425,11 +417,6 @@
     "reset": "Palauta",
     "save": "Tallenna"
   },
-  "DeleteDockingContent": {
-    "label": "Poista laiturointi",
-    "modalMessage": "Haluatko varmasti poistaa tämän laituroinnin?",
-    "dockingDetails": "Laituroinnin tiedot"
-  },
   "DockingsTable": {
     "noResults": "Ei tuloksia",
     "created": "Luotu",
@@ -442,7 +429,14 @@
     "arrival": "Tulo",
     "departure": "Lähtö",
     "unknown": "Ei tiedossa",
-    "modalTitle": "Muokkaa laiturointia"
+    "edit": "Muokkaa",
+    "delete": "Poista",
+    "editDocking": "Muokkaa laiturointia",
+    "deleteDocking": "Poista laiturointi",
+    "dockingDetails": "Laituroinnin tiedot"
+  },
+  "DeleteDockingConfirmation": {
+    "message": "Haluatko varmasti poistaa tämän laituroinnin?"
   },
   "VesselNameInput": {
     "vesselName": "Aluksen nimi",
@@ -464,7 +458,7 @@
     "berth": "Laituri",
     "selectBerth": "Valitse laituri"
   },
-  "ConfirmDeleteModal": {
+  "DeleteConfirmation": {
     "cancel": "Peru",
     "delete": "Poista"
   }

@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
   DockingFormValues,
+  DockingRowData,
   PortAreaIdentifier,
 } from '@/lib/types/docking';
 import { Mutation } from '@/lib/types/mutation';
@@ -19,9 +20,7 @@ import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
-import { DeleteDockingContent } from './DeleteDockingContent';
 import { DockingFormFields } from './DockingFormFields';
-import { DockingRowData } from './DockingsTable';
 import { usePortData } from './PortDataContext';
 import useDockingFormValidation from './useDockingFormValidation';
 
@@ -356,7 +355,6 @@ export function EditDockingForm({
             submitButtonLoading={loading}
           />
         </Group>
-        <DeleteDockingContent data={dockingRow} afterConfirm={close} />
       </Stack>
     </form>
   );
