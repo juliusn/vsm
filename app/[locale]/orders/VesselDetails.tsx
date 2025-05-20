@@ -1,5 +1,6 @@
 'use client';
 
+import { dateTimeFormatOptions } from '@/lib/formatOptions';
 import { Table } from '@mantine/core';
 import {
   DateTimeFormatOptions,
@@ -13,14 +14,6 @@ interface Eta {
   hour: number;
   minute: number;
 }
-
-const updatedFormatOptions: DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'numeric',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-};
 
 const etaFormatOptions: DateTimeFormatOptions = {
   month: 'numeric',
@@ -57,7 +50,7 @@ export function VesselDetails({ vessel }: { vessel: AppTypes.Vessel }) {
         <Table.Tr>
           <Table.Th>{t('timestamp')}</Table.Th>
           <Table.Td>
-            {format.dateTime(new Date(vessel.timestamp), updatedFormatOptions)}
+            {format.dateTime(new Date(vessel.timestamp), dateTimeFormatOptions)}
           </Table.Td>
         </Table.Tr>
         <Table.Tr>

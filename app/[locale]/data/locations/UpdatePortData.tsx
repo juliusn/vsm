@@ -1,8 +1,9 @@
 'use client';
 
+import { useRouter } from '@/i18n/routing';
+import { dateTimeFormatOptions } from '@/lib/formatOptions';
 import { createClient } from '@/lib/supabase/client';
 import { PortsApiResponse } from '@/lib/types/ports-api.types';
-import { useRouter } from '@/i18n/routing';
 import { Button, Group, Modal, Stack, Table } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -11,11 +12,7 @@ import {
   IconCheck,
   IconExclamationMark,
 } from '@tabler/icons-react';
-import {
-  DateTimeFormatOptions,
-  useFormatter,
-  useTranslations,
-} from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { DeleteAllButton } from './DeleteAllButton';
 import { UpdateAllButton } from './UpdateAllButton';
@@ -79,13 +76,6 @@ export function UpdatePortData() {
   );
   const [apiUpdateTimes, setApiUpdateTimes] = useState<string[]>([]);
   const formatter = useFormatter();
-  const formatOptions: DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-  };
   const [opened, { open, close }] = useDisclosure(false);
   const t = useTranslations('UpdatePortData');
   const supabase = createClient();
@@ -144,11 +134,14 @@ export function UpdatePortData() {
           datasetName: datasets[i],
           apiUpdatedTime: formatter.dateTime(
             new Date(apiUpdateTimes[i]),
-            formatOptions
+            dateTimeFormatOptions
           ),
           dbUpdatedTime:
             data &&
-            formatter.dateTime(new Date(data.data_updated_time), formatOptions),
+            formatter.dateTime(
+              new Date(data.data_updated_time),
+              dateTimeFormatOptions
+            ),
           comparisonResult: data ? (
             comparisonResults[i].datesMatch ? (
               <Group color="green">
