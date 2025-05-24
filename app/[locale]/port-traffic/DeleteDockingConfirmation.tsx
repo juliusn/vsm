@@ -11,7 +11,7 @@ import { DockingRowData } from '@/lib/types/docking';
 import { showNotification } from '@mantine/notifications';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { useDockings } from '../orders/DockingContext';
+import { useDockings } from '../../context/DockingContext';
 
 export function DeleteDockingConfirmation({
   data,

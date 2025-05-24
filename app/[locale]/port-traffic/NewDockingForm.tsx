@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
   DockingFormValues,
+  DockingRowData,
   PortAreaIdentifier,
 } from '@/lib/types/docking';
 import { Group, Stack } from '@mantine/core';
@@ -17,10 +18,10 @@ import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
-import { useDockings } from '../orders/DockingContext';
-import { DockingFormFields } from './DockingFormFields';
-import { useLocations } from './LocationContext';
 import useDockingFormValidation from '../../hooks/useDockingFormValidation';
+import { useDockings } from '../../context/DockingContext';
+import { DockingFormFields } from './DockingFormFields';
+import { useLocations } from '../../context/LocationContext';
 
 const initialValues: DockingFormValues = {
   vesselName: '',
@@ -36,9 +37,13 @@ const initialValues: DockingFormValues = {
 
 interface NewDockingContentProps {
   close: () => void;
+  resultCallback?: (data: DockingRowData) => void;
 }
 
-export function NewDockingForm({ close }: NewDockingContentProps) {
+export function NewDockingForm({
+  close,
+  resultCallback,
+}: NewDockingContentProps) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
   const getDockingSavedNotification = useDockingSavedNotification();
@@ -205,20 +210,31 @@ export function NewDockingForm({ close }: NewDockingContentProps) {
         );
       }
 
-      const responses = await Promise.all(queries);
-      responses.forEach((response) => {
+      const dockingEventsResponses = await Promise.all(queries);
+      dockingEventsResponses.forEach((response) => {
         if (response.data) {
           dispatchDockingEvents({ type: 'added', item: response.data });
         }
       });
 
-      for (const response of responses) {
+      for (const response of dockingEventsResponses) {
         if (response.error) {
           showNotification(getErrorNotification(dockingsResponse.status));
           return;
         }
       }
+      const [arrival, departure] = dockingEventsResponses.map(
+        (response) => response.data
+      );
 
+      const resultData: DockingRowData = {
+        ...dockingsResponse.data,
+        created: new Date(dockingsResponse.data.created_at),
+        arrival,
+        departure,
+      };
+
+      resultCallback?.(resultData);
       showNotification(getDockingSavedNotification());
       close();
     } catch {

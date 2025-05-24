@@ -1,7 +1,7 @@
 import { DockingRowData } from '@/lib/types/docking';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
-import { useDockings } from '../[locale]/orders/DockingContext';
+import { useDockings } from '../context/DockingContext';
 import { DataTableProps } from 'mantine-datatable';
 
 const PAGE_SIZE = 15;

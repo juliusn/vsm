@@ -12,7 +12,7 @@ export function NewOrderContent() {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title={t('modalTitle')}>
+      <Modal size="lg" opened={opened} onClose={close} title={t('modalTitle')}>
         <NewOrderForm close={close} />
       </Modal>
       <Group justify="space-between">

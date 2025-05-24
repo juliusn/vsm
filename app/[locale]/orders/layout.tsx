@@ -1,31 +1,32 @@
-import { Stack } from '@mantine/core';
-import { NewOrderContent } from './NewOrderContent';
-import { createClient } from '@/lib/supabase/server';
 import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
-import { DockingProvider } from './DockingContext';
+import { fetchPortTrafficData } from '@/lib/fetchPortTrafficData';
+import { Stack } from '@mantine/core';
+import { DockingProvider } from '../../context/DockingContext';
+import { NewOrderContent } from './NewOrderContent';
+import { LocationProvider } from '../../context/LocationContext';
 
 export default async function OrdersLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const dockingsQuery = supabase.from('dockings').select('*');
-  const dockingEventsQuery = supabase.from('docking_events').select('*');
-  const [dockingsResponse, dockingEventsResponse] = await Promise.all([
-    dockingsQuery,
-    dockingEventsQuery,
-  ]);
+  const data = await fetchPortTrafficData();
 
-  return dockingsResponse.data && dockingEventsResponse.data ? (
-    <DockingProvider
-      dockings={dockingsResponse.data}
-      dockingEvents={dockingEventsResponse.data}>
-      <Stack>
-        <NewOrderContent />
-        {children}
-      </Stack>
-    </DockingProvider>
+  return data ? (
+    <LocationProvider
+      vessels={data.vessels}
+      locations={data.locations}
+      portAreas={data.portAreas}
+      berths={data.berths}>
+      <DockingProvider
+        dockings={data.dockings}
+        dockingEvents={data.dockingEvents}>
+        <Stack>
+          <NewOrderContent />
+          {children}
+        </Stack>
+      </DockingProvider>
+    </LocationProvider>
   ) : (
     <DataUnavailableAlert />
   );

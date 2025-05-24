@@ -142,6 +142,8 @@
   },
   "NewOrderForm": {
     "docking": "Laiturointi",
+    "createNewDocking": "Luo uusi laiturointi",
+    "create": "Luo",
     "selectDocking": "Valitse laiturointi",
     "select": "Valitse",
     "removeSelection": "Poista valinta",

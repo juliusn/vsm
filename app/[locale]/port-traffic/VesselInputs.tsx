@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { VesselDetails } from '../orders/VesselDetails';
 import { ImoInput } from './ImoInput';
 import { VesselNameInput } from './VesselNameInput';
-import { useLocations } from './LocationContext';
+import { useLocations } from '../../context/LocationContext';
 import { DockingFormValues } from '@/lib/types/docking';
 
 export function VesselInputs({

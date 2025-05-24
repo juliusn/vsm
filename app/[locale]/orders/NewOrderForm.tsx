@@ -19,18 +19,24 @@ import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SelectDockingTable } from './SelectDockingTable';
+import { NewDockingForm } from '../port-traffic/NewDockingForm';
 
 export function NewOrderForm({ close }: { close: () => void }) {
   const t = useTranslations('NewOrderForm');
   const [docking, setDocking] = useState<DockingRowData | null>(null);
   const [preview, setPreview] = useState<DockingRowData | null>(null);
-  const [opened, { open: openSelectDocking, close: closeSelectDocking }] =
+  const [
+    selectDockingOpened,
+    { open: openSelectDocking, close: closeSelectDocking },
+  ] = useDisclosure();
+  const [newDockingOpened, { open: openNewDocking, close: closeNewDocking }] =
     useDisclosure();
 
   return (
     <form>
       <Modal
-        opened={opened}
+        size="auto"
+        opened={selectDockingOpened}
         onClose={closeSelectDocking}
         title={t('selectDocking')}>
         <SelectDockingTable
@@ -39,6 +45,18 @@ export function NewOrderForm({ close }: { close: () => void }) {
             setDocking(record);
             setPreview(record);
             closeSelectDocking();
+          }}
+        />
+      </Modal>
+      <Modal
+        opened={newDockingOpened}
+        onClose={closeNewDocking}
+        title={t('createNewDocking')}>
+        <NewDockingForm
+          close={closeNewDocking}
+          resultCallback={(data) => {
+            setDocking(data);
+            setPreview(data);
           }}
         />
       </Modal>
@@ -53,6 +71,14 @@ export function NewOrderForm({ close }: { close: () => void }) {
           <Stack>
             <Group grow>
               <Button
+                variant="outline"
+                onClick={() => {
+                  openNewDocking();
+                }}>
+                {t('create')}
+              </Button>
+              <Button
+                variant="outline"
                 onClick={() => {
                   openSelectDocking();
                 }}>

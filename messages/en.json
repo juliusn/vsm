@@ -142,6 +142,8 @@
   },
   "NewOrderForm": {
     "docking": "Docking",
+    "createNewDocking": "Create a new docking",
+    "create": "Create",
     "selectDocking": "Select docking",
     "select": "Select",
     "removeSelection": "Remove selection",

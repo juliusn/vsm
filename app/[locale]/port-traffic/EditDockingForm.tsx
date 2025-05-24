@@ -19,9 +19,9 @@ import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
-import { useDockings } from '../orders/DockingContext';
+import { useDockings } from '../../context/DockingContext';
 import { DockingFormFields } from './DockingFormFields';
-import { useLocations } from './LocationContext';
+import { useLocations } from '../../context/LocationContext';
 import useDockingFormValidation from '../../hooks/useDockingFormValidation';
 
 interface EditDockingContentProps {
