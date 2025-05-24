@@ -143,6 +143,8 @@
   "NewOrderForm": {
     "docking": "Laiturointi",
     "selectDocking": "Valitse laiturointi",
+    "select": "Valitse",
+    "removeSelection": "Poista valinta",
     "service": "Palvelu",
     "selectService": "Valitse palvelu",
     "cancelButtonLabel": "Peru",
@@ -200,14 +202,14 @@
     "vessels": "Alukset",
     "commonServices": "Yleiset palvelut"
   },
-  "LocationsBreadCrumbs": {
+  "LocationBreadCrumbs": {
     "dataMenu": "Datavalikko",
     "locations": "Sijainnit",
     "portAreas": "Satama-alueet",
     "berths": "Laiturit",
     "services": "Palvelut"
   },
-  "UpdatePortData": {
+  "UpdateLocations": {
     "updateDatabase": "Päivitä tietokanta",
     "results": "Tulokset",
     "datasetName": "Tietojoukon nimi",
@@ -237,10 +239,10 @@
   "DeleteAllButton": {
     "label": "Poista kaikki"
   },
-  "PortDataPage": {
+  "LocationsPage": {
     "title": "Alueet"
   },
-  "LocationsTable": {
+  "LocationTable": {
     "noResults": "Ei tuloksia",
     "locode": "Geokoodi",
     "locationName": "Alueen nimi",

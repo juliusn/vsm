@@ -143,6 +143,8 @@
   "NewOrderForm": {
     "docking": "Docking",
     "selectDocking": "Select docking",
+    "select": "Select",
+    "removeSelection": "Remove selection",
     "service": "Service",
     "selectService": "Select service",
     "cancelButtonLabel": "Cancel",
@@ -200,14 +202,14 @@
     "vessels": "Vessels",
     "commonServices": "Common services"
   },
-  "LocationsBreadCrumbs": {
+  "LocationBreadCrumbs": {
     "dataMenu": "Data menu",
     "locations": "Locations",
     "portAreas": "Port areas",
     "berths": "Berths",
     "services": "Services"
   },
-  "UpdatePortData": {
+  "UpdateLocations": {
     "updateDatabase": "Update Database",
     "results": "Results",
     "datasetName": "Dataset name",
@@ -237,10 +239,10 @@
   "DeleteAllButton": {
     "label": "Delete All"
   },
-  "PortDataPage": {
+  "LocationsPage": {
     "title": "Locations"
   },
-  "LocationsTable": {
+  "LocationTable": {
     "noResults": "No results",
     "locode": "Locode",
     "locationName": "Location name",
