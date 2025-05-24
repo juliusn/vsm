@@ -5,7 +5,6 @@ import {
   useDockingSavedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
-import { useDockingsStore } from '@/app/store';
 import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
@@ -20,9 +19,10 @@ import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
+import { useDockings } from '../orders/DockingContext';
 import { DockingFormFields } from './DockingFormFields';
-import { usePortData } from './PortDataContext';
-import useDockingFormValidation from './useDockingFormValidation';
+import { useLocations } from './LocationContext';
+import useDockingFormValidation from '../../hooks/useDockingFormValidation';
 
 interface EditDockingContentProps {
   dockingRow: DockingRowData;
@@ -40,13 +40,8 @@ export function EditDockingForm({
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
   const getDockingSavedNotification = useDockingSavedNotification();
-  const {
-    updateDocking,
-    updateDockingEvent,
-    insertDockingEvent,
-    removeDockingEvent,
-  } = useDockingsStore();
-  const { vessels } = usePortData();
+  const { dispatchDockings, dispatchDockingEvents } = useDockings();
+  const { vessels } = useLocations();
   const vesselMatch = vessels.find(
     (vessel) => vessel.imo === dockingRow.vessel_imo
   );
@@ -191,7 +186,7 @@ export function EditDockingForm({
         .select()
         .single(),
       stateUpdateHandler: (data: AppTypes.DockingEvent) => {
-        updateDockingEvent(data);
+        dispatchDockingEvents({ type: 'changed', item: data });
       },
     });
 
@@ -203,7 +198,7 @@ export function EditDockingForm({
         .select()
         .single(),
       stateUpdateHandler: () => {
-        removeDockingEvent(id);
+        dispatchDockingEvents({ type: 'deleted', id });
       },
     });
 
@@ -224,7 +219,7 @@ export function EditDockingForm({
         .select()
         .single(),
       stateUpdateHandler: (data: AppTypes.DockingEvent) => {
-        insertDockingEvent(data);
+        dispatchDockingEvents({ type: 'added', item: data });
       },
     });
 
@@ -243,7 +238,7 @@ export function EditDockingForm({
         .single();
 
       if (dockingsResponse.data) {
-        updateDocking(dockingsResponse.data);
+        dispatchDockings({ type: 'changed', item: dockingsResponse.data });
       }
 
       if (dockingsResponse.error) {

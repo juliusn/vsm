@@ -1,26 +1,26 @@
 'use client';
 
+import { FormButtons } from '@/app/components/FormButtons';
 import {
   useDockingSavedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
-import { useDockingsStore } from '@/app/store';
 import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
   DockingFormValues,
   PortAreaIdentifier,
 } from '@/lib/types/docking';
+import { Group, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
+import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
+import { useDockings } from '../orders/DockingContext';
 import { DockingFormFields } from './DockingFormFields';
-import { usePortData } from './PortDataContext';
-import useDockingFormValidation from './useDockingFormValidation';
-import { Group, Stack } from '@mantine/core';
-import { FormButtons } from '@/app/components/FormButtons';
-import dayjs from 'dayjs';
+import { useLocations } from './LocationContext';
+import useDockingFormValidation from '../../hooks/useDockingFormValidation';
 
 const initialValues: DockingFormValues = {
   vesselName: '',
@@ -42,8 +42,8 @@ export function NewDockingForm({ close }: NewDockingContentProps) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
   const getDockingSavedNotification = useDockingSavedNotification();
-  const { insertDocking, insertDockingEvent } = useDockingsStore();
-  const { vessels } = usePortData();
+  const { dispatchDockings, dispatchDockingEvents } = useDockings();
+  const { vessels } = useLocations();
   const [loading, setLoading] = useState(false);
   const [imoValue, setImoValue] = useState<DockingFormValues['imo']>('');
   const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>();
@@ -165,7 +165,7 @@ export function NewDockingForm({ close }: NewDockingContentProps) {
         .single();
 
       if (dockingsResponse.data) {
-        insertDocking(dockingsResponse.data);
+        dispatchDockings({ type: 'added', item: dockingsResponse.data });
       }
 
       if (dockingsResponse.error) {
@@ -208,7 +208,7 @@ export function NewDockingForm({ close }: NewDockingContentProps) {
       const responses = await Promise.all(queries);
       responses.forEach((response) => {
         if (response.data) {
-          insertDockingEvent(response.data);
+          dispatchDockingEvents({ type: 'added', item: response.data });
         }
       });
 

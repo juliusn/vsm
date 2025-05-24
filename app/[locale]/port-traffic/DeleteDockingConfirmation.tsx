@@ -6,12 +6,12 @@ import {
   useDockingDeletedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
-import { useDockingsStore } from '@/app/store';
 import { createClient } from '@/lib/supabase/client';
 import { DockingRowData } from '@/lib/types/docking';
 import { showNotification } from '@mantine/notifications';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { useDockings } from '../orders/DockingContext';
 
 export function DeleteDockingConfirmation({
   data,
@@ -25,7 +25,7 @@ export function DeleteDockingConfirmation({
   const t = useTranslations('DeleteDockingConfirmation');
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
-  const { removeDocking } = useDockingsStore();
+  const { dispatchDockings, dispatchDockingEvents } = useDockings();
   const getErrorNotification = usePostgresErrorNotification();
   const getDockingDeletedNotification = useDockingDeletedNotification();
 
@@ -49,7 +49,12 @@ export function DeleteDockingConfirmation({
           return;
         }
 
-        removeDocking(data.id);
+        dispatchDockings({ type: 'deleted', id: data.id });
+        dispatchDockingEvents({
+          type: 'cascade-deleted',
+          id: data.id,
+          foreignKey: 'docking',
+        });
         showNotification(getDockingDeletedNotification());
         close();
         afterConfirm?.();

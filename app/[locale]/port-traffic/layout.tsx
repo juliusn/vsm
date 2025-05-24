@@ -2,8 +2,12 @@ import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
 import { createClient } from '@/lib/supabase/server';
 import { Group, Stack, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
+import {
+  InitialDockingValues,
+  DockingProvider,
+} from '../orders/DockingContext';
 import { NewDockingContent } from './NewDockingContent';
-import { PortDataProvider } from './PortDataContext';
+import { InitialLocationValues, LocationProvider } from './LocationContext';
 
 export default async function PortTrafficLayout({
   children,
@@ -11,37 +15,46 @@ export default async function PortTrafficLayout({
   children: React.ReactNode;
 }) {
   const t = await getTranslations('PortTrafficLayout');
-  const supabase = await createClient();
 
-  const fetchData = async () => {
+  const fetchData = async (): Promise<
+    (InitialLocationValues & InitialDockingValues) | undefined
+  > => {
+    const supabase = await createClient();
     const vesselsResponse = await fetch(
       'https://meri.digitraffic.fi/api/ais/v1/vessels'
     );
-    const [locationsResponse, portAreasResponse, berthsResponse] =
-      await Promise.all([
-        supabase
-          .from('locations')
-          .select()
-          .eq('enabled', true)
-          .order('location_name'),
-        supabase
-          .from('port_areas')
-          .select()
-          .eq('enabled', true)
-          .order('port_area_name'),
-        supabase
-          .from('berths')
-          .select()
-          .eq('enabled', true)
-          .order('berth_name'),
-        supabase.from('common_services').select(),
-      ]);
+    const [
+      locationsResponse,
+      portAreasResponse,
+      berthsResponse,
+      dockingsResponse,
+      dockingEventsResponse,
+    ] = await Promise.all([
+      supabase
+        .from('locations')
+        .select()
+        .eq('enabled', true)
+        .order('location_name'),
+      supabase
+        .from('port_areas')
+        .select()
+        .eq('enabled', true)
+        .order('port_area_name'),
+      supabase.from('berths').select().eq('enabled', true).order('berth_name'),
+      supabase
+        .from('dockings')
+        .select()
+        .order('created_at', { ascending: false }),
+      supabase.from('docking_events').select(),
+    ]);
 
     const success =
       vesselsResponse.ok &&
-      !locationsResponse.error &&
-      !portAreasResponse.error &&
-      !berthsResponse.error;
+      locationsResponse.data &&
+      portAreasResponse.data &&
+      berthsResponse.data &&
+      dockingsResponse.data &&
+      dockingEventsResponse.data;
 
     if (success) {
       const vesselsData = (await vesselsResponse.json()) as AppTypes.Vessel[];
@@ -96,27 +109,31 @@ export default async function PortTrafficLayout({
         locations,
         portAreas: filteredPortAreas,
         berths: filteredBerths,
+        dockings: dockingsResponse.data,
+        dockingEvents: dockingEventsResponse.data,
       };
     }
-
-    return null;
   };
 
   const data = await fetchData();
 
   return data ? (
     <Stack>
-      <PortDataProvider
+      <LocationProvider
         vessels={data.vessels}
         locations={data.locations}
         portAreas={data.portAreas}
         berths={data.berths}>
-        <Group justify="space-between">
-          <Title size="h2">{t('title')}</Title>
-          <NewDockingContent />
-        </Group>
-        {children}
-      </PortDataProvider>
+        <DockingProvider
+          dockings={data.dockings}
+          dockingEvents={data.dockingEvents}>
+          <Group justify="space-between">
+            <Title size="h2">{t('title')}</Title>
+            <NewDockingContent />
+          </Group>
+          {children}
+        </DockingProvider>
+      </LocationProvider>
     </Stack>
   ) : (
     <DataUnavailableAlert />

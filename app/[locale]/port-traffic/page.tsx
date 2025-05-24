@@ -1,5 +1,5 @@
-import { DockingsTableContainer } from './DockingsTableContainer';
+import { DockingsTable } from './DockingsTable';
 
 export default function PortTrafficPage() {
-  return <DockingsTableContainer />;
+  return <DockingsTable />;
 }

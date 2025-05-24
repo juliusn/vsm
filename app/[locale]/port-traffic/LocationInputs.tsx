@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { BerthInput } from './BerthInput';
 import { LocodeInput } from './LocodeInput';
 import { PortAreaInput } from './PortAreaInput';
-import { usePortData } from './PortDataContext';
+import { useLocations } from './LocationContext';
 
 export function LocationInputs({
   locode,
@@ -21,7 +21,7 @@ export function LocationInputs({
   locode: string;
   portArea: string;
 }) {
-  const { locations, portAreas, berths } = usePortData();
+  const { locations, portAreas, berths } = useLocations();
   const { portAreaItems, berthsItems } = useMemo(
     () => getLocationInputItems(locations, portAreas, berths, locode, portArea),
     [locations, portAreas, berths, locode, portArea]
