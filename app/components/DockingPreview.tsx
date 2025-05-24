@@ -23,6 +23,10 @@ export function DockingPreview({ data }: { data: DockingRowData }) {
           </Table.Td>
         </Table.Tr>
         <Table.Tr>
+          <Table.Th>{t('vesselName')}</Table.Th>
+          <Table.Td>{data.vessel_name}</Table.Td>
+        </Table.Tr>
+        <Table.Tr>
           <Table.Th>{t('vesselImo')}</Table.Th>
           <Table.Td>{data.vessel_imo}</Table.Td>
         </Table.Tr>
