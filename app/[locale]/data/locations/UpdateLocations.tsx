@@ -3,7 +3,7 @@
 import { useRouter } from '@/i18n/routing';
 import { dateTimeFormatOptions } from '@/lib/formatOptions';
 import { createClient } from '@/lib/supabase/client';
-import { PortsApiResponse } from '@/lib/types/ports-api.types';
+import { LocationApiResponse as LocationApiResponse } from '@/lib/types/ports-api.types';
 import { Button, Group, Modal, Stack, Table } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -33,10 +33,10 @@ interface DatasetRow {
   comparisonResult: React.ReactNode;
 }
 
-export function UpdatePortData() {
+export function UpdateLocations() {
   const [rows, setRows] = useState<DatasetRow[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [apiData, setApiData] = useState<PortsApiResponse>();
+  const [apiData, setApiData] = useState<LocationApiResponse>();
   const apiLocations =
     apiData?.ssnLocations.features.map((location) => ({
       enabled: true,
@@ -77,7 +77,7 @@ export function UpdatePortData() {
   const [apiUpdateTimes, setApiUpdateTimes] = useState<string[]>([]);
   const formatter = useFormatter();
   const [opened, { open, close }] = useDisclosure(false);
-  const t = useTranslations('UpdatePortData');
+  const t = useTranslations('UpdateLocations');
   const supabase = createClient();
   const router = useRouter();
 
@@ -96,15 +96,15 @@ export function UpdatePortData() {
       throw new Error(`API responded with status ${apiResponse.status}`);
     }
 
-    const portData: PortsApiResponse = await apiResponse.json();
+    const locationData: LocationApiResponse = await apiResponse.json();
 
-    setApiData(portData);
+    setApiData(locationData);
 
     const apiUpdateTimes = [
-      portData.dataUpdatedTime,
-      portData.ssnLocations.dataUpdatedTime,
-      portData.portAreas.dataUpdatedTime,
-      portData.berths.dataUpdatedTime,
+      locationData.dataUpdatedTime,
+      locationData.ssnLocations.dataUpdatedTime,
+      locationData.portAreas.dataUpdatedTime,
+      locationData.berths.dataUpdatedTime,
     ];
 
     setApiUpdateTimes(apiUpdateTimes);

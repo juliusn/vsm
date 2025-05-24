@@ -1,5 +1,5 @@
 import { Stack } from '@mantine/core';
-import { LocationsBreadcrumbs } from './LocationsBreadcrumbs';
+import { LocationBreadcrumbs } from './LocationBreadcrumbs';
 
 export default function LocationsLayout({
   children,
@@ -8,7 +8,7 @@ export default function LocationsLayout({
 }) {
   return (
     <Stack>
-      <LocationsBreadcrumbs />
+      <LocationBreadcrumbs />
       {children}
     </Stack>
   );

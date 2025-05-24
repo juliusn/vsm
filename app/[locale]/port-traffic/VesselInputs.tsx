@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { VesselDetails } from '../orders/VesselDetails';
 import { ImoInput } from './ImoInput';
 import { VesselNameInput } from './VesselNameInput';
-import { usePortData } from './PortDataContext';
+import { useLocations } from './LocationContext';
 import { DockingFormValues } from '@/lib/types/docking';
 
 export function VesselInputs({
@@ -21,7 +21,7 @@ export function VesselInputs({
   vessel: AppTypes.Vessel | undefined;
   imoRef: React.RefObject<HTMLInputElement | null>;
 }) {
-  const { vessels } = usePortData();
+  const { vessels } = useLocations();
   const vesselItems = useMemo(
     () =>
       vessels.map(

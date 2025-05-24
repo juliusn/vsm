@@ -1,4 +1,4 @@
-import { PortsApiResponse } from '@/lib/types/ports-api.types';
+import { LocationApiResponse } from '@/lib/types/ports-api.types';
 import { Alert, Stack, Title } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import { getTranslations } from 'next-intl/server';
@@ -22,7 +22,7 @@ export default async function PortsPage() {
       </Alert>
     );
   }
-  const data: PortsApiResponse = await response.json();
+  const data: LocationApiResponse = await response.json();
 
   return (
     <Stack>

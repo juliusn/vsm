@@ -1,18 +1,18 @@
 import { Group, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
-import { LocationsTable } from './LocationsTable';
-import { UpdatePortData } from './UpdatePortData';
+import { LocationTable } from './LocationTable';
+import { UpdateLocations } from './UpdateLocations';
 
-export default async function PortDataPage() {
-  const t = await getTranslations('PortDataPage');
+export default async function LocationsPage() {
+  const t = await getTranslations('LocationsPage');
 
   return (
     <>
       <Group justify="space-between">
         <Title size="h4">{t('title')}</Title>
-        <UpdatePortData />
+        <UpdateLocations />
       </Group>
-      <LocationsTable />
+      <LocationTable />
     </>
   );
 }

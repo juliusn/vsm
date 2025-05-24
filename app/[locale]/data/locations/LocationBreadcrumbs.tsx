@@ -5,9 +5,9 @@ import { usePathname } from '@/i18n/routing';
 import { Breadcrumbs } from '@mantine/core';
 import { useTranslations } from 'use-intl';
 
-export function LocationsBreadcrumbs() {
+export function LocationBreadcrumbs() {
   const pathname = usePathname();
-  const t = useTranslations('LocationsBreadCrumbs');
+  const t = useTranslations('LocationBreadCrumbs');
   const segments = pathname.split('/').slice(1);
   const currentIndex = pathname.split('/').length - 1;
   const items = [

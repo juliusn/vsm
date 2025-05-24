@@ -13,8 +13,8 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 const PAGE_SIZE = 15;
 
-export function LocationsTable() {
-  const t = useTranslations('LocationsTable');
+export function LocationTable() {
+  const t = useTranslations('LocationTable');
   const getErrorNotification = usePostgresErrorNotification();
   const supabase = createClient();
   const [page, setPage] = useState(1);
