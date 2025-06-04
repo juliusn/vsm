@@ -1,6 +1,7 @@
 'use client';
 
 import { FormButtons } from '@/app/components/FormButtons';
+import { useVessels } from '@/app/context/VesselContext';
 import {
   useDockingSavedNotification,
   usePostgresErrorNotification,
@@ -18,10 +19,9 @@ import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
-import useDockingFormValidation from '../../hooks/useDockingFormValidation';
 import { useDockings } from '../../context/DockingContext';
+import useDockingFormValidation from '../../hooks/useDockingFormValidation';
 import { DockingFormFields } from './DockingFormFields';
-import { useLocations } from '../../context/LocationContext';
 
 const initialValues: DockingFormValues = {
   vesselName: '',
@@ -36,7 +36,7 @@ const initialValues: DockingFormValues = {
 };
 
 interface NewDockingContentProps {
-  close: () => void;
+  close(): void;
   resultCallback?: (data: DockingRowData) => void;
 }
 
@@ -48,7 +48,7 @@ export function NewDockingForm({
   const getErrorNotification = usePostgresErrorNotification();
   const getDockingSavedNotification = useDockingSavedNotification();
   const { dispatchDockings, dispatchDockingEvents } = useDockings();
-  const { vessels } = useLocations();
+  const vessels = useVessels();
   const [loading, setLoading] = useState(false);
   const [imoValue, setImoValue] = useState<DockingFormValues['imo']>('');
   const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>();

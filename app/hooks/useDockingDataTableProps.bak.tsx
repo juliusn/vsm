@@ -9,7 +9,7 @@ const PAGE_SIZE = 15;
 export function useDockingDataTableProps(): Partial<
   DataTableProps<DockingRowData>
 > {
-  const t = useTranslations('DockingsTable');
+  const t = useTranslations('DockingTable');
   const { dockings, dockingEvents } = useDockings();
   const dockingRowData = useDockingRowData(dockings, dockingEvents);
   dockingRowData.sort((a, b) => b.created.getTime() - a.created.getTime());

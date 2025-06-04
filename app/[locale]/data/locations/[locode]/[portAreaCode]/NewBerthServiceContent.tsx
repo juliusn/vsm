@@ -6,15 +6,7 @@ import { IconPlus } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { NewBerthServiceForm } from './NewBerthServiceForm';
 
-export function NewBerthServiceContent({
-  locode,
-  portAreaCode,
-  berthCode,
-}: {
-  locode: string;
-  portAreaCode: string;
-  berthCode: string;
-}) {
+export function NewBerthServiceContent() {
   const [opened, { open, close }] = useDisclosure(false);
   const t = useTranslations('NewBerthServiceContent');
 
@@ -24,12 +16,7 @@ export function NewBerthServiceContent({
         {t('buttonLabel')}
       </Button>
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
-        <NewBerthServiceForm
-          locode={locode}
-          portAreaCode={portAreaCode}
-          berthCode={berthCode}
-          close={close}
-        />
+        <NewBerthServiceForm close={close} />
       </Modal>
     </>
   );

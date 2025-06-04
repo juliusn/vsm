@@ -1,60 +1,27 @@
-import { DockingState } from '@/app/context/DockingContext';
 import { LocationState } from '@/app/context/LocationContext';
 import { createClient } from './supabase/server';
 
-export const fetchPortTrafficData = async (): Promise<
-  | {
-      locationState: LocationState;
-      vessels: AppTypes.Vessel[];
-      dockingState: DockingState;
-    }
-  | undefined
-> => {
+export const fetchLocations = async (): Promise<LocationState | undefined> => {
   const supabase = await createClient();
-  const vesselsResponse = await fetch(
-    'https://meri.digitraffic.fi/api/ais/v1/vessels'
-  );
-  const [
-    locationsResponse,
-    portAreasResponse,
-    berthsResponse,
-    dockingsResponse,
-    dockingEventsResponse,
-  ] = await Promise.all([
-    supabase
-      .from('locations')
-      .select()
-      .eq('enabled', true)
-      .order('location_name'),
-    supabase
-      .from('port_areas')
-      .select()
-      .eq('enabled', true)
-      .order('port_area_name'),
-    supabase.from('berths').select().eq('enabled', true).order('berth_name'),
-    supabase
-      .from('dockings')
-      .select()
-      .order('created_at', { ascending: false }),
-    supabase.from('docking_events').select(),
-  ]);
+  const [locationsResponse, portAreasResponse, berthsResponse] =
+    await Promise.all([
+      supabase
+        .from('locations')
+        .select()
+        .eq('enabled', true)
+        .order('location_name'),
+      supabase
+        .from('port_areas')
+        .select()
+        .eq('enabled', true)
+        .order('port_area_name'),
+      supabase.from('berths').select().eq('enabled', true).order('berth_name'),
+    ]);
 
   const success =
-    vesselsResponse.ok &&
-    locationsResponse.data &&
-    portAreasResponse.data &&
-    berthsResponse.data &&
-    dockingsResponse.data &&
-    dockingEventsResponse.data;
+    locationsResponse.data && portAreasResponse.data && berthsResponse.data;
 
   if (success) {
-    const vesselsData = (await vesselsResponse.json()) as AppTypes.Vessel[];
-    const vessels = vesselsData
-      .filter((vessel) => vessel.imo !== 0)
-      .filter(
-        (vessel, index, array) =>
-          array.findIndex((v) => v.imo === vessel.imo) === index
-      );
     const locations = locationsResponse.data;
     const locodes = locations.map((location) => location.locode);
     const filteredPortAreas = portAreasResponse.data.filter((portArea) =>
@@ -68,7 +35,6 @@ export const fetchPortTrafficData = async (): Promise<
         locodes.includes(berth.locode) &&
         filteredPortAreaCodes.includes(berth.port_area_code)
     );
-    vessels.sort((a, b) => a.timestamp - b.timestamp);
     locations.sort((a, b) => a.location_name.localeCompare(b.location_name));
     filteredPortAreas.sort((a, b) => {
       const locIndexA = locations.findIndex((loc) => loc.locode === a.locode);
@@ -96,16 +62,9 @@ export const fetchPortTrafficData = async (): Promise<
       return a.berth_name.localeCompare(b.berth_name);
     });
     return {
-      locationState: {
-        locations,
-        portAreas: filteredPortAreas,
-        berths: filteredBerths,
-      },
-      vessels,
-      dockingState: {
-        dockings: dockingsResponse.data,
-        dockingEvents: dockingEventsResponse.data,
-      },
+      locations,
+      portAreas: filteredPortAreas,
+      berths: filteredBerths,
     };
   }
 };

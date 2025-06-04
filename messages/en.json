@@ -307,7 +307,6 @@
     "title": "Port area"
   },
   "BerthsTable": {
-    "noResults": "No results",
     "berthCode": "Berth code",
     "berthName": "Berth name",
     "enabled": "Enabled",
@@ -374,7 +373,6 @@
     "title": "Common services"
   },
   "CommonServicesTable": {
-    "noResults": "No results",
     "delete": "Delete",
     "edit": "Edit",
     "editModalTitle": "Edit service",
@@ -418,7 +416,7 @@
     "reset": "Reset",
     "save": "Save"
   },
-  "DockingsTable": {
+  "DockingTable": {
     "noResults": "No results",
     "created": "Created",
     "vesselImo": "IMO",
@@ -462,5 +460,8 @@
   "DeleteConfirmation": {
     "cancel": "Cancel",
     "delete": "Delete"
+  },
+  "BaseTable": {
+    "noResults": "No results"
   }
 }

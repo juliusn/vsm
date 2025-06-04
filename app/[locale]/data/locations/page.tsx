@@ -1,6 +1,6 @@
 import { Group, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
-import { LocationTable } from './LocationTable';
+import { LocationQueryTable } from './LocationQueryTable';
 import { UpdateLocations } from './UpdateLocations';
 
 export default async function LocationsPage() {
@@ -12,7 +12,7 @@ export default async function LocationsPage() {
         <Title size="h4">{t('title')}</Title>
         <UpdateLocations />
       </Group>
-      <LocationTable />
+      <LocationQueryTable />
     </>
   );
 }

@@ -307,7 +307,6 @@
     "title": "Satama-alue"
   },
   "BerthsTable": {
-    "noResults": "Ei tuloksia",
     "berthCode": "Laituritunnus",
     "berthName": "Laiturin nimi",
     "enabled": "Tuettu",
@@ -374,7 +373,6 @@
     "title": "Yleiset palvelut"
   },
   "CommonServicesTable": {
-    "noResults": "Ei tuloksia",
     "delete": "Poista",
     "edit": "Muokkaa",
     "editModalTitle": "Muokkaa palvelua",
@@ -421,7 +419,7 @@
     "reset": "Palauta",
     "save": "Tallenna"
   },
-  "DockingsTable": {
+  "DockingTable": {
     "noResults": "Ei tuloksia",
     "created": "Luotu",
     "vesselImo": "IMO",
@@ -465,5 +463,8 @@
   "DeleteConfirmation": {
     "cancel": "Peru",
     "delete": "Poista"
+  },
+  "BaseTable": {
+    "noResults": "Ei tuloksia"
   }
 }

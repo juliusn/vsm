@@ -1,13 +1,13 @@
 'use client';
 
+import { useVessels } from '@/app/context/VesselContext';
+import { DockingFormValues } from '@/lib/types/docking';
 import { Collapse, ComboboxItem } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { useEffect, useMemo, useState } from 'react';
 import { VesselDetails } from '../orders/VesselDetails';
 import { ImoInput } from './ImoInput';
 import { VesselNameInput } from './VesselNameInput';
-import { useLocations } from '../../context/LocationContext';
-import { DockingFormValues } from '@/lib/types/docking';
 
 export function VesselInputs({
   vessel,
@@ -21,7 +21,7 @@ export function VesselInputs({
   vessel: AppTypes.Vessel | undefined;
   imoRef: React.RefObject<HTMLInputElement | null>;
 }) {
-  const { vessels } = useLocations();
+  const vessels = useVessels();
   const vesselItems = useMemo(
     () =>
       vessels.map(

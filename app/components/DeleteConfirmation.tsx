@@ -7,7 +7,7 @@ import { MouseEventHandler } from 'react';
 interface DeleteConfirmationProps {
   message: string;
   preview: React.ReactNode;
-  cancel: () => void;
+  cancel(): void;
   onConfirm: MouseEventHandler<HTMLButtonElement>;
   loading: boolean;
 }

@@ -2,7 +2,7 @@
 
 import { usePathname } from '@/i18n/routing';
 import { Code, Text, Title } from '@mantine/core';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 export default function NotFound() {
   const t = useTranslations('NotFound');

@@ -3,7 +3,7 @@
 import { ProgressBarAnchor } from '@/app/components/ProgressBar';
 import { usePathname } from '@/i18n/routing';
 import { Breadcrumbs } from '@mantine/core';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 export function LocationBreadcrumbs() {
   const pathname = usePathname();

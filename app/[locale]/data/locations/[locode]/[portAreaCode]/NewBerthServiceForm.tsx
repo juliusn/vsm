@@ -1,11 +1,13 @@
 'use client';
 
+import { useBerthServices } from '@/app/context/BerthServiceContext';
+import { useCommonServices } from '@/app/context/CommonServiceContext';
+import { useLocations } from '@/app/context/LocationContext';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import {
   Button,
   Collapse,
-  ComboboxData,
   ComboboxItem,
   Group,
   Input,
@@ -14,46 +16,54 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
+import { isNotEmpty, useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { IconCheck, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useEffect, useState, useTransition } from 'react';
-import { ActionTypes, useLocation } from '../LocationContext';
-import { isNotEmpty, useForm } from '@mantine/form';
+import { useParams } from 'next/navigation';
+import { useState } from 'react';
 
 interface FormValues {
   titleEn: string;
   titleFi: string;
 }
 
-export function NewBerthServiceForm({
-  locode,
-  portAreaCode,
-  berthCode,
-  close,
-}: {
-  locode: string;
-  portAreaCode: string;
-  berthCode: string;
-  close: () => void;
-}) {
+export function NewBerthServiceForm({ close }: { close(): void }) {
+  const t = useTranslations('NewBerthServiceForm');
   const supabase = createClient();
   const locale = useLocale() as AppTypes.Locale;
+  const getErrorNotification = usePostgresErrorNotification();
+  const [opened, { toggle }] = useDisclosure(false);
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const {
-    state: { location, portAreas, berths, berthServices },
-    dispatch,
-  } = useLocation();
+    locode,
+    portAreaCode,
+    berthCode,
+  }: { locode: string; portAreaCode: string; berthCode: string } = useParams();
+
+  const {
+    state: { locations, portAreas, berths },
+  } = useLocations();
+
+  const location = locations.find((location) => location.locode === locode);
+
   const portArea = portAreas.find(
     (portArea) =>
       portArea.locode === locode && portArea.port_area_code === portAreaCode
   );
+
   const berth = berths.find(
     (berth) =>
       berth.locode === locode &&
       berth.port_area_code === portAreaCode &&
       berth.berth_code === berthCode
   );
+
+  const { berthServices, dispatch } = useBerthServices();
+
   const localTitles = berthServices
     .filter(
       (berthService) =>
@@ -63,16 +73,6 @@ export function NewBerthServiceForm({
     )
     .map((service) => JSON.stringify(service.titles));
 
-  const getErrorNotification = usePostgresErrorNotification();
-  const t = useTranslations('NewBerthServiceForm');
-  const titleLabels: Record<AppTypes.Locale, string> = {
-    en: t('titleInputLabelEn'),
-    fi: t('titleInputLabelFi'),
-  };
-  const [opened, { toggle }] = useDisclosure(false);
-  const [serviceOptions, setServiceOptions] = useState<ComboboxData>([]);
-  const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [insertIsPending, startInsert] = useTransition();
   const titleNotAdded = (locale: AppTypes.Locale) => (value: string) =>
     localTitles.some(
       (titles) =>
@@ -80,6 +80,21 @@ export function NewBerthServiceForm({
     )
       ? t('titleAddedError', { berthCode })
       : null;
+
+  const { commonServices } = useCommonServices();
+
+  const serviceOptions = commonServices.map(
+    (service): ComboboxItem => ({
+      label: (service.titles as AppTypes.ServiceTitles)[locale],
+      value: JSON.stringify(service.titles),
+      disabled: localTitles.includes(JSON.stringify(service.titles)),
+    })
+  );
+
+  const titleLabels: Record<AppTypes.Locale, string> = {
+    en: t('titleInputLabelEn'),
+    fi: t('titleInputLabelFi'),
+  };
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -97,71 +112,45 @@ export function NewBerthServiceForm({
     validateInputOnBlur: true,
   });
 
-  const handleSubmit: React.FormEventHandler = (event) => {
+  const handleSubmit: React.FormEventHandler = async (event) => {
     event.preventDefault();
 
-    startInsert(async () => {
-      const { titleEn, titleFi } = form.values;
+    const { titleEn, titleFi } = form.values;
 
-      const { data, error, status } = await supabase
-        .from('berth_services')
-        .insert({
-          locode,
-          port_area_code: portAreaCode,
-          berth_code: berthCode,
-          enabled: true,
-          titles: { en: titleEn, fi: titleFi },
-        })
-        .select()
-        .single();
+    setLoading(true);
 
-      if (error) {
-        showNotification(getErrorNotification(status));
-        return;
-      }
+    const { data, error, status } = await supabase
+      .from('berth_services')
+      .insert({
+        locode,
+        port_area_code: portAreaCode,
+        berth_code: berthCode,
+        enabled: true,
+        titles: { en: titleEn, fi: titleFi },
+      })
+      .select()
+      .single();
+    setLoading(false);
 
-      dispatch({
-        type: ActionTypes.INSERT_SERVICE,
-        payload: {
-          service: { ...data, titles: data.titles as AppTypes.ServiceTitles },
-        },
-      });
+    if (error) {
+      showNotification(getErrorNotification(status));
+      return;
+    }
 
-      showNotification({
-        title: t('successTitle'),
-        message: t('successMessage'),
-        icon: <IconCheck stroke={1.5} />,
-        color: 'green',
-      });
-
-      close();
+    dispatch({
+      type: 'added',
+      item: { ...data, titles: data.titles as AppTypes.ServiceTitles },
     });
+
+    showNotification({
+      title: t('successTitle'),
+      message: t('successMessage'),
+      icon: <IconCheck stroke={1.5} />,
+      color: 'green',
+    });
+
+    close();
   };
-
-  useEffect(() => {
-    const fetchServiceOptions = async () => {
-      const { data, error, status } = await supabase
-        .from('common_services')
-        .select();
-
-      if (error) {
-        showNotification(getErrorNotification(status));
-        return;
-      }
-
-      const options = data.map(
-        (service): ComboboxItem => ({
-          label: (service.titles as AppTypes.ServiceTitles)[locale],
-          value: JSON.stringify(service.titles),
-          disabled: localTitles.includes(JSON.stringify(service.titles)),
-        })
-      );
-
-      setServiceOptions(options);
-    };
-
-    fetchServiceOptions();
-  }, [supabase, getErrorNotification, locale, localTitles]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -179,7 +168,7 @@ export function NewBerthServiceForm({
           <Collapse in={opened}>
             <Text>{berth ? berth.berth_name : berthCode}</Text>
             <Text>{portArea ? portArea.port_area_name : portAreaCode}</Text>
-            <Text>{location.location_name}</Text>
+            <Text>{location?.location_name}</Text>
           </Collapse>
         </Input.Wrapper>
         <Select
@@ -214,10 +203,7 @@ export function NewBerthServiceForm({
           <Button variant="outline" onClick={close}>
             {t('cancelButtonLabel')}
           </Button>
-          <Button
-            type="submit"
-            disabled={!form.isValid()}
-            loading={insertIsPending}>
+          <Button type="submit" disabled={!form.isValid()} loading={loading}>
             {t('saveButtonLabel')}
           </Button>
         </Group>

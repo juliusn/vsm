@@ -24,11 +24,21 @@
     }
   },
   "include": [
+    "app",
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "pages",
+    "src",
     ".next/types/**/*.ts",
-    "lib/types/**/*"
+    "lib/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    ".next",
+    "dist",
+    "build",
+    ".turbo",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
 }

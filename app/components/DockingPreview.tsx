@@ -6,7 +6,7 @@ import { Table } from '@mantine/core';
 import { useFormatter, useTranslations } from 'next-intl';
 
 export function DockingPreview({ data }: { data: DockingRowData }) {
-  const t = useTranslations('DockingsTable');
+  const t = useTranslations('DockingTable');
   const format = useFormatter();
 
   return (

@@ -4,34 +4,34 @@ import { reducer } from '@/lib/reducer';
 import { Action } from '@/lib/types/context';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
-export type InitialDockingValues = {
+export type DockingState = {
   dockings: AppTypes.Docking[];
   dockingEvents: AppTypes.DockingEvent[];
 };
 
-type DockingContextType = InitialDockingValues & {
+type DockingContextType = DockingState & {
   dispatchDockings: Dispatch<Action<AppTypes.Docking>>;
   dispatchDockingEvents: Dispatch<Action<AppTypes.DockingEvent>>;
 };
 
 type DockingProviderProps = {
   children: React.ReactNode;
-} & InitialDockingValues;
+  initialState: DockingState;
+};
 
 const DockingContext = createContext<DockingContextType | null>(null);
 
 export const DockingProvider = ({
   children,
-  dockings: initialDockings,
-  dockingEvents: initialDockingEvents,
+  initialState,
 }: DockingProviderProps) => {
   const [dockings, dispatchDockings] = useReducer(
     reducer<AppTypes.Docking>,
-    initialDockings
+    initialState.dockings
   );
   const [dockingEvents, dispatchDockingEvents] = useReducer(
     reducer<AppTypes.DockingEvent>,
-    initialDockingEvents
+    initialState.dockingEvents
   );
   return (
     <DockingContext.Provider

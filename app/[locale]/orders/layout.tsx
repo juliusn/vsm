@@ -4,6 +4,7 @@ import { Stack } from '@mantine/core';
 import { DockingProvider } from '../../context/DockingContext';
 import { NewOrderContent } from './NewOrderContent';
 import { LocationProvider } from '../../context/LocationContext';
+import { VesselProvider } from '@/app/context/VesselContext';
 
 export default async function OrdersLayout({
   children,
@@ -14,18 +15,23 @@ export default async function OrdersLayout({
 
   return data ? (
     <LocationProvider
-      vessels={data.vessels}
-      locations={data.locations}
-      portAreas={data.portAreas}
-      berths={data.berths}>
-      <DockingProvider
-        dockings={data.dockings}
-        dockingEvents={data.dockingEvents}>
-        <Stack>
-          <NewOrderContent />
-          {children}
-        </Stack>
-      </DockingProvider>
+      initialState={{
+        locations: data.locationState.locations,
+        portAreas: data.locationState.portAreas,
+        berths: data.locationState.berths,
+      }}>
+      <VesselProvider vessels={data.vessels}>
+        <DockingProvider
+          initialState={{
+            dockings: data.dockingState.dockings,
+            dockingEvents: data.dockingState.dockingEvents,
+          }}>
+          <Stack>
+            <NewOrderContent />
+            {children}
+          </Stack>
+        </DockingProvider>
+      </VesselProvider>
     </LocationProvider>
   ) : (
     <DataUnavailableAlert />

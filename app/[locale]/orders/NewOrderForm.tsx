@@ -21,7 +21,7 @@ import { useState } from 'react';
 import { SelectDockingTable } from './SelectDockingTable';
 import { NewDockingForm } from '../port-traffic/NewDockingForm';
 
-export function NewOrderForm({ close }: { close: () => void }) {
+export function NewOrderForm({ close }: { close(): void }) {
   const t = useTranslations('NewOrderForm');
   const [docking, setDocking] = useState<DockingRowData | null>(null);
   const [preview, setPreview] = useState<DockingRowData | null>(null);
@@ -40,7 +40,6 @@ export function NewOrderForm({ close }: { close: () => void }) {
         onClose={closeSelectDocking}
         title={t('selectDocking')}>
         <SelectDockingTable
-          highlightOnHover
           onRowClick={({ record }) => {
             setDocking(record);
             setPreview(record);
@@ -93,7 +92,7 @@ export function NewOrderForm({ close }: { close: () => void }) {
                 {t('removeSelection')}
               </Button>
             </Group>
-            <Collapse in={docking}>
+            <Collapse in={!!docking}>
               <Paper withBorder shadow="sm">
                 {preview && <DockingPreview data={preview} />}
               </Paper>

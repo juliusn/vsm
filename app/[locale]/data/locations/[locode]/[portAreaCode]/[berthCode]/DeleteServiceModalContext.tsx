@@ -1,5 +1,6 @@
 'use client';
 
+import { useCommonServices } from '@/app/context/CommonServiceContext';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import { Button, Group, Modal, Stack } from '@mantine/core';
@@ -8,14 +9,12 @@ import { showNotification } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { createContext, useContext, useState, useTransition } from 'react';
-import { ActionTypes, useLocation } from '../../LocationContext';
 
-interface DeleteServiceModalContextProps {
+interface Props {
   showDeleteModal: (id: string, content: React.ReactNode) => void;
 }
 
-const DeleteServiceModalContext =
-  createContext<DeleteServiceModalContextProps | null>(null);
+const Context = createContext<Props | null>(null);
 
 export function DeleteServiceModalProvider({
   children,
@@ -26,7 +25,7 @@ export function DeleteServiceModalProvider({
 }) {
   const t = useTranslations('DeleteServiceModalProvider');
   const getErrorNotification = usePostgresErrorNotification();
-  const { dispatch } = useLocation();
+  const { dispatch } = useCommonServices();
   const [id, setId] = useState<string>('');
   const [deleteIsPending, startDelete] = useTransition();
   const supabase = createClient();
@@ -44,12 +43,7 @@ export function DeleteServiceModalProvider({
         return;
       }
 
-      dispatch({
-        type: ActionTypes.REMOVE_SERVICE,
-        payload: {
-          id,
-        },
-      });
+      dispatch({ type: 'deleted', id });
 
       showNotification({
         title: t('successTitle'),
@@ -69,7 +63,7 @@ export function DeleteServiceModalProvider({
   };
 
   return (
-    <DeleteServiceModalContext.Provider value={{ showDeleteModal }}>
+    <Context.Provider value={{ showDeleteModal }}>
       {children}
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
         <Stack>
@@ -88,15 +82,15 @@ export function DeleteServiceModalProvider({
           </Group>
         </Stack>
       </Modal>
-    </DeleteServiceModalContext.Provider>
+    </Context.Provider>
   );
 }
 
-export const useDeleteServiceModal = (): DeleteServiceModalContextProps => {
-  const context = useContext(DeleteServiceModalContext);
+export const useDeleteServiceModal = (): Props => {
+  const context = useContext(Context);
   if (context === null)
     throw new Error(
-      'useDeleteServiceModal must be used within a DeleteServiceModalContext.Provider.'
+      'useDeleteServiceModal must be used within DeleteServiceModalProvider.'
     );
   return context;
 };

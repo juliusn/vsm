@@ -1,11 +1,10 @@
 'use client';
 
+import { EnabledSwitch } from '@/app/components/EnabledSwitch';
+import { ActionTypes, useLocations } from '@/app/context/LocationContext';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
-import { Switch } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { useTranslations } from 'next-intl';
-import { ActionTypes, useLocation } from '../../LocationContext';
 
 export function BerthSwitch({
   locode,
@@ -17,19 +16,17 @@ export function BerthSwitch({
   berthCode: string;
 }) {
   const supabase = createClient();
-  const { state, dispatch } = useLocation();
+  const { state, dispatch } = useLocations();
   const berth = state.berths.find(
     (berth) =>
       berth.locode === locode &&
       berth.port_area_code === portAreaCode &&
       berth.berth_code === berthCode
   );
-  const t = useTranslations('EnabledSwitch');
   const getErrorNotification = usePostgresErrorNotification();
 
   return (
-    <Switch
-      label={t('label')}
+    <EnabledSwitch
       checked={berth?.enabled}
       onChange={async (event) => {
         const newChecked = event.currentTarget.checked;

@@ -1,5 +1,6 @@
 'use client';
 
+import { useBerthServices } from '@/app/context/BerthServiceContext';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import { Button, Group, Modal, Stack, TextInput } from '@mantine/core';
@@ -8,14 +9,12 @@ import { showNotification } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { createContext, useContext, useState, useTransition } from 'react';
-import { ActionTypes, useLocation } from '../../LocationContext';
 
-interface EditServiceModalContextProps {
+interface Props {
   showEditModal: (service: AppTypes.BerthService) => void;
 }
 
-const EditServiceModalContext =
-  createContext<EditServiceModalContextProps | null>(null);
+const Context = createContext<Props | null>(null);
 
 export function EditServiceModalProvider({
   children,
@@ -28,7 +27,7 @@ export function EditServiceModalProvider({
     fi: t('titleInputLabelFi'),
   };
   const getErrorNotification = usePostgresErrorNotification();
-  const { dispatch } = useLocation();
+  const { dispatch } = useBerthServices();
   const [service, setService] = useState<AppTypes.BerthService | null>(null);
   const [enValue, setEnValue] = useState<string>('');
   const [fiValue, setFiValue] = useState<string>('');
@@ -57,10 +56,8 @@ export function EditServiceModalProvider({
       }
 
       dispatch({
-        type: ActionTypes.UPDATE_SERVICE,
-        payload: {
-          service: { ...data, titles: data.titles as AppTypes.ServiceTitles },
-        },
+        type: 'changed',
+        item: { ...data, titles: data.titles as AppTypes.ServiceTitles },
       });
 
       showNotification({
@@ -82,7 +79,7 @@ export function EditServiceModalProvider({
   };
 
   return (
-    <EditServiceModalContext.Provider value={{ showEditModal }}>
+    <Context.Provider value={{ showEditModal }}>
       {children}
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
         <form onSubmit={submitUpdate}>
@@ -110,15 +107,15 @@ export function EditServiceModalProvider({
           </Stack>
         </form>
       </Modal>
-    </EditServiceModalContext.Provider>
+    </Context.Provider>
   );
 }
 
-export const useEditServiceModal = (): EditServiceModalContextProps => {
-  const context = useContext(EditServiceModalContext);
+export const useEditServiceModal = (): Props => {
+  const context = useContext(Context);
   if (context === null)
     throw new Error(
-      'useEditServiceModal must be used within a EditServiceModalContext.Provider.'
+      'useEditServiceModal must be used within EditServiceModalProvider.'
     );
   return context;
 };

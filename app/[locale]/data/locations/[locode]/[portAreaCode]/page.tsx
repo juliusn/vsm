@@ -5,11 +5,9 @@ import { BerthsTable } from './BerthsTable';
 export default async function PortAreaCodePage(props: {
   params: Promise<{ portAreaCode: string }>;
 }) {
-  const params = await props.params;
-
-  const { portAreaCode } = params;
-
+  const { portAreaCode } = await props.params;
   const t = await getTranslations('PortAreaCodePage');
+
   return (
     <>
       <Title size="h4">{t('title')}</Title>

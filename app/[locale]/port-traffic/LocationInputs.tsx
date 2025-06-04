@@ -21,7 +21,9 @@ export function LocationInputs({
   locode: string;
   portArea: string;
 }) {
-  const { locations, portAreas, berths } = useLocations();
+  const {
+    state: { locations, portAreas, berths },
+  } = useLocations();
   const { portAreaItems, berthsItems } = useMemo(
     () => getLocationInputItems(locations, portAreas, berths, locode, portArea),
     [locations, portAreas, berths, locode, portArea]

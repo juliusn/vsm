@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import { DockingProvider } from '../../context/DockingContext';
 import { LocationProvider } from '../../context/LocationContext';
 import { NewDockingContent } from './NewDockingContent';
+import { VesselProvider } from '@/app/context/VesselContext';
 
 export default async function PortTrafficLayout({
   children,
@@ -16,20 +17,16 @@ export default async function PortTrafficLayout({
 
   return data ? (
     <Stack>
-      <LocationProvider
-        vessels={data.vessels}
-        locations={data.locations}
-        portAreas={data.portAreas}
-        berths={data.berths}>
-        <DockingProvider
-          dockings={data.dockings}
-          dockingEvents={data.dockingEvents}>
-          <Group justify="space-between">
-            <Title size="h2">{t('title')}</Title>
-            <NewDockingContent />
-          </Group>
-          {children}
-        </DockingProvider>
+      <LocationProvider initialState={data.locationState}>
+        <VesselProvider vessels={data.vessels}>
+          <DockingProvider initialState={data.dockingState}>
+            <Group justify="space-between">
+              <Title size="h2">{t('title')}</Title>
+              <NewDockingContent />
+            </Group>
+            {children}
+          </DockingProvider>
+        </VesselProvider>
       </LocationProvider>
     </Stack>
   ) : (

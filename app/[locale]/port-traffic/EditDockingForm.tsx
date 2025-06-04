@@ -1,6 +1,7 @@
 'use client';
 
 import { FormButtons } from '@/app/components/FormButtons';
+import { useVessels } from '@/app/context/VesselContext';
 import {
   useDockingSavedNotification,
   usePostgresErrorNotification,
@@ -20,13 +21,12 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
 import { useDockings } from '../../context/DockingContext';
-import { DockingFormFields } from './DockingFormFields';
-import { useLocations } from '../../context/LocationContext';
 import useDockingFormValidation from '../../hooks/useDockingFormValidation';
+import { DockingFormFields } from './DockingFormFields';
 
 interface EditDockingContentProps {
   dockingRow: DockingRowData;
-  close: () => void;
+  close(): void;
 }
 
 type DockingEventMutation = Mutation<AppTypes.DockingEvent>;
@@ -41,7 +41,7 @@ export function EditDockingForm({
   const getErrorNotification = usePostgresErrorNotification();
   const getDockingSavedNotification = useDockingSavedNotification();
   const { dispatchDockings, dispatchDockingEvents } = useDockings();
-  const { vessels } = useLocations();
+  const vessels = useVessels();
   const vesselMatch = vessels.find(
     (vessel) => vessel.imo === dockingRow.vessel_imo
   );

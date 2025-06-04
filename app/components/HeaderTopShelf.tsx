@@ -9,7 +9,7 @@ export function HeaderTopShelf({
 }: {
   children: React.ReactNode;
   opened: boolean;
-  toggle: () => void;
+  toggle(): void;
 }) {
   return (
     <div className="xs:h-20 md:h-30 w-full flex justify-between align-top md:mt-8">

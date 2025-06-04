@@ -1,22 +1,22 @@
 'use client';
 
+import { EnabledSwitch } from '@/app/components/EnabledSwitch';
+import { ActionTypes, useLocations } from '@/app/context/LocationContext';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
-import { Switch } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { useTranslations } from 'next-intl';
-import { ActionTypes, useLocation } from './LocationContext';
 
 export function LocodeSwitch({ locode }: { locode: string }) {
   const supabase = createClient();
-  const { state, dispatch } = useLocation();
-  const t = useTranslations('EnabledSwitch');
+  const { state, dispatch } = useLocations();
+  const location = state.locations.find(
+    (location) => location.locode === locode
+  );
   const getErrorNotification = usePostgresErrorNotification();
 
   return (
-    <Switch
-      label={t('label')}
-      checked={state.location.enabled}
+    <EnabledSwitch
+      checked={location?.enabled}
       onChange={async (event) => {
         const newChecked = event.currentTarget.checked;
         const { data, error, status } = await supabase
@@ -33,7 +33,7 @@ export function LocodeSwitch({ locode }: { locode: string }) {
 
         dispatch({
           type: ActionTypes.UPDATE_LOCATION_ENABLED,
-          payload: { enabled: data.enabled },
+          payload: { locode, enabled: data.enabled },
         });
       }}
     />

@@ -1,11 +1,10 @@
 'use client';
 
+import { EnabledSwitch } from '@/app/components/EnabledSwitch';
+import { ActionTypes, useLocations } from '@/app/context/LocationContext';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
-import { Switch } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { useTranslations } from 'next-intl';
-import { ActionTypes, useLocation } from '../LocationContext';
 
 export function PortAreaSwitch({
   locode,
@@ -15,17 +14,15 @@ export function PortAreaSwitch({
   portAreaCode: string;
 }) {
   const supabase = createClient();
-  const { state, dispatch } = useLocation();
+  const { state, dispatch } = useLocations();
   const portArea = state.portAreas.find(
     (portArea) =>
       portArea.locode === locode && portArea.port_area_code === portAreaCode
   );
-  const t = useTranslations('EnabledSwitch');
   const getErrorNotification = usePostgresErrorNotification();
 
   return (
-    <Switch
-      label={t('label')}
+    <EnabledSwitch
       checked={portArea?.enabled}
       onChange={async (event) => {
         const newChecked = event.currentTarget.checked;
