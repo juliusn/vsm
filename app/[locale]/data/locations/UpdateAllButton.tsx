@@ -5,11 +5,7 @@ import { IconRefresh } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-export function UpdateAllButton({
-  callback,
-}: {
-  callback: () => Promise<void>;
-}) {
+export function UpdateAllButton({ callback }: { callback(): Promise<void> }) {
   const t = useTranslations('UpdateAllButton');
   const [loading, setLoading] = useState(false);
 

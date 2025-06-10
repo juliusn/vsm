@@ -6,7 +6,7 @@ import { useState } from 'react';
 interface ControlledCheckboxProps {
   index: number;
   enabled: boolean;
-  onToggle: (index: number, checked: boolean) => Promise<void>;
+  onToggle(index: number, checked: boolean): Promise<void>;
 }
 
 export function ControlledCheckbox({
