@@ -2,8 +2,8 @@ import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
 import { fetchPortTrafficData } from '@/lib/fetchPortTrafficData';
 import { Group, Stack, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
-import { DockingProvider } from '../../context/DockingContext';
-import { LocationProvider } from '../../context/LocationContext';
+import { DockingProvider } from '@/app/context/DockingContext';
+import { LocationProvider } from '@/app/context/LocationContext';
 import { NewDockingContent } from './NewDockingContent';
 import { VesselProvider } from '@/app/context/VesselContext';
 

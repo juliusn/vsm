@@ -10,7 +10,7 @@ export function HeaderNavbarLinks({
   toggle,
 }: {
   navItems: { label: string; href: string }[];
-  toggle: () => void;
+  toggle(): void;
 }) {
   const router = useRouter();
   const pathname = usePathname();

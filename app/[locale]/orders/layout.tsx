@@ -1,9 +1,9 @@
 import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
 import { fetchPortTrafficData } from '@/lib/fetchPortTrafficData';
 import { Stack } from '@mantine/core';
-import { DockingProvider } from '../../context/DockingContext';
+import { DockingProvider } from '@/app/context/DockingContext';
 import { NewOrderContent } from './NewOrderContent';
-import { LocationProvider } from '../../context/LocationContext';
+import { LocationProvider } from '@/app/context/LocationContext';
 import { VesselProvider } from '@/app/context/VesselContext';
 
 export default async function OrdersLayout({

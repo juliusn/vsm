@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { BerthInput } from './BerthInput';
 import { LocodeInput } from './LocodeInput';
 import { PortAreaInput } from './PortAreaInput';
-import { useLocations } from '../../context/LocationContext';
+import { useLocations } from '@/app/context/LocationContext';
 
 export function LocationInputs({
   locode,

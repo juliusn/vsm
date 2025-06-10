@@ -20,7 +20,7 @@ import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
-import { useDockings } from '../../context/DockingContext';
+import { useDockings } from '@/app/context/DockingContext';
 import useDockingFormValidation from '../../hooks/useDockingFormValidation';
 import { DockingFormFields } from './DockingFormFields';
 

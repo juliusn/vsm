@@ -11,7 +11,7 @@ import { DockingRowData } from '@/lib/types/docking';
 import { showNotification } from '@mantine/notifications';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { useDockings } from '../../context/DockingContext';
+import { useDockings } from '@/app/context/DockingContext';
 
 export function DeleteDockingConfirmation({
   data,
@@ -19,7 +19,7 @@ export function DeleteDockingConfirmation({
   afterConfirm,
 }: {
   data: DockingRowData;
-  cancel: () => void;
+  cancel(): void;
   afterConfirm?: () => void;
 }) {
   const t = useTranslations('DeleteDockingConfirmation');
