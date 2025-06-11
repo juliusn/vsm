@@ -1,5 +1,6 @@
 'use client';
 
+import { useCommonServices } from '@/app/context/CommonServiceContext';
 import {
   usePostgresErrorNotification,
   useServiceSavedNotification,
@@ -9,7 +10,6 @@ import { Button } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconPlus } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { ActionTypes, useCommonServices } from './CommonServicesContext';
 import { useEditServiceModal } from '../EditServicesModalContext';
 
 export function NewCommonServiceButton() {
@@ -39,8 +39,8 @@ export function NewCommonServiceButton() {
             }
 
             dispatch({
-              type: ActionTypes.INSERT_SERVICE,
-              payload: { service: data as AppTypes.CommonService },
+              type: 'added',
+              item: { ...data, titles: data.titles as AppTypes.ServiceTitles },
             });
 
             showNotification(getServiceSavedNotification());

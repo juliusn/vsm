@@ -69,3 +69,16 @@ export const useDockingDeletedNotification = () => {
     [t]
   );
 };
+
+export const useOrderSavedNotification = () => {
+  const t = useTranslations('OrderSavedNotification');
+  return useCallback(
+    (): NotificationData => ({
+      title: t('title'),
+      message: t('message'),
+      icon: <IconCheck stroke={1.5} />,
+      color: 'green',
+    }),
+    [t]
+  );
+};

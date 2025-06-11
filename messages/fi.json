@@ -147,8 +147,10 @@
     "selectDocking": "Valitse laiturointi",
     "select": "Valitse",
     "removeSelection": "Poista valinta",
-    "service": "Palvelu",
-    "selectService": "Valitse palvelu",
+    "selectDockingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
+    "services": "Palvelut",
+    "servicesTooltip": "Valitse laiturointi valitaksesi palveluja.",
+    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin.",
     "cancelButtonLabel": "Peru",
     "saveButtonLabel": "Tallenna"
   },
@@ -287,6 +289,10 @@
     "title": "Valmis!",
     "message": "Laiturointi on poistettu."
   },
+  "OrderSavedNotification": {
+    "title": "Valmis!",
+    "message": "Tilaus on tallennettu."
+  },
   "PortAreaCodePage": {
     "title": "Laiturit",
     "caption": "Valitse laiturit, jotka haluat liittää palvelunhallintaan.",
@@ -372,7 +378,7 @@
   "CommonServicesPage": {
     "title": "Yleiset palvelut"
   },
-  "CommonServicesTable": {
+  "CommonServiceTable": {
     "delete": "Poista",
     "edit": "Muokkaa",
     "editModalTitle": "Muokkaa palvelua",

@@ -1,17 +1,19 @@
 import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
-import { fetchPortTrafficData } from '@/lib/fetchPortTrafficData';
-import { Stack } from '@mantine/core';
 import { DockingProvider } from '@/app/context/DockingContext';
-import { NewOrderContent } from './NewOrderContent';
 import { LocationProvider } from '@/app/context/LocationContext';
 import { VesselProvider } from '@/app/context/VesselContext';
+import { fetchOrdersData } from '@/lib/fetchOrdersData';
+import { Stack } from '@mantine/core';
+import { NewOrderContent } from './NewOrderContent';
+import { BerthServiceProvider } from '@/app/context/BerthServiceContext';
+import { CommonServiceProvider } from '@/app/context/CommonServiceContext';
 
 export default async function OrdersLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const data = await fetchPortTrafficData();
+  const data = await fetchOrdersData();
 
   return data ? (
     <LocationProvider
@@ -26,10 +28,14 @@ export default async function OrdersLayout({
             dockings: data.dockingState.dockings,
             dockingEvents: data.dockingState.dockingEvents,
           }}>
-          <Stack>
-            <NewOrderContent />
-            {children}
-          </Stack>
+          <BerthServiceProvider initialValues={data.berthServices}>
+            <CommonServiceProvider initialValues={data.commonServices}>
+              <Stack>
+                <NewOrderContent />
+                {children}
+              </Stack>
+            </CommonServiceProvider>
+          </BerthServiceProvider>
         </DockingProvider>
       </VesselProvider>
     </LocationProvider>

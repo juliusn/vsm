@@ -130,6 +130,40 @@ export type Database = {
           },
         ]
       }
+      common_service_order: {
+        Row: {
+          common_service: string
+          created_at: string
+          id: string
+          order: string
+        }
+        Insert: {
+          common_service: string
+          created_at?: string
+          id?: string
+          order: string
+        }
+        Update: {
+          common_service?: string
+          created_at?: string
+          id?: string
+          order?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "common_service_order_common_service_fkey"
+            columns: ["common_service"]
+            referencedRelation: "common_services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "common_service_order_order_fkey"
+            columns: ["order"]
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       common_services: {
         Row: {
           id: string
@@ -255,26 +289,27 @@ export type Database = {
       orders: {
         Row: {
           created_at: string
+          docking: string
           id: string
-          service_titles: Json | null
-          time: string | null
-          vessel_imo: number | null
         }
         Insert: {
           created_at?: string
+          docking: string
           id?: string
-          service_titles?: Json | null
-          time?: string | null
-          vessel_imo?: number | null
         }
         Update: {
           created_at?: string
+          docking?: string
           id?: string
-          service_titles?: Json | null
-          time?: string | null
-          vessel_imo?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_docking_fkey"
+            columns: ["docking"]
+            referencedRelation: "dockings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       port_areas: {
         Row: {

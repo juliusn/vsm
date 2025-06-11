@@ -2,6 +2,7 @@
 
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { ServicePreview } from '@/app/components/ServicePreview';
+import { useCommonServices } from '@/app/context/CommonServiceContext';
 import {
   usePostgresErrorNotification,
   useServiceDeletedNotification,
@@ -16,10 +17,9 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useDeleteServiceModal } from '../DeleteServiceModalContext';
 import { useEditServiceModal } from '../EditServicesModalContext';
-import { ActionTypes, useCommonServices } from './CommonServicesContext';
 
-export function CommonServicesTable() {
-  const t = useTranslations('CommonServicesTable');
+export function CommonServiceTable() {
+  const t = useTranslations('CommonServiceTable');
   const getErrorNotification = usePostgresErrorNotification();
   const getServiceDeletedNotification = useServiceDeletedNotification();
   const getServiceUpdatedNotification = useServiceSavedNotification();
@@ -28,7 +28,7 @@ export function CommonServicesTable() {
   const [titleFiQuery, setTitleFiQuery] = useState('');
   const { openDeleteModal, closeDeleteModal } = useDeleteServiceModal();
   const { openEditModal, closeEditModal } = useEditServiceModal();
-  const { services, dispatch } = useCommonServices();
+  const { commonServices, dispatch } = useCommonServices();
 
   const columns: DataTableColumn<AppTypes.CommonService>[] = [
     {
@@ -98,10 +98,8 @@ export function CommonServicesTable() {
                 }
 
                 dispatch({
-                  type: ActionTypes.REMOVE_SERVICE,
-                  payload: {
-                    id,
-                  },
+                  type: 'deleted',
+                  id,
                 });
 
                 showNotification(getServiceDeletedNotification());
@@ -140,8 +138,11 @@ export function CommonServicesTable() {
                 }
 
                 dispatch({
-                  type: ActionTypes.UPDATE_SERVICE,
-                  payload: { service: data as AppTypes.CommonService },
+                  type: 'changed',
+                  item: {
+                    ...data,
+                    titles: data.titles as AppTypes.ServiceTitles,
+                  },
                 });
 
                 showNotification(getServiceUpdatedNotification());
@@ -155,5 +156,5 @@ export function CommonServicesTable() {
     },
   ];
 
-  return <PaginatedTable allRecords={services} columns={columns} />;
+  return <PaginatedTable allRecords={commonServices} columns={columns} />;
 }

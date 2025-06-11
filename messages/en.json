@@ -147,8 +147,10 @@
     "selectDocking": "Select docking",
     "select": "Select",
     "removeSelection": "Remove selection",
-    "service": "Service",
-    "selectService": "Select service",
+    "selectDockingError": "Select docking to which you want to add services.",
+    "services": "Services",
+    "servicesTooltip": "Select a docking in order to select services.",
+    "selectServicesError": "Selet services you want to add to the docking.",
     "cancelButtonLabel": "Cancel",
     "saveButtonLabel": "Save"
   },
@@ -287,6 +289,10 @@
     "title": "Done!",
     "message": "Docking has been deleted."
   },
+  "OrderSavedNotification": {
+    "title": "Done!",
+    "message": "Order has been saved."
+  },
   "PortAreaCodePage": {
     "title": "Berths",
     "caption": "Select berths that you want to include in service management.",
@@ -372,7 +378,7 @@
   "CommonServicesPage": {
     "title": "Common services"
   },
-  "CommonServicesTable": {
+  "CommonServiceTable": {
     "delete": "Delete",
     "edit": "Edit",
     "editModalTitle": "Edit service",
