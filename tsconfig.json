@@ -30,7 +30,7 @@
     "pages",
     "src",
     ".next/types/**/*.ts",
-    "lib/types/**/*.ts"
+    "lib/**/*.ts"
   ],
   "exclude": [
     "node_modules",
