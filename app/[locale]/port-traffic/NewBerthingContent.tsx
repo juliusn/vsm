@@ -5,10 +5,10 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconPlus } from '@tabler/icons-react';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
-import { NewDockingForm } from './NewDockingForm';
+import { NewBerthingForm } from './NewBerthingForm';
 
-export function NewDockingContent() {
-  const t = useTranslations('NewDockingContent');
+export function NewBerthingContent() {
+  const t = useTranslations('NewBerthingContent');
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -17,7 +17,7 @@ export function NewDockingContent() {
         {t('buttonLabel')}
       </Button>
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
-        <NewDockingForm close={close} />
+        <NewBerthingForm close={close} />
       </Modal>
     </>
   );

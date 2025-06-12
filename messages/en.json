@@ -141,16 +141,16 @@
     "modalTitle": "Create a new order"
   },
   "NewOrderForm": {
-    "docking": "Docking",
-    "createNewDocking": "Create a new docking",
+    "berthing": "Berthing",
+    "createNewBerthing": "Create a new berthing",
     "create": "Create",
-    "selectDocking": "Select docking",
+    "selectBerthing": "Select berthing",
     "select": "Select",
     "removeSelection": "Remove selection",
-    "selectDockingError": "Select docking to which you want to add services.",
+    "selectBerthingError": "Select berthing to which you want to add services.",
     "services": "Services",
-    "servicesTooltip": "Select a docking in order to select services.",
-    "selectServicesError": "Selet services you want to add to the docking.",
+    "servicesTooltip": "Select a berthing in order to select services.",
+    "selectServicesError": "Selet services you want to add to the berthing.",
     "cancelButtonLabel": "Cancel",
     "saveButtonLabel": "Save"
   },
@@ -281,13 +281,13 @@
     "title": "Done!",
     "message": "Service has been saved."
   },
-  "DockingSavedNotification": {
+  "BerthingSavedNotification": {
     "title": "Done!",
-    "message": "Docking event has been saved."
+    "message": "Berthing has been saved."
   },
-  "DockingDeletedNotification": {
+  "BerthingDeletedNotification": {
     "title": "Done!",
-    "message": "Docking has been deleted."
+    "message": "Berthing has been deleted."
   },
   "OrderSavedNotification": {
     "title": "Done!",
@@ -394,13 +394,13 @@
     "titleFi": "Title in Finnish"
   },
   "PortTrafficLayout": {
-    "title": "Dockings"
+    "title": "Berthings"
   },
-  "NewDockingContent": {
-    "buttonLabel": "New docking",
-    "modalTitle": "Create a new docking event"
+  "NewBerthingContent": {
+    "buttonLabel": "New berthing",
+    "modalTitle": "Create a new berthing"
   },
-  "NewDockingForm": {
+  "NewBerthingForm": {
     "vessel": "Vessel",
     "imoRequiredError": "Vessel IMO number is required.",
     "imoLengthError": "Vessel IMO number must be 7 digits.",
@@ -422,7 +422,7 @@
     "reset": "Reset",
     "save": "Save"
   },
-  "DockingTable": {
+  "BerthingTable": {
     "noResults": "No results",
     "created": "Created",
     "vesselImo": "IMO",
@@ -436,12 +436,12 @@
     "unknown": "Unknown",
     "edit": "Edit",
     "delete": "Delete",
-    "editDocking": "Edit docking",
-    "deleteDocking": "Delete docking",
-    "dockingDetails": "Docking details"
+    "editBerthing": "Edit berthing",
+    "deleteBerthing": "Delete berthing",
+    "berthingDetails": "Berthing details"
   },
-  "DeleteDockingConfirmation": {
-    "message": "Are you sure you want to delete this docking?"
+  "DeleteBerthingConfirmation": {
+    "message": "Are you sure you want to delete this berthing?"
   },
   "VesselNameInput": {
     "vesselName": "Vessel name",

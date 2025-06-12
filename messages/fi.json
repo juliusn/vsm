@@ -141,13 +141,13 @@
     "modalTitle": "Luo uusi tilaus"
   },
   "NewOrderForm": {
-    "docking": "Laiturointi",
-    "createNewDocking": "Luo uusi laiturointi",
+    "berthing": "Laiturointi",
+    "createNewBerthing": "Luo uusi laiturointi",
     "create": "Luo",
-    "selectDocking": "Valitse laiturointi",
+    "selectBerthing": "Valitse laiturointi",
     "select": "Valitse",
     "removeSelection": "Poista valinta",
-    "selectDockingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
+    "selectBerthingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
     "services": "Palvelut",
     "servicesTooltip": "Valitse laiturointi valitaksesi palveluja.",
     "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin.",
@@ -281,11 +281,11 @@
     "title": "Valmis!",
     "message": "Palvelu on tallennettu."
   },
-  "DockingSavedNotification": {
+  "BerthingSavedNotification": {
     "title": "Valmis!",
     "message": "Laiturointitapahtuma on tallennettu."
   },
-  "DockingDeletedNotification": {
+  "BerthingDeletedNotification": {
     "title": "Valmis!",
     "message": "Laiturointi on poistettu."
   },
@@ -396,11 +396,11 @@
   "PortTrafficLayout": {
     "title": "Laituroinnit"
   },
-  "NewDockingContent": {
+  "NewBerthingContent": {
     "buttonLabel": "Uusi laiturointi",
     "modalTitle": "Luo uusi laiturointitapahtuma"
   },
-  "NewDockingForm": {
+  "NewBerthingForm": {
     "vessel": "Alus",
     "imoRequiredError": "Aluksen IMO-tunnus vaaditaan.",
     "imoLengthError": "Aluksen IMO-tunnus täytyy olla 7 numeroa pitkä.",
@@ -425,7 +425,7 @@
     "reset": "Palauta",
     "save": "Tallenna"
   },
-  "DockingTable": {
+  "BerthingTable": {
     "noResults": "Ei tuloksia",
     "created": "Luotu",
     "vesselImo": "IMO",
@@ -439,11 +439,11 @@
     "unknown": "Ei tiedossa",
     "edit": "Muokkaa",
     "delete": "Poista",
-    "editDocking": "Muokkaa laiturointia",
-    "deleteDocking": "Poista laiturointi",
-    "dockingDetails": "Laituroinnin tiedot"
+    "editBerthing": "Muokkaa laiturointia",
+    "deleteBerthing": "Poista laiturointi",
+    "berthingDetails": "Laituroinnin tiedot"
   },
-  "DeleteDockingConfirmation": {
+  "DeleteBerthingConfirmation": {
     "message": "Haluatko varmasti poistaa tämän laituroinnin?"
   },
   "VesselNameInput": {

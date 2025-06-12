@@ -3,27 +3,27 @@
 import { FormButtons } from '@/app/components/FormButtons';
 import { useVessels } from '@/app/context/VesselContext';
 import {
-  useDockingSavedNotification,
+  useBerthingSavedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
-  DockingFormValues,
-  DockingRowData,
+  BerthingFormValues,
+  BerthingRowData,
   PortAreaIdentifier,
-} from '@/lib/types/docking';
+} from '@/lib/types/berthing';
 import { Group, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
-import { useDockings } from '@/app/context/DockingContext';
-import useDockingFormValidation from '../../hooks/useDockingFormValidation';
-import { DockingFormFields } from './DockingFormFields';
+import { useBerthings } from '@/app/context/BerthingContext';
+import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
+import { BerthingFormFields } from './BerthingFormFields';
 
-const initialValues: DockingFormValues = {
+const initialValues: BerthingFormValues = {
   vesselName: '',
   imo: '',
   locode: '',
@@ -35,29 +35,29 @@ const initialValues: DockingFormValues = {
   etdTime: '',
 };
 
-interface NewDockingContentProps {
+interface NewBerthingContentProps {
   close(): void;
-  resultCallback?: (data: DockingRowData) => void;
+  resultCallback?: (data: BerthingRowData) => void;
 }
 
-export function NewDockingForm({
+export function NewBerthingForm({
   close,
   resultCallback,
-}: NewDockingContentProps) {
+}: NewBerthingContentProps) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
-  const getDockingSavedNotification = useDockingSavedNotification();
-  const { dispatchDockings, dispatchDockingEvents } = useDockings();
+  const getBerthingSavedNotification = useBerthingSavedNotification();
+  const { dispatchBerthings, dispatchPortEvents } = useBerthings();
   const vessels = useVessels();
   const [loading, setLoading] = useState(false);
-  const [imoValue, setImoValue] = useState<DockingFormValues['imo']>('');
+  const [imoValue, setImoValue] = useState<BerthingFormValues['imo']>('');
   const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>();
   const [locode, setLocode] = useState(initialValues.locode);
   const [portArea, setPortArea] = useState(initialValues.portArea);
-  const validate = useDockingFormValidation();
+  const validate = useBerthingFormValidation();
   const imoRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<DockingFormValues>({
+  const form = useForm<BerthingFormValues>({
     mode: 'uncontrolled',
     initialValues,
     validate,
@@ -139,7 +139,7 @@ export function NewDockingForm({
     form.validateField('etaTime');
   });
 
-  const newDockingSubmitHandler = async ({
+  const submitHandler = async ({
     imo,
     vesselName,
     locode,
@@ -149,7 +149,7 @@ export function NewDockingForm({
     etaTime,
     etdDate,
     etdTime,
-  }: DockingFormValues) => {
+  }: BerthingFormValues) => {
     if (imo === '') {
       return;
     }
@@ -157,8 +157,8 @@ export function NewDockingForm({
     setLoading(true);
 
     try {
-      const dockingsResponse = await supabase
-        .from('dockings')
+      const berhingsResponse = await supabase
+        .from('berthings')
         .insert({
           vessel_imo: imo,
           vessel_name: vesselName || null,
@@ -169,12 +169,12 @@ export function NewDockingForm({
         .select()
         .single();
 
-      if (dockingsResponse.data) {
-        dispatchDockings({ type: 'added', item: dockingsResponse.data });
+      if (berhingsResponse.data) {
+        dispatchBerthings({ type: 'added', item: berhingsResponse.data });
       }
 
-      if (dockingsResponse.error) {
-        showNotification(getErrorNotification(dockingsResponse.status));
+      if (berhingsResponse.error) {
+        showNotification(getErrorNotification(berhingsResponse.status));
         return;
       }
 
@@ -183,9 +183,9 @@ export function NewDockingForm({
       if (etaDate) {
         queries.push(
           supabase
-            .from('docking_events')
+            .from('port_events')
             .insert({
-              docking: dockingsResponse.data.id,
+              berthing: berhingsResponse.data.id,
               type: 'arrival',
               estimated_date: dayjs(etaDate).format('YYYY-MM-DD'),
               estimated_time: etaTime || null,
@@ -198,9 +198,9 @@ export function NewDockingForm({
       if (etdDate) {
         queries.push(
           supabase
-            .from('docking_events')
+            .from('port_events')
             .insert({
-              docking: dockingsResponse.data.id,
+              berthing: berhingsResponse.data.id,
               type: 'departure',
               estimated_date: dayjs(etaDate).format('YYYY-MM-DD'),
               estimated_time: etdTime || null,
@@ -210,32 +210,32 @@ export function NewDockingForm({
         );
       }
 
-      const dockingEventsResponses = await Promise.all(queries);
-      dockingEventsResponses.forEach((response) => {
+      const portEventsResponse = await Promise.all(queries);
+      portEventsResponse.forEach((response) => {
         if (response.data) {
-          dispatchDockingEvents({ type: 'added', item: response.data });
+          dispatchPortEvents({ type: 'added', item: response.data });
         }
       });
 
-      for (const response of dockingEventsResponses) {
+      for (const response of portEventsResponse) {
         if (response.error) {
-          showNotification(getErrorNotification(dockingsResponse.status));
+          showNotification(getErrorNotification(berhingsResponse.status));
           return;
         }
       }
-      const [arrival, departure] = dockingEventsResponses.map(
+      const [arrival, departure] = portEventsResponse.map(
         (response) => response.data
       );
 
-      const resultData: DockingRowData = {
-        ...dockingsResponse.data,
-        created: new Date(dockingsResponse.data.created_at),
+      const resultData: BerthingRowData = {
+        ...berhingsResponse.data,
+        created: new Date(berhingsResponse.data.created_at),
         arrival,
         departure,
       };
 
       resultCallback?.(resultData);
-      showNotification(getDockingSavedNotification());
+      showNotification(getBerthingSavedNotification());
       close();
     } catch {
       showNotification(getErrorNotification(500));
@@ -245,9 +245,9 @@ export function NewDockingForm({
   };
 
   return (
-    <form onSubmit={form.onSubmit(newDockingSubmitHandler)}>
+    <form onSubmit={form.onSubmit(submitHandler)}>
       <Stack>
-        <DockingFormFields
+        <BerthingFormFields
           form={form}
           vessel={vessel}
           imoRef={imoRef}

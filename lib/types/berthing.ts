@@ -1,4 +1,4 @@
-export interface DockingFormValues {
+export interface BerthingFormValues {
   vesselName: string;
   imo: number | '';
   locode: string;
@@ -21,8 +21,8 @@ export type BerthIdentifier = {
   berth_code: string;
 };
 
-export interface DockingRowData extends AppTypes.Docking {
+export interface BerthingRowData extends AppTypes.Berthing {
   created: Date;
-  arrival: AppTypes.DockingEvent | null;
-  departure: AppTypes.DockingEvent | null;
+  arrival: AppTypes.PortEvent | null;
+  departure: AppTypes.PortEvent | null;
 }

@@ -3,16 +3,16 @@
 import { FormButtons } from '@/app/components/FormButtons';
 import { useVessels } from '@/app/context/VesselContext';
 import {
-  useDockingSavedNotification,
+  useBerthingSavedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
-  DockingFormValues,
-  DockingRowData,
+  BerthingFormValues,
+  BerthingRowData,
   PortAreaIdentifier,
-} from '@/lib/types/docking';
+} from '@/lib/types/berthing';
 import { Mutation } from '@/lib/types/mutation';
 import { Group, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -20,73 +20,73 @@ import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
-import { useDockings } from '@/app/context/DockingContext';
-import useDockingFormValidation from '../../hooks/useDockingFormValidation';
-import { DockingFormFields } from './DockingFormFields';
+import { useBerthings } from '@/app/context/BerthingContext';
+import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
+import { BerthingFormFields } from './BerthingFormFields';
 
-interface EditDockingContentProps {
-  dockingRow: DockingRowData;
+interface EditBerthingContentProps {
+  berthingRow: BerthingRowData;
   close(): void;
 }
 
-type DockingEventMutation = Mutation<AppTypes.DockingEvent>;
-type DockingEventQuery = DockingEventMutation['query'];
-type StateUpdateHandler = DockingEventMutation['stateUpdateHandler'];
+type PortEventMutation = Mutation<AppTypes.PortEvent>;
+type PortEventQuery = PortEventMutation['query'];
+type StateUpdateHandler = PortEventMutation['stateUpdateHandler'];
 
-export function EditDockingForm({
-  dockingRow,
+export function EditBerthingForm({
+  berthingRow,
   close,
-}: EditDockingContentProps) {
+}: EditBerthingContentProps) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
-  const getDockingSavedNotification = useDockingSavedNotification();
-  const { dispatchDockings, dispatchDockingEvents } = useDockings();
+  const getBerthingSavedNotification = useBerthingSavedNotification();
+  const { dispatchBerthings, dispatchPortEvents } = useBerthings();
   const vessels = useVessels();
   const vesselMatch = vessels.find(
-    (vessel) => vessel.imo === dockingRow.vessel_imo
+    (vessel) => vessel.imo === berthingRow.vessel_imo
   );
   const [loading, setLoading] = useState(false);
   const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>(
     vesselMatch
   );
-  const [locode, setLocode] = useState(dockingRow.locode || '');
+  const [locode, setLocode] = useState(berthingRow.locode || '');
   const portAreaIdentifier: PortAreaIdentifier | null =
-    dockingRow.locode && dockingRow.port_area_code
+    berthingRow.locode && berthingRow.port_area_code
       ? {
-          locode: dockingRow.locode,
-          port_area_code: dockingRow.port_area_code,
+          locode: berthingRow.locode,
+          port_area_code: berthingRow.port_area_code,
         }
       : null;
   const berthIdentifier: BerthIdentifier | null =
-    dockingRow.locode && dockingRow.port_area_code && dockingRow.berth_code
+    berthingRow.locode && berthingRow.port_area_code && berthingRow.berth_code
       ? {
-          locode: dockingRow.locode,
-          port_area_code: dockingRow.port_area_code,
-          berth_code: dockingRow.berth_code,
+          locode: berthingRow.locode,
+          port_area_code: berthingRow.port_area_code,
+          berth_code: berthingRow.berth_code,
         }
       : null;
   const [portArea, setPortArea] = useState(
     portAreaIdentifier ? JSON.stringify(portAreaIdentifier) : ''
   );
-  const validate = useDockingFormValidation();
+  const validate = useBerthingFormValidation();
   const imoRef = useRef<HTMLInputElement>(null);
-  const initialValues: DockingFormValues = {
-    vesselName: dockingRow.vessel_imo.toString(),
-    imo: dockingRow.vessel_imo,
-    locode: dockingRow.locode || '',
+  const initialValues: BerthingFormValues = {
+    vesselName: berthingRow.vessel_imo.toString(),
+    imo: berthingRow.vessel_imo,
+    locode: berthingRow.locode || '',
     portArea: portAreaIdentifier ? JSON.stringify(portAreaIdentifier) : '',
     berth: berthIdentifier ? JSON.stringify(berthIdentifier) : '',
-    etaDate: dockingRow.arrival
-      ? dayjs(dockingRow.arrival.estimated_date).toDate()
+    etaDate: berthingRow.arrival
+      ? dayjs(berthingRow.arrival.estimated_date).toDate()
       : '',
-    etaTime: dockingRow.arrival?.estimated_time || '',
-    etdDate: dockingRow.departure
-      ? dayjs(dockingRow.departure.estimated_date).toDate()
+    etaTime: berthingRow.arrival?.estimated_time || '',
+    etdDate: berthingRow.departure
+      ? dayjs(berthingRow.departure.estimated_date).toDate()
       : '',
-    etdTime: dockingRow.departure?.estimated_time || '',
+    etdTime: berthingRow.departure?.estimated_time || '',
   };
 
-  const form = useForm<DockingFormValues>({
+  const form = useForm<BerthingFormValues>({
     mode: 'uncontrolled',
     initialValues,
     validate,
@@ -151,7 +151,7 @@ export function EditDockingForm({
     }
   });
 
-  const updateDockingSubmitHandler = async ({
+  const submitHandler = async ({
     imo,
     vesselName,
     locode,
@@ -161,23 +161,23 @@ export function EditDockingForm({
     etaTime,
     etdDate,
     etdTime,
-  }: DockingFormValues) => {
+  }: BerthingFormValues) => {
     if (imo === '') {
       return;
     }
 
     setLoading(true);
 
-    const queries: DockingEventQuery[] = [];
+    const queries: PortEventQuery[] = [];
     const stateUpdateHandlers: StateUpdateHandler[] = [];
 
     const prepareUpdate = (
       date: Date,
       time: string,
       id: string
-    ): DockingEventMutation => ({
+    ): PortEventMutation => ({
       query: supabase
-        .from('docking_events')
+        .from('port_events')
         .update({
           estimated_date: dayjs(date).format('YYYY-MM-DD'),
           estimated_time: time || null,
@@ -185,47 +185,47 @@ export function EditDockingForm({
         .eq('id', id)
         .select()
         .single(),
-      stateUpdateHandler: (data: AppTypes.DockingEvent) => {
-        dispatchDockingEvents({ type: 'changed', item: data });
+      stateUpdateHandler: (data: AppTypes.PortEvent) => {
+        dispatchPortEvents({ type: 'changed', item: data });
       },
     });
 
-    const prepareRemove = (id: string): DockingEventMutation => ({
+    const prepareRemove = (id: string): PortEventMutation => ({
       query: supabase
-        .from('docking_events')
+        .from('port_events')
         .delete()
         .eq('id', id)
         .select()
         .single(),
       stateUpdateHandler: () => {
-        dispatchDockingEvents({ type: 'deleted', id });
+        dispatchPortEvents({ type: 'deleted', id });
       },
     });
 
     const prepareInsert = (
-      docking: string,
-      type: AppTypes.DockingEvent['type'],
+      berthing: string,
+      type: AppTypes.PortEvent['type'],
       date: Date,
       time: string
-    ): DockingEventMutation => ({
+    ): PortEventMutation => ({
       query: supabase
-        .from('docking_events')
+        .from('port_events')
         .insert({
-          docking,
+          berthing,
           type,
           estimated_date: dayjs(date).format('YYYY-MM-DD'),
           estimated_time: time || null,
         })
         .select()
         .single(),
-      stateUpdateHandler: (data: AppTypes.DockingEvent) => {
-        dispatchDockingEvents({ type: 'added', item: data });
+      stateUpdateHandler: (data: AppTypes.PortEvent) => {
+        dispatchPortEvents({ type: 'added', item: data });
       },
     });
 
     try {
-      const dockingsResponse = await supabase
-        .from('dockings')
+      const berthingsResponse = await supabase
+        .from('berthings')
         .update({
           vessel_imo: imo,
           vessel_name: vesselName || null,
@@ -233,32 +233,32 @@ export function EditDockingForm({
           port_area_code: portArea || null,
           berth_code: berth || null,
         })
-        .eq('id', dockingRow.id)
+        .eq('id', berthingRow.id)
         .select()
         .single();
 
-      if (dockingsResponse.data) {
-        dispatchDockings({ type: 'changed', item: dockingsResponse.data });
+      if (berthingsResponse.data) {
+        dispatchBerthings({ type: 'changed', item: berthingsResponse.data });
       }
 
-      if (dockingsResponse.error) {
-        showNotification(getErrorNotification(dockingsResponse.status));
+      if (berthingsResponse.error) {
+        showNotification(getErrorNotification(berthingsResponse.status));
         return;
       }
 
-      handleDockingEvent(
-        dockingRow.arrival,
+      handlePortEvent(
+        berthingRow.arrival,
         etaDate,
         etaTime,
-        dockingsResponse.data.id,
+        berthingsResponse.data.id,
         'arrival'
       );
 
-      handleDockingEvent(
-        dockingRow.departure,
+      handlePortEvent(
+        berthingRow.departure,
         etdDate,
         etdTime,
-        dockingsResponse.data.id,
+        berthingsResponse.data.id,
         'departure'
       );
 
@@ -271,12 +271,12 @@ export function EditDockingForm({
 
       for (const response of responses) {
         if (response.error) {
-          showNotification(getErrorNotification(dockingsResponse.status));
+          showNotification(getErrorNotification(berthingsResponse.status));
           return;
         }
       }
 
-      showNotification(getDockingSavedNotification());
+      showNotification(getBerthingSavedNotification());
       close();
     } catch {
       showNotification(getErrorNotification(500));
@@ -284,37 +284,36 @@ export function EditDockingForm({
       setLoading(false);
     }
 
-    function handleDockingEvent(
-      dockingEvent: AppTypes.DockingEvent | null,
+    function handlePortEvent(
+      portEvent: AppTypes.PortEvent | null,
       date: Date | '',
       time: string,
-      docking: string,
-      type: AppTypes.DockingEvent['type']
+      berthing: string,
+      type: AppTypes.PortEvent['type']
     ) {
-      if (dockingEvent) {
+      if (portEvent) {
         if (date) {
           if (
-            date.getTime() !==
-              new Date(dockingEvent.estimated_date).getTime() ||
-            time !== (dockingEvent.estimated_time || '')
+            date.getTime() !== new Date(portEvent.estimated_date).getTime() ||
+            time !== (portEvent.estimated_time || '')
           ) {
             const { query, stateUpdateHandler } = prepareUpdate(
               date,
               time,
-              dockingEvent.id
+              portEvent.id
             );
             queries.push(query);
             stateUpdateHandlers.push(stateUpdateHandler);
           }
         } else {
-          const { query, stateUpdateHandler } = prepareRemove(dockingEvent.id);
+          const { query, stateUpdateHandler } = prepareRemove(portEvent.id);
           queries.push(query);
           stateUpdateHandlers.push(stateUpdateHandler);
         }
       } else {
         if (date) {
           const { query, stateUpdateHandler } = prepareInsert(
-            docking,
+            berthing,
             type,
             date,
             time
@@ -327,9 +326,9 @@ export function EditDockingForm({
   };
 
   return (
-    <form onSubmit={form.onSubmit(updateDockingSubmitHandler)}>
+    <form onSubmit={form.onSubmit(submitHandler)}>
       <Stack>
-        <DockingFormFields
+        <BerthingFormFields
           form={form}
           vessel={vessel}
           imoRef={imoRef}

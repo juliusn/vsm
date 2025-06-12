@@ -1,11 +1,11 @@
-import { DockingState } from '@/app/context/DockingContext';
+import { BerthingState } from '@/app/context/BerthingContext';
 import { LocationState } from '@/app/context/LocationContext';
 import { createClient } from './supabase/server';
 
 type Result = {
   locationState: LocationState;
   vessels: AppTypes.Vessel[];
-  dockingState: DockingState;
+  berthingState: BerthingState;
   berthServices: AppTypes.BerthService[];
   commonServices: AppTypes.CommonService[];
 };
@@ -18,8 +18,8 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     locationsResponse,
     portAreasResponse,
     berthsResponse,
-    dockingsResponse,
-    dockingEventsResponse,
+    berthingsResponse,
+    portEventsResponse,
     berthServiceResponse,
     commonServiceResponse,
   ] = await Promise.all([
@@ -36,10 +36,10 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
       .order('port_area_name'),
     supabase.from('berths').select().eq('enabled', true).order('berth_name'),
     supabase
-      .from('dockings')
+      .from('berthings')
       .select()
       .order('created_at', { ascending: false }),
-    supabase.from('docking_events').select(),
+    supabase.from('port_events').select(),
     supabase.from('berth_services').select(),
     supabase.from('common_services').select(),
   ]);
@@ -49,8 +49,8 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     locationsResponse.data &&
     portAreasResponse.data &&
     berthsResponse.data &&
-    dockingsResponse.data &&
-    dockingEventsResponse.data &&
+    berthingsResponse.data &&
+    portEventsResponse.data &&
     berthServiceResponse.data &&
     commonServiceResponse.data;
 
@@ -120,9 +120,9 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
         berths: filteredBerths,
       },
       vessels,
-      dockingState: {
-        dockings: dockingsResponse.data,
-        dockingEvents: dockingEventsResponse.data,
+      berthingState: {
+        berthings: berthingsResponse.data,
+        portEvents: portEventsResponse.data,
       },
       berthServices: berthServiceResponse.data.map((service) => ({
         ...service,

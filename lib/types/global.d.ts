@@ -36,8 +36,8 @@ declare global {
       referencePointC: number;
       referencePointD: number;
     };
-    type Docking = Database['public']['Tables']['dockings']['Row'];
-    type DockingEvent = Database['public']['Tables']['docking_events']['Row'];
+    type Berthing = Database['public']['Tables']['berthings']['Row'];
+    type PortEvent = Database['public']['Tables']['port_events']['Row'];
   }
 }
 

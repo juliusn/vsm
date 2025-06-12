@@ -1,10 +1,10 @@
-import { DockingFormValues } from '@/lib/types/docking';
+import { BerthingFormValues } from '@/lib/types/berthing';
 import { FormValidateInput, isNotEmpty } from '@mantine/form';
 import dayjs from 'dayjs';
 import { useTranslations } from 'next-intl';
 
-export default function useDockingFormValidation(): FormValidateInput<DockingFormValues> {
-  const t = useTranslations('NewDockingForm');
+export default function useBerthingFormValidation(): FormValidateInput<BerthingFormValues> {
+  const t = useTranslations('NewBerthingForm');
   const isSevenDigits = (errorMessage: string) => (value: number | '') =>
     value.toString().length !== 7 ? errorMessage : null;
 
@@ -12,7 +12,7 @@ export default function useDockingFormValidation(): FormValidateInput<DockingFor
     imo: (value: number | '') =>
       isNotEmpty(t('imoRequiredError'))(value) ??
       isSevenDigits(t('imoLengthError'))(value),
-    etaDate: (value: Date | '', values: DockingFormValues) => {
+    etaDate: (value: Date | '', values: BerthingFormValues) => {
       if (!value && values.etaTime) return t('enterDateOrRemoveTimeError');
 
       if (value && values.etdDate) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { getLocationInputItems } from '@/lib/getLocationInputItems';
-import { DockingFormValues } from '@/lib/types/docking';
+import { BerthingFormValues } from '@/lib/types/berthing';
 import { UseFormReturnType } from '@mantine/form';
 import { useMemo } from 'react';
 import { BerthInput } from './BerthInput';
@@ -15,8 +15,8 @@ export function LocationInputs({
   form,
 }: {
   form: UseFormReturnType<
-    DockingFormValues,
-    (values: DockingFormValues) => DockingFormValues
+    BerthingFormValues,
+    (values: BerthingFormValues) => BerthingFormValues
   >;
   locode: string;
   portArea: string;

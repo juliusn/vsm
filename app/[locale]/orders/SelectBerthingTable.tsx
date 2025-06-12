@@ -1,23 +1,20 @@
 'use client';
 
 import { PaginatedTable } from '@/app/components/PaginatedTable';
-import { useDockings } from '@/app/context/DockingContext';
+import { useBerthings } from '@/app/context/BerthingContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
-import { DockingRowData } from '@/lib/types/docking';
+import { BerthingRowData } from '@/lib/types/berthing';
 import { DataTableColumn, DataTableProps } from 'mantine-datatable';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 
-type SelectDockingTableProps = Pick<
-  DataTableProps<DockingRowData>,
-  'onRowClick'
->;
+type Props = Pick<DataTableProps<BerthingRowData>, 'onRowClick'>;
 
-export function SelectDockingTable(props: SelectDockingTableProps) {
-  const t = useTranslations('DockingTable');
+export function SelectBerthingTable(props: Props) {
+  const t = useTranslations('BerthingTable');
   const format = useFormatter();
 
-  const columns: DataTableColumn<DockingRowData>[] = [
+  const columns: DataTableColumn<BerthingRowData>[] = [
     {
       accessor: 'created_at',
       title: t('created'),
@@ -65,35 +62,36 @@ export function SelectDockingTable(props: SelectDockingTableProps) {
     },
   ];
 
-  const { dockings, dockingEvents } = useDockings();
+  const { berthings: berthings, portEvents: portEvents } = useBerthings();
 
-  const dockingRowData = useMemo(
+  const berthingRowData = useMemo(
     () =>
-      dockings.map((docking): DockingRowData => {
+      berthings.map((berthing): BerthingRowData => {
         const arrival =
-          dockingEvents.find(
-            (event) => event.docking === docking.id && event.type === 'arrival'
+          portEvents.find(
+            (event) =>
+              event.berthing === berthing.id && event.type === 'arrival'
           ) || null;
         const departure =
-          dockingEvents.find(
+          portEvents.find(
             (event) =>
-              event.docking === docking.id && event.type === 'departure'
+              event.berthing === berthing.id && event.type === 'departure'
           ) || null;
         return {
-          ...docking,
-          created: new Date(docking.created_at),
+          ...berthing,
+          created: new Date(berthing.created_at),
           arrival,
           departure,
         };
       }),
-    [dockings, dockingEvents]
+    [berthings, portEvents]
   );
 
-  dockingRowData.sort((a, b) => b.created.getTime() - a.created.getTime());
+  berthingRowData.sort((a, b) => b.created.getTime() - a.created.getTime());
 
   return (
-    <PaginatedTable<DockingRowData>
-      allRecords={dockingRowData}
+    <PaginatedTable<BerthingRowData>
+      allRecords={berthingRowData}
       columns={columns}
       highlightOnHover={true}
       {...props}

@@ -1,6 +1,6 @@
 'use client';
 
-import { DockingFormValues } from '@/lib/types/docking';
+import { BerthingFormValues } from '@/lib/types/berthing';
 import { Fieldset, Group, Stack, Text } from '@mantine/core';
 import { DateInput, TimeInput } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
@@ -14,10 +14,10 @@ import { useTranslations } from 'next-intl';
 import { LocationInputs } from './LocationInputs';
 import { VesselInputs } from './VesselInputs';
 
-interface DockingFormFieldsProps {
+interface BerthingFormFieldsProps {
   form: UseFormReturnType<
-    DockingFormValues,
-    (values: DockingFormValues) => DockingFormValues
+    BerthingFormValues,
+    (values: BerthingFormValues) => BerthingFormValues
   >;
   vessel: AppTypes.Vessel | undefined;
   imoRef: React.RefObject<HTMLInputElement | null>;
@@ -25,14 +25,14 @@ interface DockingFormFieldsProps {
   portArea: string;
 }
 
-export function DockingFormFields({
+export function BerthingFormFields({
   form,
   vessel,
   imoRef,
   locode,
   portArea,
-}: DockingFormFieldsProps) {
-  const t = useTranslations('NewDockingForm');
+}: BerthingFormFieldsProps) {
+  const t = useTranslations('NewBerthingForm');
   return (
     <>
       <Fieldset

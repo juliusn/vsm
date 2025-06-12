@@ -1,13 +1,13 @@
 'use client';
 
-import { DockingPreview } from '@/app/components/DockingPreview';
+import { BerthingPreview } from '@/app/components/BerthingPreview';
 import { useCommonServices } from '@/app/context/CommonServiceContext';
 import {
   useOrderSavedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
-import { DockingRowData } from '@/lib/types/docking';
+import { BerthingRowData } from '@/lib/types/berthing';
 import {
   Button,
   Checkbox,
@@ -28,11 +28,11 @@ import { IconAnchor, IconChecklist } from '@tabler/icons-react';
 import 'dayjs/locale/fi';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { NewDockingForm } from '../port-traffic/NewDockingForm';
-import { SelectDockingTable } from './SelectDockingTable';
+import { NewBerthingForm } from '../port-traffic/NewBerthingForm';
+import { SelectBerthingTable } from './SelectBerthingTable';
 
 type NewOrderValues = {
-  docking: string;
+  berthing: string;
   services: string[];
 };
 
@@ -40,38 +40,40 @@ export function NewOrderForm({ close }: { close(): void }) {
   const t = useTranslations('NewOrderForm');
   const locale = useLocale() as AppTypes.Locale;
   const supabase = createClient();
-  const [docking, setDocking] = useState<DockingRowData | null>(null);
-  const [preview, setPreview] = useState<DockingRowData | null>(null);
+  const [berthing, setBerthing] = useState<BerthingRowData | null>(null);
+  const [preview, setPreview] = useState<BerthingRowData | null>(null);
   const [loading, setLoading] = useState(false);
   const { commonServices } = useCommonServices();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSavedNotification = useOrderSavedNotification();
 
   const [
-    selectDockingOpened,
-    { open: openSelectDocking, close: closeSelectDocking },
+    selectBerthingOpened,
+    { open: openSelectBerthing, close: closeSelectBerthing },
   ] = useDisclosure();
 
-  const [newDockingOpened, { open: openNewDocking, close: closeNewDocking }] =
-    useDisclosure();
+  const [
+    newBerthingOpened,
+    { open: openNewBerthing, close: closeNewBerthing },
+  ] = useDisclosure();
 
   const form = useForm<NewOrderValues>({
     mode: 'uncontrolled',
     validateInputOnChange: true,
-    initialValues: { docking: '', services: [] },
+    initialValues: { berthing: '', services: [] },
     validate: {
-      docking: (docking) => (docking ? null : t('selectDockingError')),
+      berthing: (berthing) => (berthing ? null : t('selectBerthingError')),
       services: (services) =>
         services.length ? null : t('selectServicesError'),
     },
   });
 
-  const handleSubmit = async ({ docking, services }: NewOrderValues) => {
+  const handleSubmit = async ({ berthing, services }: NewOrderValues) => {
     setLoading(true);
 
     const { data, error, status } = await supabase
       .from('orders')
-      .insert({ docking })
+      .insert({ berthing })
       .select()
       .single();
 
@@ -106,27 +108,27 @@ export function NewOrderForm({ close }: { close(): void }) {
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <Modal
         size="auto"
-        opened={selectDockingOpened}
-        onClose={closeSelectDocking}
-        title={t('selectDocking')}>
-        <SelectDockingTable
+        opened={selectBerthingOpened}
+        onClose={closeSelectBerthing}
+        title={t('selectBerthing')}>
+        <SelectBerthingTable
           onRowClick={({ record }) => {
-            setDocking(record);
+            setBerthing(record);
             setPreview(record);
-            form.setFieldValue('docking', record.id);
+            form.setFieldValue('berthing', record.id);
             form.setFieldValue('services', []);
-            closeSelectDocking();
+            closeSelectBerthing();
           }}
         />
       </Modal>
       <Modal
-        opened={newDockingOpened}
-        onClose={closeNewDocking}
-        title={t('createNewDocking')}>
-        <NewDockingForm
-          close={closeNewDocking}
+        opened={newBerthingOpened}
+        onClose={closeNewBerthing}
+        title={t('createNewBerthing')}>
+        <NewBerthingForm
+          close={closeNewBerthing}
           resultCallback={(data) => {
-            setDocking(data);
+            setBerthing(data);
             setPreview(data);
             form.setFieldValue('services', []);
           }}
@@ -135,13 +137,13 @@ export function NewOrderForm({ close }: { close(): void }) {
       <Stack>
         <InputWrapper
           required
-          {...form.getInputProps('docking')}
-          key={form.key('docking')}>
+          {...form.getInputProps('berthing')}
+          key={form.key('berthing')}>
           <Fieldset
             legend={
               <Group>
                 <IconAnchor size={20} color="var(--mantine-color-blue-5)" />
-                <Text>{t('docking')}</Text>
+                <Text>{t('berthing')}</Text>
               </Group>
             }>
             <Stack>
@@ -149,30 +151,30 @@ export function NewOrderForm({ close }: { close(): void }) {
                 <Button
                   variant="outline"
                   onClick={() => {
-                    openNewDocking();
+                    openNewBerthing();
                   }}>
                   {t('create')}
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => {
-                    openSelectDocking();
+                    openSelectBerthing();
                   }}>
                   {t('select')}
                 </Button>
                 <Button
                   variant="default"
-                  disabled={!docking}
+                  disabled={!berthing}
                   onClick={() => {
-                    setDocking(null);
+                    setBerthing(null);
                     form.reset();
                   }}>
                   {t('removeSelection')}
                 </Button>
               </Group>
-              <Collapse in={!!docking}>
+              <Collapse in={!!berthing}>
                 <Paper withBorder shadow="sm">
-                  {preview && <DockingPreview data={preview} />}
+                  {preview && <BerthingPreview data={preview} />}
                 </Paper>
               </Collapse>
             </Stack>
@@ -183,14 +185,14 @@ export function NewOrderForm({ close }: { close(): void }) {
           {...form.getInputProps('services')}
           key={form.key('services')}>
           <Fieldset
-            disabled={!docking}
+            disabled={!berthing}
             legend={
               <Group>
                 <IconChecklist size={20} color="var(--mantine-color-blue-5)" />
                 <Text>{t('services')}</Text>
               </Group>
             }>
-            <Tooltip disabled={!!docking} label={t('servicesTooltip')}>
+            <Tooltip disabled={!!berthing} label={t('servicesTooltip')}>
               <Stack>
                 {commonServices.map((service, index) => (
                   <Checkbox

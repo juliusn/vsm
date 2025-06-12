@@ -1,5 +1,5 @@
 import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
-import { DockingProvider } from '@/app/context/DockingContext';
+import { BerthingProvider } from '@/app/context/BerthingContext';
 import { LocationProvider } from '@/app/context/LocationContext';
 import { VesselProvider } from '@/app/context/VesselContext';
 import { fetchOrdersData } from '@/lib/fetchOrdersData';
@@ -23,10 +23,10 @@ export default async function OrdersLayout({
         berths: data.locationState.berths,
       }}>
       <VesselProvider vessels={data.vessels}>
-        <DockingProvider
+        <BerthingProvider
           initialState={{
-            dockings: data.dockingState.dockings,
-            dockingEvents: data.dockingState.dockingEvents,
+            berthings: data.berthingState.berthings,
+            portEvents: data.berthingState.portEvents,
           }}>
           <BerthServiceProvider initialValues={data.berthServices}>
             <CommonServiceProvider initialValues={data.commonServices}>
@@ -36,7 +36,7 @@ export default async function OrdersLayout({
               </Stack>
             </CommonServiceProvider>
           </BerthServiceProvider>
-        </DockingProvider>
+        </BerthingProvider>
       </VesselProvider>
     </LocationProvider>
   ) : (

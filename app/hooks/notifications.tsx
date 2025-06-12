@@ -44,8 +44,8 @@ export const useServiceSavedNotification = () => {
   );
 };
 
-export const useDockingSavedNotification = () => {
-  const t = useTranslations('DockingSavedNotification');
+export const useBerthingSavedNotification = () => {
+  const t = useTranslations('BerthingSavedNotification');
   return useCallback(
     (): NotificationData => ({
       title: t('title'),
@@ -57,8 +57,8 @@ export const useDockingSavedNotification = () => {
   );
 };
 
-export const useDockingDeletedNotification = () => {
-  const t = useTranslations('DockingDeletedNotification');
+export const useBerthingDeletedNotification = () => {
+  const t = useTranslations('BerthingDeletedNotification');
   return useCallback(
     (): NotificationData => ({
       title: t('title'),

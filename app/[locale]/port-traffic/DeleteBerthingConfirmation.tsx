@@ -1,44 +1,44 @@
 'use client';
 
 import { DeleteConfirmation } from '@/app/components/DeleteConfirmation';
-import { DockingPreview } from '@/app/components/DockingPreview';
+import { BerthingPreview } from '@/app/components/BerthingPreview';
 import {
-  useDockingDeletedNotification,
+  useBerthingDeletedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
-import { DockingRowData } from '@/lib/types/docking';
+import { BerthingRowData } from '@/lib/types/berthing';
 import { showNotification } from '@mantine/notifications';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { useDockings } from '@/app/context/DockingContext';
+import { useBerthings } from '@/app/context/BerthingContext';
 
-export function DeleteDockingConfirmation({
+export function DeleteBerthingConfirmation({
   data,
   cancel,
   afterConfirm,
 }: {
-  data: DockingRowData;
+  data: BerthingRowData;
   cancel(): void;
   afterConfirm?: () => void;
 }) {
-  const t = useTranslations('DeleteDockingConfirmation');
+  const t = useTranslations('DeleteBerthingConfirmation');
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
-  const { dispatchDockings, dispatchDockingEvents } = useDockings();
+  const { dispatchBerthings, dispatchPortEvents } = useBerthings();
   const getErrorNotification = usePostgresErrorNotification();
-  const getDockingDeletedNotification = useDockingDeletedNotification();
+  const getBerthingDeletedNotification = useBerthingDeletedNotification();
 
   return (
     <DeleteConfirmation
       message={t('message')}
-      preview={<DockingPreview data={data} />}
+      preview={<BerthingPreview data={data} />}
       cancel={cancel}
       onConfirm={async () => {
         setLoading(true);
 
         const { error, status } = await supabase
-          .from('dockings')
+          .from('berthings')
           .delete()
           .eq('id', data.id);
 
@@ -49,13 +49,13 @@ export function DeleteDockingConfirmation({
           return;
         }
 
-        dispatchDockings({ type: 'deleted', id: data.id });
-        dispatchDockingEvents({
+        dispatchBerthings({ type: 'deleted', id: data.id });
+        dispatchPortEvents({
           type: 'cascade-deleted',
           id: data.id,
-          foreignKey: 'docking',
+          foreignKey: 'berthing',
         });
-        showNotification(getDockingDeletedNotification());
+        showNotification(getBerthingDeletedNotification());
         close();
         afterConfirm?.();
       }}

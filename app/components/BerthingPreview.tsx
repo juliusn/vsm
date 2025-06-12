@@ -1,12 +1,12 @@
 'use client';
 
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
-import { DockingRowData } from '@/lib/types/docking';
+import { BerthingRowData } from '@/lib/types/berthing';
 import { Table } from '@mantine/core';
 import { useFormatter, useTranslations } from 'next-intl';
 
-export function DockingPreview({ data }: { data: DockingRowData }) {
-  const t = useTranslations('DockingTable');
+export function BerthingPreview({ data }: { data: BerthingRowData }) {
+  const t = useTranslations('BerthingTable');
   const format = useFormatter();
 
   return (
@@ -14,7 +14,7 @@ export function DockingPreview({ data }: { data: DockingRowData }) {
       captionSide="top"
       variant="vertical"
       styles={{ th: { backgroundColor: 'transparent' } }}>
-      <Table.Caption>{t('dockingDetails')}</Table.Caption>
+      <Table.Caption>{t('berthingDetails')}</Table.Caption>
       <Table.Tbody>
         <Table.Tr>
           <Table.Th>{t('created')}</Table.Th>

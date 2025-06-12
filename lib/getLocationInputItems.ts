@@ -1,5 +1,5 @@
 import { ComboboxItem, ComboboxItemGroup } from '@mantine/core';
-import { PortAreaIdentifier } from './types/docking';
+import { PortAreaIdentifier } from './types/berthing';
 
 export function getLocationInputItems(
   locations: AppTypes.Location[],

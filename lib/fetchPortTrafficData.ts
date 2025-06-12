@@ -1,4 +1,4 @@
-import { DockingState } from '@/app/context/DockingContext';
+import { BerthingState } from '@/app/context/BerthingContext';
 import { LocationState } from '@/app/context/LocationContext';
 import { createClient } from './supabase/server';
 
@@ -6,7 +6,7 @@ export const fetchPortTrafficData = async (): Promise<
   | {
       locationState: LocationState;
       vessels: AppTypes.Vessel[];
-      dockingState: DockingState;
+      berthingState: BerthingState;
     }
   | undefined
 > => {
@@ -18,8 +18,8 @@ export const fetchPortTrafficData = async (): Promise<
     locationsResponse,
     portAreasResponse,
     berthsResponse,
-    dockingsResponse,
-    dockingEventsResponse,
+    berthingsResponse,
+    portEventsResponse,
   ] = await Promise.all([
     supabase
       .from('locations')
@@ -33,10 +33,10 @@ export const fetchPortTrafficData = async (): Promise<
       .order('port_area_name'),
     supabase.from('berths').select().eq('enabled', true).order('berth_name'),
     supabase
-      .from('dockings')
+      .from('berthings')
       .select()
       .order('created_at', { ascending: false }),
-    supabase.from('docking_events').select(),
+    supabase.from('port_events').select(),
   ]);
 
   const success =
@@ -44,8 +44,8 @@ export const fetchPortTrafficData = async (): Promise<
     locationsResponse.data &&
     portAreasResponse.data &&
     berthsResponse.data &&
-    dockingsResponse.data &&
-    dockingEventsResponse.data;
+    berthingsResponse.data &&
+    portEventsResponse.data;
 
   if (success) {
     const vesselsData = (await vesselsResponse.json()) as AppTypes.Vessel[];
@@ -102,9 +102,9 @@ export const fetchPortTrafficData = async (): Promise<
         berths: filteredBerths,
       },
       vessels,
-      dockingState: {
-        dockings: dockingsResponse.data,
-        dockingEvents: dockingEventsResponse.data,
+      berthingState: {
+        berthings: berthingsResponse.data,
+        portEvents: portEventsResponse.data,
       },
     };
   }

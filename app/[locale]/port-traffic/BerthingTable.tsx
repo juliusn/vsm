@@ -1,23 +1,23 @@
 'use client';
 
 import { PaginatedTable } from '@/app/components/PaginatedTable';
-import { useDockings } from '@/app/context/DockingContext';
+import { useBerthings } from '@/app/context/BerthingContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
-import { DockingRowData } from '@/lib/types/docking';
+import { BerthingRowData } from '@/lib/types/berthing';
 import { ActionIcon, Center, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { DataTableColumn } from 'mantine-datatable';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
-import { DeleteDockingConfirmation } from './DeleteDockingConfirmation';
-import { EditDockingForm } from './EditDockingForm';
+import { DeleteBerthingConfirmation } from './DeleteBerthingConfirmation';
+import { EditBerthingForm } from './EditBerthingForm';
 
-export function DockingTable() {
-  const t = useTranslations('DockingTable');
+export function BerthingTable() {
+  const t = useTranslations('BerthingTable');
   const format = useFormatter();
-  const [selectedRow, setSelectedRow] = useState<DockingRowData | null>(null);
-  const { dockings, dockingEvents } = useDockings();
+  const [selectedRow, setSelectedRow] = useState<BerthingRowData | null>(null);
+  const { berthings, portEvents } = useBerthings();
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
     useDisclosure(false);
   const [
@@ -25,7 +25,7 @@ export function DockingTable() {
     { open: openDeleteModal, close: closeDeleteModal },
   ] = useDisclosure(false);
 
-  const columns: DataTableColumn<DockingRowData>[] = [
+  const columns: DataTableColumn<BerthingRowData>[] = [
     {
       accessor: 'created_at',
       title: t('created'),
@@ -74,12 +74,12 @@ export function DockingTable() {
     {
       accessor: 'edit',
       title: t('edit'),
-      render: (dockingRow) => (
+      render: (berthingRow) => (
         <Center>
           <ActionIcon
             variant="subtle"
             onClick={() => {
-              setSelectedRow(dockingRow);
+              setSelectedRow(berthingRow);
               openEditModal();
             }}>
             <IconEdit stroke={1.5} />
@@ -90,13 +90,13 @@ export function DockingTable() {
     {
       accessor: 'delete',
       title: t('delete'),
-      render: (dockingRow) => (
+      render: (berthingRow) => (
         <Center>
           <ActionIcon
             variant="subtle"
             color="red"
             onClick={() => {
-              setSelectedRow(dockingRow);
+              setSelectedRow(berthingRow);
               openDeleteModal();
             }}>
             <IconTrash stroke={1.5} />
@@ -106,54 +106,55 @@ export function DockingTable() {
     },
   ];
 
-  const dockingRowData = useMemo(
+  const berthingRowData = useMemo(
     () =>
-      dockings.map((docking): DockingRowData => {
+      berthings.map((berthing): BerthingRowData => {
         const arrival =
-          dockingEvents.find(
-            (event) => event.docking === docking.id && event.type === 'arrival'
+          portEvents.find(
+            (event) =>
+              event.berthing === berthing.id && event.type === 'arrival'
           ) || null;
         const departure =
-          dockingEvents.find(
+          portEvents.find(
             (event) =>
-              event.docking === docking.id && event.type === 'departure'
+              event.berthing === berthing.id && event.type === 'departure'
           ) || null;
         return {
-          ...docking,
-          created: new Date(docking.created_at),
+          ...berthing,
+          created: new Date(berthing.created_at),
           arrival,
           departure,
         };
       }),
-    [dockings, dockingEvents]
+    [berthings, portEvents]
   );
 
-  dockingRowData.sort((a, b) => b.created.getTime() - a.created.getTime());
+  berthingRowData.sort((a, b) => b.created.getTime() - a.created.getTime());
 
   return (
     <>
       <Modal
         opened={editModalOpened}
         onClose={closeEditModal}
-        title={t('editDocking')}>
+        title={t('editBerthing')}>
         {selectedRow && (
-          <EditDockingForm dockingRow={selectedRow} close={closeEditModal} />
+          <EditBerthingForm berthingRow={selectedRow} close={closeEditModal} />
         )}
       </Modal>
       <Modal
         opened={deleteModalOpened}
         onClose={closeDeleteModal}
-        title={t('deleteDocking')}>
+        title={t('deleteBerthing')}>
         {selectedRow && (
-          <DeleteDockingConfirmation
+          <DeleteBerthingConfirmation
             cancel={closeDeleteModal}
             data={selectedRow}
             afterConfirm={closeDeleteModal}
           />
         )}
       </Modal>
-      <PaginatedTable<DockingRowData>
-        allRecords={dockingRowData}
+      <PaginatedTable<BerthingRowData>
+        allRecords={berthingRowData}
         columns={columns}
       />
     </>

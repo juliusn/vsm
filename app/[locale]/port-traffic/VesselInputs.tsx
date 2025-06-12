@@ -1,7 +1,7 @@
 'use client';
 
 import { useVessels } from '@/app/context/VesselContext';
-import { DockingFormValues } from '@/lib/types/docking';
+import { BerthingFormValues } from '@/lib/types/berthing';
 import { Collapse, ComboboxItem } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { useEffect, useMemo, useState } from 'react';
@@ -15,8 +15,8 @@ export function VesselInputs({
   imoRef,
 }: {
   form: UseFormReturnType<
-    DockingFormValues,
-    (values: DockingFormValues) => DockingFormValues
+    BerthingFormValues,
+    (values: BerthingFormValues) => BerthingFormValues
   >;
   vessel: AppTypes.Vessel | undefined;
   imoRef: React.RefObject<HTMLInputElement | null>;

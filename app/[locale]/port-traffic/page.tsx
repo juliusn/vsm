@@ -1,5 +1,5 @@
-import { DockingTable } from './DockingTable';
+import { BerthingTable } from './BerthingTable';
 
 export default function PortTrafficPage() {
-  return <DockingTable />;
+  return <BerthingTable />;
 }
