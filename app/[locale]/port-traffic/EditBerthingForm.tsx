@@ -1,6 +1,7 @@
 'use client';
 
 import { FormButtons } from '@/app/components/FormButtons';
+import { useBerthings } from '@/app/context/BerthingContext';
 import { useVessels } from '@/app/context/VesselContext';
 import {
   useBerthingSavedNotification,
@@ -13,14 +14,13 @@ import {
   BerthingRowData,
   PortAreaIdentifier,
 } from '@/lib/types/berthing';
-import { Mutation } from '@/lib/types/mutation';
 import { Group, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
+import { PostgrestBuilder } from '@supabase/postgrest-js';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
-import { useBerthings } from '@/app/context/BerthingContext';
 import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
 import { BerthingFormFields } from './BerthingFormFields';
 
@@ -29,10 +29,6 @@ interface EditBerthingContentProps {
   close(): void;
 }
 
-type PortEventMutation = Mutation<AppTypes.PortEvent>;
-type PortEventQuery = PortEventMutation['query'];
-type StateUpdateHandler = PortEventMutation['stateUpdateHandler'];
-
 export function EditBerthingForm({
   berthingRow,
   close,
@@ -40,7 +36,7 @@ export function EditBerthingForm({
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
   const getBerthingSavedNotification = useBerthingSavedNotification();
-  const { dispatchBerthings, dispatchPortEvents } = useBerthings();
+  const { dispatchBerthings } = useBerthings();
   const vessels = useVessels();
   const vesselMatch = vessels.find(
     (vessel) => vessel.imo === berthingRow.vessel_imo
@@ -168,60 +164,7 @@ export function EditBerthingForm({
 
     setLoading(true);
 
-    const queries: PortEventQuery[] = [];
-    const stateUpdateHandlers: StateUpdateHandler[] = [];
-
-    const prepareUpdate = (
-      date: Date,
-      time: string,
-      id: string
-    ): PortEventMutation => ({
-      query: supabase
-        .from('port_events')
-        .update({
-          estimated_date: dayjs(date).format('YYYY-MM-DD'),
-          estimated_time: time || null,
-        })
-        .eq('id', id)
-        .select()
-        .single(),
-      stateUpdateHandler: (data: AppTypes.PortEvent) => {
-        dispatchPortEvents({ type: 'changed', item: data });
-      },
-    });
-
-    const prepareRemove = (id: string): PortEventMutation => ({
-      query: supabase
-        .from('port_events')
-        .delete()
-        .eq('id', id)
-        .select()
-        .single(),
-      stateUpdateHandler: () => {
-        dispatchPortEvents({ type: 'deleted', id });
-      },
-    });
-
-    const prepareInsert = (
-      berthing: string,
-      type: AppTypes.PortEvent['type'],
-      date: Date,
-      time: string
-    ): PortEventMutation => ({
-      query: supabase
-        .from('port_events')
-        .insert({
-          berthing,
-          type,
-          estimated_date: dayjs(date).format('YYYY-MM-DD'),
-          estimated_time: time || null,
-        })
-        .select()
-        .single(),
-      stateUpdateHandler: (data: AppTypes.PortEvent) => {
-        dispatchPortEvents({ type: 'added', item: data });
-      },
-    });
+    const queries: PostgrestBuilder<null>[] = [];
 
     try {
       const berthingsResponse = await supabase
@@ -236,10 +179,6 @@ export function EditBerthingForm({
         .eq('id', berthingRow.id)
         .select()
         .single();
-
-      if (berthingsResponse.data) {
-        dispatchBerthings({ type: 'changed', item: berthingsResponse.data });
-      }
 
       if (berthingsResponse.error) {
         showNotification(getErrorNotification(berthingsResponse.status));
@@ -263,11 +202,6 @@ export function EditBerthingForm({
       );
 
       const responses = await Promise.all(queries);
-      responses.forEach((response, index) => {
-        if (response.data) {
-          stateUpdateHandlers[index](response.data);
-        }
-      });
 
       for (const response of responses) {
         if (response.error) {
@@ -275,6 +209,36 @@ export function EditBerthingForm({
           return;
         }
       }
+
+      const { data, error, status } = await supabase
+        .from('berthings')
+        .select(
+          `
+        id, 
+        created_at, 
+        vessel_imo, 
+        vessel_name, 
+        locode, 
+        port_area_code, 
+        berth_code, 
+        port_events ( 
+          id, 
+          created_at, 
+          type, 
+          estimated_date, 
+          estimated_time 
+        )
+        `
+        )
+        .eq('id', berthingRow.id)
+        .single();
+
+      if (error) {
+        showNotification(getErrorNotification(status));
+        return;
+      }
+
+      dispatchBerthings({ type: 'changed', item: data });
 
       showNotification(getBerthingSavedNotification());
       close();
@@ -284,8 +248,8 @@ export function EditBerthingForm({
       setLoading(false);
     }
 
-    function handlePortEvent(
-      portEvent: AppTypes.PortEvent | null,
+    async function handlePortEvent(
+      portEvent: Omit<AppTypes.PortEvent, 'berthing'> | null,
       date: Date | '',
       time: string,
       berthing: string,
@@ -294,32 +258,34 @@ export function EditBerthingForm({
       if (portEvent) {
         if (date) {
           if (
-            date.getTime() !== new Date(portEvent.estimated_date).getTime() ||
+            !dayjs(date).isSame(portEvent.estimated_date, 'day') ||
             time !== (portEvent.estimated_time || '')
           ) {
-            const { query, stateUpdateHandler } = prepareUpdate(
-              date,
-              time,
-              portEvent.id
+            queries.push(
+              supabase
+                .from('port_events')
+                .update({
+                  estimated_date: dayjs(date).format('YYYY-MM-DD'),
+                  estimated_time: time || null,
+                })
+                .eq('id', portEvent.id)
             );
-            queries.push(query);
-            stateUpdateHandlers.push(stateUpdateHandler);
           }
         } else {
-          const { query, stateUpdateHandler } = prepareRemove(portEvent.id);
-          queries.push(query);
-          stateUpdateHandlers.push(stateUpdateHandler);
+          queries.push(
+            supabase.from('port_events').delete().eq('id', portEvent.id)
+          );
         }
       } else {
         if (date) {
-          const { query, stateUpdateHandler } = prepareInsert(
-            berthing,
-            type,
-            date,
-            time
+          queries.push(
+            supabase.from('port_events').insert({
+              berthing,
+              type,
+              estimated_date: dayjs(date).format('YYYY-MM-DD'),
+              estimated_time: time || null,
+            })
           );
-          queries.push(query);
-          stateUpdateHandlers.push(stateUpdateHandler);
         }
       }
     }

@@ -7,6 +7,7 @@ import { Stack } from '@mantine/core';
 import { NewOrderContent } from './NewOrderContent';
 import { BerthServiceProvider } from '@/app/context/BerthServiceContext';
 import { CommonServiceProvider } from '@/app/context/CommonServiceContext';
+import { OrderDataProvider } from '@/app/context/OrderContext';
 
 export default async function OrdersLayout({
   children,
@@ -23,17 +24,15 @@ export default async function OrdersLayout({
         berths: data.locationState.berths,
       }}>
       <VesselProvider vessels={data.vessels}>
-        <BerthingProvider
-          initialState={{
-            berthings: data.berthingState.berthings,
-            portEvents: data.berthingState.portEvents,
-          }}>
+        <BerthingProvider initialBerthings={data.berthings}>
           <BerthServiceProvider initialValues={data.berthServices}>
             <CommonServiceProvider initialValues={data.commonServices}>
-              <Stack>
-                <NewOrderContent />
-                {children}
-              </Stack>
+              <OrderDataProvider initialOrderData={data.orderData}>
+                <Stack>
+                  <NewOrderContent />
+                  {children}
+                </Stack>
+              </OrderDataProvider>
             </CommonServiceProvider>
           </BerthServiceProvider>
         </BerthingProvider>

@@ -4,42 +4,28 @@ import { reducer } from '@/lib/reducer';
 import { Action } from '@/lib/types/context';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
-export type BerthingState = {
+type ContextType = {
   berthings: AppTypes.Berthing[];
-  portEvents: AppTypes.PortEvent[];
-};
-
-type BerthingContextType = BerthingState & {
   dispatchBerthings: Dispatch<Action<AppTypes.Berthing>>;
-  dispatchPortEvents: Dispatch<Action<AppTypes.PortEvent>>;
 };
 
-type BerthingProviderProps = {
+type Props = {
   children: React.ReactNode;
-  initialState: BerthingState;
+  initialBerthings: AppTypes.Berthing[];
 };
 
-const BerthingContext = createContext<BerthingContextType | null>(null);
+const BerthingContext = createContext<ContextType | null>(null);
 
-export const BerthingProvider = ({
-  children,
-  initialState,
-}: BerthingProviderProps) => {
+export const BerthingProvider = ({ children, initialBerthings }: Props) => {
   const [berthings, dispatchBerthings] = useReducer(
     reducer<AppTypes.Berthing>,
-    initialState.berthings
-  );
-  const [portEvents, dispatchPortEvents] = useReducer(
-    reducer<AppTypes.PortEvent>,
-    initialState.portEvents
+    initialBerthings
   );
   return (
     <BerthingContext.Provider
       value={{
-        berthings: berthings,
-        portEvents: portEvents,
-        dispatchBerthings: dispatchBerthings,
-        dispatchPortEvents: dispatchPortEvents,
+        berthings,
+        dispatchBerthings,
       }}>
       {children}
     </BerthingContext.Provider>

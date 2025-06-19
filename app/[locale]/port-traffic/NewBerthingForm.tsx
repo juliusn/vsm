@@ -1,6 +1,7 @@
 'use client';
 
 import { FormButtons } from '@/app/components/FormButtons';
+import { useBerthings } from '@/app/context/BerthingContext';
 import { useVessels } from '@/app/context/VesselContext';
 import {
   useBerthingSavedNotification,
@@ -19,7 +20,6 @@ import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
-import { useBerthings } from '@/app/context/BerthingContext';
 import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
 import { BerthingFormFields } from './BerthingFormFields';
 
@@ -35,19 +35,15 @@ const initialValues: BerthingFormValues = {
   etdTime: '',
 };
 
-interface NewBerthingContentProps {
-  close(): void;
-  resultCallback?: (data: BerthingRowData) => void;
-}
-
 export function NewBerthingForm({
-  close,
   resultCallback,
-}: NewBerthingContentProps) {
+}: {
+  resultCallback?: (data: BerthingRowData) => void;
+}) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
   const getBerthingSavedNotification = useBerthingSavedNotification();
-  const { dispatchBerthings, dispatchPortEvents } = useBerthings();
+  const { dispatchBerthings } = useBerthings();
   const vessels = useVessels();
   const [loading, setLoading] = useState(false);
   const [imoValue, setImoValue] = useState<BerthingFormValues['imo']>('');
@@ -157,7 +153,7 @@ export function NewBerthingForm({
     setLoading(true);
 
     try {
-      const berhingsResponse = await supabase
+      const berthingsResponse = await supabase
         .from('berthings')
         .insert({
           vessel_imo: imo,
@@ -169,12 +165,8 @@ export function NewBerthingForm({
         .select()
         .single();
 
-      if (berhingsResponse.data) {
-        dispatchBerthings({ type: 'added', item: berhingsResponse.data });
-      }
-
-      if (berhingsResponse.error) {
-        showNotification(getErrorNotification(berhingsResponse.status));
+      if (berthingsResponse.error) {
+        showNotification(getErrorNotification(berthingsResponse.status));
         return;
       }
 
@@ -185,7 +177,7 @@ export function NewBerthingForm({
           supabase
             .from('port_events')
             .insert({
-              berthing: berhingsResponse.data.id,
+              berthing: berthingsResponse.data.id,
               type: 'arrival',
               estimated_date: dayjs(etaDate).format('YYYY-MM-DD'),
               estimated_time: etaTime || null,
@@ -200,7 +192,7 @@ export function NewBerthingForm({
           supabase
             .from('port_events')
             .insert({
-              berthing: berhingsResponse.data.id,
+              berthing: berthingsResponse.data.id,
               type: 'departure',
               estimated_date: dayjs(etaDate).format('YYYY-MM-DD'),
               estimated_time: etdTime || null,
@@ -210,33 +202,34 @@ export function NewBerthingForm({
         );
       }
 
-      const portEventsResponse = await Promise.all(queries);
-      portEventsResponse.forEach((response) => {
-        if (response.data) {
-          dispatchPortEvents({ type: 'added', item: response.data });
-        }
-      });
+      const portEventResponses = await Promise.all(queries);
 
-      for (const response of portEventsResponse) {
-        if (response.error) {
-          showNotification(getErrorNotification(berhingsResponse.status));
-          return;
-        }
+      if (!portEventResponses.every((response) => response.data !== null)) {
+        showNotification(getErrorNotification(500));
+        return;
       }
-      const [arrival, departure] = portEventsResponse.map(
-        (response) => response.data
-      );
+
+      const port_events = portEventResponses.map((response) => response.data);
+
+      const berthing: AppTypes.Berthing = {
+        ...berthingsResponse.data,
+        port_events,
+      };
+
+      dispatchBerthings({ type: 'added', item: berthing });
 
       const resultData: BerthingRowData = {
-        ...berhingsResponse.data,
-        created: new Date(berhingsResponse.data.created_at),
-        arrival,
-        departure,
+        ...berthingsResponse.data,
+        created: new Date(berthingsResponse.data.created_at),
+        arrival:
+          port_events.find((portEvent) => portEvent.type === 'arrival') || null,
+        departure:
+          port_events.find((portEvent) => portEvent.type === 'departure') ||
+          null,
       };
 
       resultCallback?.(resultData);
       showNotification(getBerthingSavedNotification());
-      close();
     } catch {
       showNotification(getErrorNotification(500));
     } finally {

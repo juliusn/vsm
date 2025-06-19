@@ -25,7 +25,7 @@ export function DeleteBerthingConfirmation({
   const t = useTranslations('DeleteBerthingConfirmation');
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
-  const { dispatchBerthings, dispatchPortEvents } = useBerthings();
+  const { dispatchBerthings } = useBerthings();
   const getErrorNotification = usePostgresErrorNotification();
   const getBerthingDeletedNotification = useBerthingDeletedNotification();
 
@@ -50,13 +50,7 @@ export function DeleteBerthingConfirmation({
         }
 
         dispatchBerthings({ type: 'deleted', id: data.id });
-        dispatchPortEvents({
-          type: 'cascade-deleted',
-          id: data.id,
-          foreignKey: 'berthing',
-        });
         showNotification(getBerthingDeletedNotification());
-        close();
         afterConfirm?.();
       }}
       loading={loading}

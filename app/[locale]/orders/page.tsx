@@ -1,3 +1,5 @@
+import { OrderTable } from './OrderTable';
+
 export default function OrdersPage() {
-  return null;
+  return <OrderTable />;
 }

@@ -469,5 +469,14 @@
   },
   "BaseTable": {
     "noResults": "No results"
+  },
+  "OrderTable": {
+    "unknown": "Unknown",
+    "created": "Created",
+    "berth": "Berth",
+    "vessel": "Vessel",
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "services": "Services"
   }
 }

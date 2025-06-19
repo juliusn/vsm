@@ -2,6 +2,7 @@
 
 import { BerthingPreview } from '@/app/components/BerthingPreview';
 import { useCommonServices } from '@/app/context/CommonServiceContext';
+import { useOrderData } from '@/app/context/OrderContext';
 import {
   useOrderSavedNotification,
   usePostgresErrorNotification,
@@ -44,6 +45,7 @@ export function NewOrderForm({ close }: { close(): void }) {
   const [preview, setPreview] = useState<BerthingRowData | null>(null);
   const [loading, setLoading] = useState(false);
   const { commonServices } = useCommonServices();
+  const { dispatchOrderData } = useOrderData();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSavedNotification = useOrderSavedNotification();
 
@@ -74,7 +76,7 @@ export function NewOrderForm({ close }: { close(): void }) {
     const { data, error, status } = await supabase
       .from('orders')
       .insert({ berthing })
-      .select()
+      .select('id')
       .single();
 
     if (error) {
@@ -99,6 +101,50 @@ export function NewOrderForm({ close }: { close(): void }) {
       }
     }
 
+    const orderResponse = await supabase
+      .from('orders')
+      .select(
+        `
+      id,
+      created_at,
+      berthing:berthings ( 
+        id, 
+        created_at, 
+        vessel_imo, 
+        vessel_name, 
+        locode, 
+        port_area_code, 
+        berth_code, 
+        port_events ( 
+          id, 
+          created_at, 
+          type, 
+          estimated_date, 
+          estimated_time 
+        )
+      ),
+      common_services ( id, titles )
+    `
+      )
+      .eq('id', data.id)
+      .single();
+
+    if (orderResponse.error) {
+      showNotification(getErrorNotification(orderResponse.status));
+      setLoading(false);
+      return;
+    }
+
+    dispatchOrderData({
+      type: 'added',
+      item: {
+        ...orderResponse.data,
+        common_services: orderResponse.data.common_services.map((service) => ({
+          ...service,
+          titles: service.titles as AppTypes.ServiceTitles,
+        })),
+      },
+    });
     setLoading(false);
     showNotification(getOrderSavedNotification());
     close();
@@ -126,11 +172,12 @@ export function NewOrderForm({ close }: { close(): void }) {
         onClose={closeNewBerthing}
         title={t('createNewBerthing')}>
         <NewBerthingForm
-          close={closeNewBerthing}
           resultCallback={(data) => {
             setBerthing(data);
             setPreview(data);
+            form.setFieldValue('berthing', data.id);
             form.setFieldValue('services', []);
+            closeNewBerthing();
           }}
         />
       </Modal>

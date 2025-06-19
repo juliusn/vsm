@@ -17,7 +17,7 @@ export function BerthingTable() {
   const t = useTranslations('BerthingTable');
   const format = useFormatter();
   const [selectedRow, setSelectedRow] = useState<BerthingRowData | null>(null);
-  const { berthings, portEvents } = useBerthings();
+  const { berthings } = useBerthings();
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
     useDisclosure(false);
   const [
@@ -108,25 +108,26 @@ export function BerthingTable() {
 
   const berthingRowData = useMemo(
     () =>
-      berthings.map((berthing): BerthingRowData => {
-        const arrival =
-          portEvents.find(
-            (event) =>
-              event.berthing === berthing.id && event.type === 'arrival'
-          ) || null;
-        const departure =
-          portEvents.find(
-            (event) =>
-              event.berthing === berthing.id && event.type === 'departure'
-          ) || null;
-        return {
-          ...berthing,
-          created: new Date(berthing.created_at),
-          arrival,
-          departure,
-        };
-      }),
-    [berthings, portEvents]
+      berthings
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+        .map((berthing): BerthingRowData => {
+          const arrival =
+            berthing.port_events.find((event) => event.type === 'arrival') ||
+            null;
+          const departure =
+            berthing.port_events.find((event) => event.type === 'departure') ||
+            null;
+          return {
+            ...berthing,
+            created: new Date(berthing.created_at),
+            arrival,
+            departure,
+          };
+        }),
+    [berthings]
   );
 
   berthingRowData.sort((a, b) => b.created.getTime() - a.created.getTime());

@@ -472,5 +472,14 @@
   },
   "BaseTable": {
     "noResults": "Ei tuloksia"
+  },
+  "OrderTable": {
+    "unknown": "Ei tiedossa",
+    "created": "Luotu",
+    "berth": "Laituri",
+    "vessel": "Alus",
+    "arrival": "Tulo",
+    "departure": "Lähtö",
+    "services": "Palvelut"
   }
 }

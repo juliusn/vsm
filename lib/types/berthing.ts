@@ -21,8 +21,9 @@ export type BerthIdentifier = {
   berth_code: string;
 };
 
-export interface BerthingRowData extends AppTypes.Berthing {
+export interface BerthingRowData
+  extends Omit<AppTypes.Berthing, 'port_events'> {
   created: Date;
-  arrival: AppTypes.PortEvent | null;
-  departure: AppTypes.PortEvent | null;
+  arrival: Omit<AppTypes.PortEvent, 'berthing'> | null;
+  departure: Omit<AppTypes.PortEvent, 'berthing'> | null;
 }

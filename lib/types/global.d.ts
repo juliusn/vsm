@@ -8,6 +8,7 @@ declare global {
     type Location = Database['public']['Tables']['locations']['Row'];
     type PortArea = Database['public']['Tables']['port_areas']['Row'];
     type Berth = Database['public']['Tables']['berths']['Row'];
+    type Order = Database['public']['Tables']['orders']['Row'];
     type Locale = (typeof routing.locales)[number];
     type ServiceTitles = Record<Locale, string>;
     type CommonService = Omit<
@@ -36,8 +37,14 @@ declare global {
       referencePointC: number;
       referencePointD: number;
     };
-    type Berthing = Database['public']['Tables']['berthings']['Row'];
     type PortEvent = Database['public']['Tables']['port_events']['Row'];
+    type Berthing = Database['public']['Tables']['berthings']['Row'] & {
+      port_events: Omit<PortEvent, 'berthing'>[];
+    };
+    type OrderData = Omit<Order, 'berthing'> & {
+      berthing: Berthing;
+      common_services: CommonService[];
+    };
   }
 }
 

@@ -1,13 +1,13 @@
-import { BerthingState } from '@/app/context/BerthingContext';
 import { LocationState } from '@/app/context/LocationContext';
 import { createClient } from './supabase/server';
 
 type Result = {
   locationState: LocationState;
   vessels: AppTypes.Vessel[];
-  berthingState: BerthingState;
+  berthings: AppTypes.Berthing[];
   berthServices: AppTypes.BerthService[];
   commonServices: AppTypes.CommonService[];
+  orderData: AppTypes.OrderData[];
 };
 
 export const fetchOrdersData = async (): Promise<Result | undefined> => {
@@ -20,8 +20,9 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     berthsResponse,
     berthingsResponse,
     portEventsResponse,
-    berthServiceResponse,
-    commonServiceResponse,
+    berthServicesResponse,
+    commonServicesResponse,
+    ordersResponse,
   ] = await Promise.all([
     fetch('https://meri.digitraffic.fi/api/ais/v1/vessels'),
     supabase
@@ -35,13 +36,50 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
       .eq('enabled', true)
       .order('port_area_name'),
     supabase.from('berths').select().eq('enabled', true).order('berth_name'),
-    supabase
-      .from('berthings')
-      .select()
-      .order('created_at', { ascending: false }),
+    supabase.from('berthings').select(
+      `
+        id, 
+        created_at, 
+        vessel_imo, 
+        vessel_name, 
+        locode, 
+        port_area_code, 
+        berth_code, 
+        port_events ( 
+          id, 
+          created_at, 
+          type, 
+          estimated_date, 
+          estimated_time 
+        )
+        `
+    ),
     supabase.from('port_events').select(),
     supabase.from('berth_services').select(),
     supabase.from('common_services').select(),
+    supabase.from('orders').select(
+      `
+      id,
+      created_at,
+      berthing:berthings ( 
+        id, 
+        created_at, 
+        vessel_imo, 
+        vessel_name, 
+        locode, 
+        port_area_code, 
+        berth_code, 
+        port_events ( 
+          id, 
+          created_at, 
+          type, 
+          estimated_date, 
+          estimated_time 
+        )
+      ),
+      common_services ( id, titles )
+    `
+    ),
   ]);
 
   const success =
@@ -51,8 +89,9 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     berthsResponse.data &&
     berthingsResponse.data &&
     portEventsResponse.data &&
-    berthServiceResponse.data &&
-    commonServiceResponse.data;
+    berthServicesResponse.data &&
+    commonServicesResponse.data &&
+    ordersResponse.data;
 
   if (success) {
     const vesselsData = (await vesselsResponse.json()) as AppTypes.Vessel[];
@@ -120,17 +159,21 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
         berths: filteredBerths,
       },
       vessels,
-      berthingState: {
-        berthings: berthingsResponse.data,
-        portEvents: portEventsResponse.data,
-      },
-      berthServices: berthServiceResponse.data.map((service) => ({
+      berthings: berthingsResponse.data,
+      berthServices: berthServicesResponse.data.map((service) => ({
         ...service,
         titles: service.titles as AppTypes.ServiceTitles,
       })),
-      commonServices: commonServiceResponse.data.map((service) => ({
+      commonServices: commonServicesResponse.data.map((service) => ({
         ...service,
         titles: service.titles as AppTypes.ServiceTitles,
+      })),
+      orderData: ordersResponse.data.map((order) => ({
+        ...order,
+        common_services: order.common_services.map((service) => ({
+          ...service,
+          titles: service.titles as AppTypes.ServiceTitles,
+        })),
       })),
     };
   }

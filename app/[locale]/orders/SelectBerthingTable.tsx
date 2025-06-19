@@ -62,21 +62,17 @@ export function SelectBerthingTable(props: Props) {
     },
   ];
 
-  const { berthings: berthings, portEvents: portEvents } = useBerthings();
+  const { berthings } = useBerthings();
 
   const berthingRowData = useMemo(
     () =>
       berthings.map((berthing): BerthingRowData => {
         const arrival =
-          portEvents.find(
-            (event) =>
-              event.berthing === berthing.id && event.type === 'arrival'
-          ) || null;
+          berthing.port_events.find((event) => event.type === 'arrival') ||
+          null;
         const departure =
-          portEvents.find(
-            (event) =>
-              event.berthing === berthing.id && event.type === 'departure'
-          ) || null;
+          berthing.port_events.find((event) => event.type === 'departure') ||
+          null;
         return {
           ...berthing,
           created: new Date(berthing.created_at),
@@ -84,7 +80,7 @@ export function SelectBerthingTable(props: Props) {
           departure,
         };
       }),
-    [berthings, portEvents]
+    [berthings]
   );
 
   berthingRowData.sort((a, b) => b.created.getTime() - a.created.getTime());

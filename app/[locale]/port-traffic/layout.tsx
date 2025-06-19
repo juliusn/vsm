@@ -19,7 +19,7 @@ export default async function PortTrafficLayout({
     <Stack>
       <LocationProvider initialState={data.locationState}>
         <VesselProvider vessels={data.vessels}>
-          <BerthingProvider initialState={data.berthingState}>
+          <BerthingProvider initialBerthings={data.berthings}>
             <Group justify="space-between">
               <Title size="h2">{t('title')}</Title>
               <NewBerthingContent />

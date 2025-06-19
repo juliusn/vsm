@@ -17,7 +17,7 @@ export function NewBerthingContent() {
         {t('buttonLabel')}
       </Button>
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
-        <NewBerthingForm close={close} />
+        <NewBerthingForm resultCallback={close} />
       </Modal>
     </>
   );
