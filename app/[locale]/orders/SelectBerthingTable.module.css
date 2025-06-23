@@ -1,0 +1,9 @@
+.selectableRow:hover {
+  background-color: var(--mantine-color-default-hover);
+  cursor: pointer;
+}
+
+.disabledRow {
+  color: var(--mantine-color-dimmed);
+  cursor: not-allowed;
+}

@@ -158,7 +158,7 @@ export function NewOrderForm({ close }: { close(): void }) {
         onClose={closeSelectBerthing}
         title={t('selectBerthing')}>
         <SelectBerthingTable
-          onRowClick={({ record }) => {
+          onSelect={(record) => {
             setBerthing(record);
             setPreview(record);
             form.setFieldValue('berthing', record.id);

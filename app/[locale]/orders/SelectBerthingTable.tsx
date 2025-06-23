@@ -2,17 +2,29 @@
 
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { useBerthings } from '@/app/context/BerthingContext';
+import { useOrderData } from '@/app/context/OrderContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
 import { BerthingRowData } from '@/lib/types/berthing';
-import { DataTableColumn, DataTableProps } from 'mantine-datatable';
+import { DataTableColumn } from 'mantine-datatable';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import styles from './SelectBerthingTable.module.css';
 
-type Props = Pick<DataTableProps<BerthingRowData>, 'onRowClick'>;
-
-export function SelectBerthingTable(props: Props) {
+export function SelectBerthingTable({
+  onSelect,
+}: {
+  onSelect(row: BerthingRowData): void;
+}) {
   const t = useTranslations('BerthingTable');
   const format = useFormatter();
+  const { berthings } = useBerthings();
+  const { orderData } = useOrderData();
+
+  const orderExists = useMemo(
+    () => (row: BerthingRowData) =>
+      orderData.find((order) => order.berthing.id === row.id),
+    [orderData]
+  );
 
   const columns: DataTableColumn<BerthingRowData>[] = [
     {
@@ -62,35 +74,40 @@ export function SelectBerthingTable(props: Props) {
     },
   ];
 
-  const { berthings } = useBerthings();
-
   const berthingRowData = useMemo(
     () =>
-      berthings.map((berthing): BerthingRowData => {
-        const arrival =
-          berthing.port_events.find((event) => event.type === 'arrival') ||
-          null;
-        const departure =
-          berthing.port_events.find((event) => event.type === 'departure') ||
-          null;
-        return {
-          ...berthing,
-          created: new Date(berthing.created_at),
-          arrival,
-          departure,
-        };
-      }),
+      berthings
+        .map((berthing): BerthingRowData => {
+          const arrival =
+            berthing.port_events.find((event) => event.type === 'arrival') ||
+            null;
+          const departure =
+            berthing.port_events.find((event) => event.type === 'departure') ||
+            null;
+          return {
+            ...berthing,
+            created: new Date(berthing.created_at),
+            arrival,
+            departure,
+          };
+        })
+        .sort((a, b) => b.created.getTime() - a.created.getTime()),
     [berthings]
   );
 
-  berthingRowData.sort((a, b) => b.created.getTime() - a.created.getTime());
-
   return (
     <PaginatedTable<BerthingRowData>
+      onRowClick={({ record }) => {
+        if (orderExists(record)) {
+          return;
+        }
+        onSelect(record);
+      }}
+      rowClassName={(record) =>
+        orderExists(record) ? styles.disabledRow : styles.selectableRow
+      }
       allRecords={berthingRowData}
       columns={columns}
-      highlightOnHover={true}
-      {...props}
     />
   );
 }

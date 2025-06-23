@@ -4,9 +4,9 @@ import { DataTableProps } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
 import { BaseTable } from './BaseTable';
 
-type PaginatedTableProps<T> = Pick<
+type Props<T> = Pick<
   DataTableProps<T>,
-  'highlightOnHover' | 'idAccessor'
+  'onRowClick' | 'idAccessor' | 'rowClassName'
 > &
   Required<Pick<DataTableProps<T>, 'columns'>> & {
     allRecords: T[];
@@ -14,10 +14,7 @@ type PaginatedTableProps<T> = Pick<
 
 const PAGE_SIZE = 15;
 
-export function PaginatedTable<T>({
-  allRecords,
-  ...props
-}: PaginatedTableProps<T>) {
+export function PaginatedTable<T>({ allRecords, ...props }: Props<T>) {
   const [page, setPage] = useState(1);
   const [records, setRecords] = useState<T[]>(allRecords.slice(0, PAGE_SIZE));
 
