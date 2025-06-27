@@ -4,7 +4,7 @@ import { Button, Group, Modal, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconPlus } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { NewOrderForm } from './NewOrderForm';
+import { NewOrder } from './NewOrder';
 
 export function NewOrderContent() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -13,7 +13,7 @@ export function NewOrderContent() {
   return (
     <>
       <Modal size="lg" opened={opened} onClose={close} title={t('modalTitle')}>
-        <NewOrderForm close={close} />
+        <NewOrder onCancel={close} resultCallback={close} />
       </Modal>
       <Group justify="space-between">
         <Title size="h4">{t('title')}</Title>

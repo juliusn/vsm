@@ -7,6 +7,7 @@ import {
   useBerthingSavedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
+import { berthingsQuery } from '@/lib/queries';
 import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
@@ -26,12 +27,14 @@ import { BerthingFormFields } from './BerthingFormFields';
 
 interface EditBerthingContentProps {
   berthingRow: BerthingRowData;
-  close(): void;
+  onCancel(): void;
+  resultCallback(data: AppTypes.Berthing): void;
 }
 
 export function EditBerthingForm({
   berthingRow,
-  close,
+  onCancel,
+  resultCallback,
 }: EditBerthingContentProps) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
@@ -212,24 +215,7 @@ export function EditBerthingForm({
 
       const { data, error, status } = await supabase
         .from('berthings')
-        .select(
-          `
-        id, 
-        created_at, 
-        vessel_imo, 
-        vessel_name, 
-        locode, 
-        port_area_code, 
-        berth_code, 
-        port_events ( 
-          id, 
-          created_at, 
-          type, 
-          estimated_date, 
-          estimated_time 
-        )
-        `
-        )
+        .select(berthingsQuery)
         .eq('id', berthingRow.id)
         .single();
 
@@ -239,9 +225,8 @@ export function EditBerthingForm({
       }
 
       dispatchBerthings({ type: 'changed', item: data });
-
       showNotification(getBerthingSavedNotification());
-      close();
+      resultCallback(data);
     } catch {
       showNotification(getErrorNotification(500));
     } finally {
@@ -303,7 +288,7 @@ export function EditBerthingForm({
         />
         <Group grow>
           <FormButtons
-            cancelButtonClickHandler={close}
+            cancelButtonClickHandler={onCancel}
             resetButtonClickHandler={() => {
               form.reset();
               setVessel(vesselMatch);

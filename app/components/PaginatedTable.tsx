@@ -1,16 +1,11 @@
 'use client';
 
-import { DataTableProps } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
-import { BaseTable } from './BaseTable';
+import { BaseTable, BaseTableProps } from './BaseTable';
 
-type Props<T> = Pick<
-  DataTableProps<T>,
-  'onRowClick' | 'idAccessor' | 'rowClassName'
-> &
-  Required<Pick<DataTableProps<T>, 'columns'>> & {
-    allRecords: T[];
-  };
+type Props<T> = BaseTableProps<T> & {
+  allRecords: T[];
+};
 
 const PAGE_SIZE = 15;
 

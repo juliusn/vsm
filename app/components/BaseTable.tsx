@@ -3,7 +3,20 @@
 import { DataTable, DataTableProps } from 'mantine-datatable';
 import { useTranslations } from 'next-intl';
 
-export function BaseTable<T>({ records, ...props }: DataTableProps<T>) {
+type WithColumns<T> = {
+  columns: Exclude<DataTableProps<T>['columns'], undefined>;
+  groups?: never;
+};
+
+type WithGroups<T> = {
+  columns?: never;
+  groups: Exclude<DataTableProps<T>['groups'], undefined>;
+};
+
+export type BaseTableProps<T> = DataTableProps<T> &
+  (WithColumns<T> | WithGroups<T>);
+
+export function BaseTable<T>({ records, ...props }: BaseTableProps<T>) {
   const t = useTranslations('BaseTable');
 
   return (

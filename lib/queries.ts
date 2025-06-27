@@ -1,0 +1,38 @@
+export const ordersQuery = `
+id,
+created_at,
+berthing:berthings ( 
+  id, 
+  created_at, 
+  vessel_imo, 
+  vessel_name, 
+  locode, 
+  port_area_code, 
+  berth_code, 
+  port_events ( 
+    id, 
+    created_at, 
+    type, 
+    estimated_date, 
+    estimated_time 
+  )
+),
+common_services ( id, titles )
+`;
+
+export const berthingsQuery = `
+id, 
+created_at, 
+vessel_imo, 
+vessel_name, 
+locode, 
+port_area_code, 
+berth_code, 
+port_events ( 
+  id, 
+  created_at, 
+  type, 
+  estimated_date, 
+  estimated_time 
+)
+`;

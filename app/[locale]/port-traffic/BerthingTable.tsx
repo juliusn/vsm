@@ -139,7 +139,11 @@ export function BerthingTable() {
         onClose={closeEditModal}
         title={t('editBerthing')}>
         {selectedRow && (
-          <EditBerthingForm berthingRow={selectedRow} close={closeEditModal} />
+          <EditBerthingForm
+            berthingRow={selectedRow}
+            onCancel={closeEditModal}
+            resultCallback={closeEditModal}
+          />
         )}
       </Modal>
       <Modal

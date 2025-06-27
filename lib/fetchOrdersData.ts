@@ -1,5 +1,6 @@
 import { LocationState } from '@/app/context/LocationContext';
 import { createClient } from './supabase/server';
+import { berthingsQuery, ordersQuery } from './queries';
 
 type Result = {
   locationState: LocationState;
@@ -36,50 +37,11 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
       .eq('enabled', true)
       .order('port_area_name'),
     supabase.from('berths').select().eq('enabled', true).order('berth_name'),
-    supabase.from('berthings').select(
-      `
-        id, 
-        created_at, 
-        vessel_imo, 
-        vessel_name, 
-        locode, 
-        port_area_code, 
-        berth_code, 
-        port_events ( 
-          id, 
-          created_at, 
-          type, 
-          estimated_date, 
-          estimated_time 
-        )
-        `
-    ),
+    supabase.from('berthings').select(berthingsQuery),
     supabase.from('port_events').select(),
     supabase.from('berth_services').select(),
     supabase.from('common_services').select(),
-    supabase.from('orders').select(
-      `
-      id,
-      created_at,
-      berthing:berthings ( 
-        id, 
-        created_at, 
-        vessel_imo, 
-        vessel_name, 
-        locode, 
-        port_area_code, 
-        berth_code, 
-        port_events ( 
-          id, 
-          created_at, 
-          type, 
-          estimated_date, 
-          estimated_time 
-        )
-      ),
-      common_services ( id, titles )
-    `
-    ),
+    supabase.from('orders').select(ordersQuery),
   ]);
 
   const success =

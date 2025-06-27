@@ -140,19 +140,9 @@
     "buttonLabel": "Uusi tilaus",
     "modalTitle": "Luo uusi tilaus"
   },
-  "NewOrderForm": {
-    "berthing": "Laiturointi",
-    "createNewBerthing": "Luo uusi laiturointi",
-    "create": "Luo",
-    "selectBerthing": "Valitse laiturointi",
-    "select": "Valitse",
-    "removeSelection": "Poista valinta",
+  "NewOrder": {
     "selectBerthingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
-    "services": "Palvelut",
-    "servicesTooltip": "Valitse laiturointi valitaksesi palveluja.",
-    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin.",
-    "cancelButtonLabel": "Peru",
-    "saveButtonLabel": "Tallenna"
+    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin."
   },
   "BerthServiceSelect": {
     "tasks": "Tehtävät",
@@ -475,11 +465,35 @@
   },
   "OrderTable": {
     "unknown": "Ei tiedossa",
+    "berthing": "Laiturointi",
     "created": "Luotu",
     "berth": "Laituri",
     "vessel": "Alus",
     "arrival": "Tulo",
     "departure": "Lähtö",
-    "services": "Palvelut"
+    "services": "Palvelut",
+    "orderedServices": "Tilatut palvelut",
+    "edit": "Muokkaa",
+    "delete": "Poista",
+    "editOrder": "Muokkaa tilausta",
+    "deleteOrder": "Poista tilaus"
+  },
+  "OrderForm": {
+    "berthing": "Laiturointi",
+    "createNewBerthing": "Luo uusi laiturointi",
+    "create": "Luo",
+    "selectBerthing": "Valitse laiturointi",
+    "select": "Valitse",
+    "removeSelection": "Poista valinta",
+    "editBerthing": "Muokkaa laiturointia",
+    "services": "Palvelut",
+    "servicesTooltip": "Valitse laiturointi valitaksesi palveluja.",
+    "cancelButtonLabel": "Peru",
+    "saveButtonLabel": "Tallenna"
+  },
+  "EditOrder": {
+    "editOrder": "Muokkaa tilausta",
+    "selectBerthingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
+    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin."
   }
 }

@@ -3,11 +3,15 @@
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { useOrderData } from '@/app/context/OrderContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
+import { ActionIcon, Center, Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { IconEdit } from '@tabler/icons-react';
 import { DataTableColumn } from 'mantine-datatable';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { EditOrder } from './EditOrder';
 
-type OrderRowData = AppTypes.OrderData & {
+export type OrderRowData = AppTypes.OrderData & {
   created: string;
   arrival: string;
   departure: string;
@@ -18,6 +22,11 @@ export function OrderTable() {
   const locale = useLocale() as AppTypes.Locale;
   const format = useFormatter();
   const { orderData } = useOrderData();
+  const [selectedRow, setSelectedRow] = useState<OrderRowData | null>(null);
+
+  const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
+    useDisclosure(false);
+
   const orderRowData = useMemo(
     () =>
       orderData
@@ -101,9 +110,44 @@ export function OrderTable() {
           .map((service) => service.titles[locale])
           .join(', '),
     },
+    {
+      accessor: 'edit',
+      title: t('edit'),
+      render: (berthingRow) => (
+        <Center>
+          <ActionIcon
+            variant="subtle"
+            onClick={() => {
+              setSelectedRow(berthingRow);
+              openEditModal();
+            }}>
+            <IconEdit stroke={1.5} />
+          </ActionIcon>
+        </Center>
+      ),
+    },
   ];
 
   return (
-    <PaginatedTable<OrderRowData> allRecords={orderRowData} columns={columns} />
+    <>
+      <Modal
+        size="lg"
+        opened={editModalOpened}
+        onClose={closeEditModal}
+        title={t('editOrder')}>
+        {selectedRow && (
+          <EditOrder
+            order={selectedRow}
+            onCancel={closeEditModal}
+            resultCallback={closeEditModal}
+          />
+        )}
+      </Modal>
+      <PaginatedTable<OrderRowData>
+        withColumnBorders
+        allRecords={orderRowData}
+        columns={columns}
+      />
+    </>
   );
 }

@@ -140,19 +140,9 @@
     "buttonLabel": "New Order",
     "modalTitle": "Create a new order"
   },
-  "NewOrderForm": {
-    "berthing": "Berthing",
-    "createNewBerthing": "Create a new berthing",
-    "create": "Create",
-    "selectBerthing": "Select berthing",
-    "select": "Select",
-    "removeSelection": "Remove selection",
+  "NewOrder": {
     "selectBerthingError": "Select berthing to which you want to add services.",
-    "services": "Services",
-    "servicesTooltip": "Select a berthing in order to select services.",
-    "selectServicesError": "Selet services you want to add to the berthing.",
-    "cancelButtonLabel": "Cancel",
-    "saveButtonLabel": "Save"
+    "selectServicesError": "Selet services you want to add to the berthing."
   },
   "BerthServiceSelect": {
     "tasks": "Tasks",
@@ -472,11 +462,35 @@
   },
   "OrderTable": {
     "unknown": "Unknown",
+    "berthing": "Berthing",
     "created": "Created",
     "berth": "Berth",
     "vessel": "Vessel",
     "arrival": "Arrival",
     "departure": "Departure",
-    "services": "Services"
+    "services": "Services",
+    "orderedServices": "Ordered services",
+    "edit": "Edit",
+    "delete": "Delete",
+    "editOrder": "Edit order",
+    "deleteOrder": "Delete order"
+  },
+  "OrderForm": {
+    "berthing": "Berthing",
+    "createNewBerthing": "Create a new berthing",
+    "create": "Create",
+    "selectBerthing": "Select berthing",
+    "select": "Select",
+    "removeSelection": "Remove selection",
+    "editBerthing": "Edit berthing",
+    "services": "Services",
+    "servicesTooltip": "Select a berthing in order to select services.",
+    "cancelButtonLabel": "Cancel",
+    "saveButtonLabel": "Save"
+  },
+  "EditOrder": {
+    "editOrder": "Edit order",
+    "selectBerthingError": "Select berthing to which you want to add services.",
+    "selectServicesError": "Selet services you want to add to the berthing."
   }
 }
