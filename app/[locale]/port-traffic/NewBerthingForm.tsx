@@ -21,7 +21,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
 import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
-import { BerthingFormFields } from './BerthingFormFields';
+import { BerthingFormFields } from '../../components/BerthingFormFields';
 
 const initialValues: BerthingFormValues = {
   vesselName: '',
@@ -146,9 +146,7 @@ export function NewBerthingForm({
     etdDate,
     etdTime,
   }: BerthingFormValues) => {
-    if (imo === '') {
-      return;
-    }
+    if (imo === '') return;
 
     setLoading(true);
 
@@ -241,11 +239,32 @@ export function NewBerthingForm({
     <form onSubmit={form.onSubmit(submitHandler)}>
       <Stack>
         <BerthingFormFields
-          form={form}
-          vessel={vessel}
-          imoRef={imoRef}
-          locode={locode}
-          portArea={portArea}
+          vesselInputsProps={{
+            vessel: vessel,
+            vesselNameProps: form.getInputProps('vesselName'),
+            vesselNameKey: form.key('vesselName'),
+            imoProps: form.getInputProps('imo'),
+            imoKey: form.key('imo'),
+            imoRef: imoRef,
+          }}
+          locationInputsProps={{
+            locode: locode,
+            portArea: portArea,
+            locodeProps: form.getInputProps('locode'),
+            locodeKey: form.key('locode'),
+            portAreaProps: form.getInputProps('portArea'),
+            portAreaKey: form.key('portArea'),
+            berthProps: form.getInputProps('berth'),
+            berthKey: form.key('berth'),
+          }}
+          etaDateProps={form.getInputProps('etaDate')}
+          etaDateKey={form.key('etaDate')}
+          etaTimeProps={form.getInputProps('etaTime')}
+          etaTimeKey={form.key('etaTime')}
+          etdDateProps={form.getInputProps('etdDate')}
+          etdDateKey={form.key('etdDate')}
+          etdTimeProps={form.getInputProps('etdTime')}
+          etdTimeKey={form.key('etdTime')}
         />
         <Group grow>
           <FormButtons

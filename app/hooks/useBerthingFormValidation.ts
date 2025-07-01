@@ -4,15 +4,16 @@ import dayjs from 'dayjs';
 import { useTranslations } from 'next-intl';
 
 export default function useBerthingFormValidation(): FormValidateInput<BerthingFormValues> {
-  const t = useTranslations('NewBerthingForm');
+  const t = useTranslations('BerthingFormFields');
   const isSevenDigits = (errorMessage: string) => (value: number | '') =>
     value.toString().length !== 7 ? errorMessage : null;
 
   return {
-    imo: (value: number | '') =>
+    imo: (value) =>
       isNotEmpty(t('imoRequiredError'))(value) ??
       isSevenDigits(t('imoLengthError'))(value),
-    etaDate: (value: Date | '', values: BerthingFormValues) => {
+
+    etaDate: (value, values) => {
       if (!value && values.etaTime) return t('enterDateOrRemoveTimeError');
 
       if (value && values.etdDate) {
@@ -23,6 +24,7 @@ export default function useBerthingFormValidation(): FormValidateInput<BerthingF
 
       return null;
     },
+
     etaTime: (value, values) => {
       if (value && !values.etaDate) return t('timeWithoutDateError');
 
@@ -32,16 +34,19 @@ export default function useBerthingFormValidation(): FormValidateInput<BerthingF
           'YYYY-MM-DDTHH:mm',
           true
         );
+
         const etdDateTime = dayjs(
           `${dayjs(values.etdDate).format('YYYY-MM-DD')}T${values.etdTime}`,
           'YYYY-MM-DDTHH:mm',
           true
         );
+
         if (etaDateTime.isAfter(etdDateTime)) return t('etaAfterEtdError');
       }
 
       return null;
     },
+
     etdDate: (value, values) => {
       if (!value && values.etdTime) return t('enterDateOrRemoveTimeError');
 
@@ -53,6 +58,7 @@ export default function useBerthingFormValidation(): FormValidateInput<BerthingF
 
       return null;
     },
+
     etdTime: (value, values) => {
       if (value && !values.etdDate) return t('timeWithoutDateError');
 

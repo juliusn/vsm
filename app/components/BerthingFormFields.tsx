@@ -1,9 +1,8 @@
 'use client';
 
-import { BerthingFormValues } from '@/lib/types/berthing';
 import { Fieldset, Group, Stack, Text } from '@mantine/core';
 import { DateInput, TimeInput } from '@mantine/dates';
-import { UseFormReturnType } from '@mantine/form';
+import { GetInputPropsReturnType } from '@mantine/form/lib/types';
 import {
   IconAnchor,
   IconArrowBarRight,
@@ -11,28 +10,37 @@ import {
   IconShip,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { LocationInputs } from './LocationInputs';
-import { VesselInputs } from './VesselInputs';
+import { ComponentProps } from 'react';
+import { LocationInputs } from '../[locale]/port-traffic/LocationInputs';
+import { VesselInputs } from '../[locale]/port-traffic/VesselInputs';
 
-interface BerthingFormFieldsProps {
-  form: UseFormReturnType<
-    BerthingFormValues,
-    (values: BerthingFormValues) => BerthingFormValues
-  >;
-  vessel: AppTypes.Vessel | undefined;
-  imoRef: React.RefObject<HTMLInputElement | null>;
-  locode: string;
-  portArea: string;
+interface Props {
+  vesselInputsProps: ComponentProps<typeof VesselInputs>;
+  locationInputsProps: ComponentProps<typeof LocationInputs>;
+  etaDateProps: GetInputPropsReturnType;
+  etaDateKey: string;
+  etaTimeProps: GetInputPropsReturnType;
+  etaTimeKey: string;
+  etdDateProps: GetInputPropsReturnType;
+  etdDateKey: string;
+  etdTimeProps: GetInputPropsReturnType;
+  etdTimeKey: string;
 }
 
 export function BerthingFormFields({
-  form,
-  vessel,
-  imoRef,
-  locode,
-  portArea,
-}: BerthingFormFieldsProps) {
-  const t = useTranslations('NewBerthingForm');
+  vesselInputsProps,
+  locationInputsProps,
+  etaDateProps,
+  etaDateKey,
+  etaTimeProps,
+  etaTimeKey,
+  etdDateProps,
+  etdDateKey,
+  etdTimeProps,
+  etdTimeKey,
+}: Props) {
+  const t = useTranslations('BerthingFormFields');
+
   return (
     <>
       <Fieldset
@@ -43,7 +51,7 @@ export function BerthingFormFields({
           </Group>
         }>
         <Stack>
-          <VesselInputs form={form} vessel={vessel} imoRef={imoRef} />
+          <VesselInputs {...vesselInputsProps} />
         </Stack>
       </Fieldset>
       <Fieldset
@@ -54,7 +62,7 @@ export function BerthingFormFields({
           </Group>
         }>
         <Stack>
-          <LocationInputs form={form} locode={locode} portArea={portArea} />
+          <LocationInputs {...locationInputsProps} />
         </Stack>
       </Fieldset>
       <Fieldset
@@ -74,14 +82,10 @@ export function BerthingFormFields({
             label={t('date')}
             placeholder={t('selectDate')}
             clearable
-            key={form.key('etaDate')}
-            {...form.getInputProps('etaDate')}
+            {...etaDateProps}
+            key={etaDateKey}
           />
-          <TimeInput
-            label={t('time')}
-            key={form.key('etaTime')}
-            {...form.getInputProps('etaTime')}
-          />
+          <TimeInput label={t('time')} {...etaTimeProps} key={etaTimeKey} />
         </Stack>
       </Fieldset>
       <Fieldset
@@ -98,14 +102,10 @@ export function BerthingFormFields({
             label={t('date')}
             placeholder={t('selectDate')}
             clearable
-            key={form.key('etdDate')}
-            {...form.getInputProps('etdDate')}
+            {...etdDateProps}
+            key={etdDateKey}
           />
-          <TimeInput
-            label={t('time')}
-            key={form.key('etdTime')}
-            {...form.getInputProps('etdTime')}
-          />
+          <TimeInput label={t('time')} {...etdTimeProps} key={etdTimeKey} />
         </Stack>
       </Fieldset>
     </>

@@ -390,7 +390,7 @@
     "buttonLabel": "New berthing",
     "modalTitle": "Create a new berthing"
   },
-  "NewBerthingForm": {
+  "BerthingFormFields": {
     "vessel": "Vessel",
     "imoRequiredError": "Vessel IMO number is required.",
     "imoLengthError": "Vessel IMO number must be 7 digits.",

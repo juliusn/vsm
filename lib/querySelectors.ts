@@ -1,4 +1,4 @@
-export const ordersQuery = `
+export const ordersSelector = `
 id,
 created_at,
 berthing:berthings ( 
@@ -20,7 +20,7 @@ berthing:berthings (
 common_services ( id, titles )
 `;
 
-export const berthingsQuery = `
+export const berthingsSelector = `
 id, 
 created_at, 
 vessel_imo, 

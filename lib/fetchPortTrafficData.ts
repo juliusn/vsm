@@ -1,6 +1,6 @@
 import { LocationState } from '@/app/context/LocationContext';
 import { createClient } from './supabase/server';
-import { berthingsQuery } from './queries';
+import { berthingsSelector } from './querySelectors';
 
 export const fetchPortTrafficData = async (): Promise<
   | {
@@ -33,7 +33,7 @@ export const fetchPortTrafficData = async (): Promise<
     supabase.from('berths').select().eq('enabled', true).order('berth_name'),
     supabase
       .from('berthings')
-      .select(berthingsQuery)
+      .select(berthingsSelector)
       .order('created_at', { ascending: false }),
   ]);
 

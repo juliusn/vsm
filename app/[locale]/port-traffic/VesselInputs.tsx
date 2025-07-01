@@ -1,9 +1,8 @@
 'use client';
 
 import { useVessels } from '@/app/context/VesselContext';
-import { BerthingFormValues } from '@/lib/types/berthing';
-import { Collapse, ComboboxItem } from '@mantine/core';
-import { UseFormReturnType } from '@mantine/form';
+import { Collapse, ComboboxItem, Paper } from '@mantine/core';
+import { GetInputPropsReturnType } from '@mantine/form/lib/types';
 import { useEffect, useMemo, useState } from 'react';
 import { VesselDetails } from '../orders/VesselDetails';
 import { ImoInput } from './ImoInput';
@@ -11,17 +10,21 @@ import { VesselNameInput } from './VesselNameInput';
 
 export function VesselInputs({
   vessel,
-  form,
+  vesselNameProps,
+  vesselNameKey,
+  imoProps,
+  imoKey,
   imoRef,
 }: {
-  form: UseFormReturnType<
-    BerthingFormValues,
-    (values: BerthingFormValues) => BerthingFormValues
-  >;
   vessel: AppTypes.Vessel | undefined;
+  vesselNameProps: GetInputPropsReturnType;
+  vesselNameKey: string;
+  imoProps: GetInputPropsReturnType;
+  imoKey: string;
   imoRef: React.RefObject<HTMLInputElement | null>;
 }) {
   const vessels = useVessels();
+
   const vesselItems = useMemo(
     () =>
       vessels.map(
@@ -47,16 +50,14 @@ export function VesselInputs({
     <>
       <VesselNameInput
         data={vesselItems}
-        key={form.key('vesselName')}
-        {...form.getInputProps('vesselName')}
+        {...vesselNameProps}
+        key={vesselNameKey}
       />
-      <ImoInput
-        key={form.key('imo')}
-        {...form.getInputProps('imo')}
-        ref={imoRef}
-      />
+      <ImoInput {...imoProps} key={imoKey} ref={imoRef} />
       <Collapse in={!!vessel}>
-        {mostRecentVessel && <VesselDetails vessel={mostRecentVessel} />}
+        <Paper withBorder shadow="sm">
+          {mostRecentVessel && <VesselDetails vessel={mostRecentVessel} />}
+        </Paper>
       </Collapse>
     </>
   );

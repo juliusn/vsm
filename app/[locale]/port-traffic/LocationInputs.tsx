@@ -1,29 +1,36 @@
 'use client';
 
+import { useLocations } from '@/app/context/LocationContext';
 import { getLocationInputItems } from '@/lib/getLocationInputItems';
-import { BerthingFormValues } from '@/lib/types/berthing';
-import { UseFormReturnType } from '@mantine/form';
+import { GetInputPropsReturnType } from '@mantine/form/lib/types';
 import { useMemo } from 'react';
 import { BerthInput } from './BerthInput';
 import { LocodeInput } from './LocodeInput';
 import { PortAreaInput } from './PortAreaInput';
-import { useLocations } from '@/app/context/LocationContext';
 
 export function LocationInputs({
   locode,
   portArea,
-  form,
+  locodeProps,
+  locodeKey,
+  portAreaProps,
+  portAreaKey,
+  berthProps,
+  berthKey,
 }: {
-  form: UseFormReturnType<
-    BerthingFormValues,
-    (values: BerthingFormValues) => BerthingFormValues
-  >;
   locode: string;
   portArea: string;
+  locodeProps: GetInputPropsReturnType;
+  locodeKey: string;
+  portAreaProps: GetInputPropsReturnType;
+  portAreaKey: string;
+  berthProps: GetInputPropsReturnType;
+  berthKey: string;
 }) {
   const {
     state: { locations, portAreas, berths },
   } = useLocations();
+
   const { portAreaItems, berthsItems } = useMemo(
     () => getLocationInputItems(locations, portAreas, berths, locode, portArea),
     [locations, portAreas, berths, locode, portArea]
@@ -31,21 +38,13 @@ export function LocationInputs({
 
   return (
     <>
-      <LocodeInput
-        locations={locations}
-        key={form.key('locode')}
-        {...form.getInputProps('locode')}
-      />
+      <LocodeInput locations={locations} {...locodeProps} key={locodeKey} />
       <PortAreaInput
         data={portAreaItems}
-        key={form.key('portArea')}
-        {...form.getInputProps('portArea')}
+        {...portAreaProps}
+        key={portAreaKey}
       />
-      <BerthInput
-        data={berthsItems}
-        key={form.key('berth')}
-        {...form.getInputProps('berth')}
-      />
+      <BerthInput data={berthsItems} {...berthProps} key={berthKey} />
     </>
   );
 }

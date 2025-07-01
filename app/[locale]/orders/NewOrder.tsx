@@ -5,7 +5,7 @@ import {
   useOrderSavedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
-import { ordersQuery } from '@/lib/queries';
+import { ordersSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
@@ -13,11 +13,7 @@ import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { OrderForm } from './OrderForm';
-
-export type OrderFormValues = {
-  berthing: string;
-  services: string[];
-};
+import { OrderFormValues } from '@/lib/types/order';
 
 interface Props {
   onCancel(): void;
@@ -76,7 +72,7 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
 
     const orderResponse = await supabase
       .from('orders')
-      .select(ordersQuery)
+      .select(ordersSelector)
       .eq('id', data.id)
       .single();
 

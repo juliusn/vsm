@@ -390,7 +390,7 @@
     "buttonLabel": "Uusi laiturointi",
     "modalTitle": "Luo uusi laiturointitapahtuma"
   },
-  "NewBerthingForm": {
+  "BerthingFormFields": {
     "vessel": "Alus",
     "imoRequiredError": "Aluksen IMO-tunnus vaaditaan.",
     "imoLengthError": "Aluksen IMO-tunnus täytyy olla 7 numeroa pitkä.",

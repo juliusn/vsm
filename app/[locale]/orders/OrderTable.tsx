@@ -10,12 +10,7 @@ import { DataTableColumn } from 'mantine-datatable';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { EditOrder } from './EditOrder';
-
-export type OrderRowData = AppTypes.OrderData & {
-  created: string;
-  arrival: string;
-  departure: string;
-};
+import { OrderRowData } from '@/lib/types/order';
 
 export function OrderTable() {
   const t = useTranslations('OrderTable');
@@ -144,7 +139,6 @@ export function OrderTable() {
         )}
       </Modal>
       <PaginatedTable<OrderRowData>
-        withColumnBorders
         allRecords={orderRowData}
         columns={columns}
       />

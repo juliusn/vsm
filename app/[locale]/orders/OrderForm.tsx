@@ -24,8 +24,16 @@ import { useLocale, useTranslations } from 'next-intl';
 import { FormEventHandler, useState } from 'react';
 import { EditBerthingForm } from '../port-traffic/EditBerthingForm';
 import { NewBerthingForm } from '../port-traffic/NewBerthingForm';
-import { OrderFormValues } from './NewOrder';
+import { OrderFormValues } from '@/lib/types/order';
 import { SelectBerthingTable } from './SelectBerthingTable';
+
+interface Props {
+  form: UseFormReturnType<OrderFormValues>;
+  onEditBerthing?(data: AppTypes.Berthing): void;
+  onCancel(): void;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  loading: boolean;
+}
 
 export function OrderForm({
   form,
@@ -33,13 +41,7 @@ export function OrderForm({
   onCancel,
   onSubmit,
   loading,
-}: {
-  form: UseFormReturnType<OrderFormValues>;
-  onEditBerthing?(data: AppTypes.Berthing): void;
-  onCancel(): void;
-  onSubmit: FormEventHandler<HTMLFormElement>;
-  loading: boolean;
-}) {
+}: Props) {
   const t = useTranslations('OrderForm');
   const { berthings } = useBerthings();
   const { commonServices } = useCommonServices();

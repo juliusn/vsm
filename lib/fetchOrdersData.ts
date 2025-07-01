@@ -1,6 +1,6 @@
 import { LocationState } from '@/app/context/LocationContext';
 import { createClient } from './supabase/server';
-import { berthingsQuery, ordersQuery } from './queries';
+import { berthingsSelector, ordersSelector } from './querySelectors';
 
 type Result = {
   locationState: LocationState;
@@ -37,11 +37,11 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
       .eq('enabled', true)
       .order('port_area_name'),
     supabase.from('berths').select().eq('enabled', true).order('berth_name'),
-    supabase.from('berthings').select(berthingsQuery),
+    supabase.from('berthings').select(berthingsSelector),
     supabase.from('port_events').select(),
     supabase.from('berth_services').select(),
     supabase.from('common_services').select(),
-    supabase.from('orders').select(ordersQuery),
+    supabase.from('orders').select(ordersSelector),
   ]);
 
   const success =
