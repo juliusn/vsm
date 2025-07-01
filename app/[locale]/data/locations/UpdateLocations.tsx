@@ -13,7 +13,7 @@ import {
   IconExclamationMark,
 } from '@tabler/icons-react';
 import { useFormatter, useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { MouseEventHandler, useState } from 'react';
 import { DeleteAllButton } from './DeleteAllButton';
 import { UpdateAllButton } from './UpdateAllButton';
 type DatasetName = 'port_data' | 'locations' | 'port_areas' | 'berths';
@@ -37,6 +37,13 @@ export function UpdateLocations() {
   const [rows, setRows] = useState<DatasetRow[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [apiData, setApiData] = useState<LocationApiResponse>();
+  const [apiUpdateTimes, setApiUpdateTimes] = useState<string[]>([]);
+  const formatter = useFormatter();
+  const [opened, { open, close }] = useDisclosure(false);
+  const t = useTranslations('UpdateLocations');
+  const supabase = createClient();
+  const router = useRouter();
+
   const apiLocations =
     apiData?.ssnLocations.features.map((location) => ({
       enabled: true,
@@ -44,6 +51,7 @@ export function UpdateLocations() {
       location_name: location.properties.locationName,
       locode: location.properties.locode,
     })) || [];
+
   const apiPortAreas =
     apiData?.portAreas.features.map(
       (portArea): AppTypes.PortArea => ({
@@ -54,6 +62,7 @@ export function UpdateLocations() {
         geometry: portArea.geometry,
       })
     ) || [];
+
   const apiBerths =
     apiData?.berths.berths.map(
       (berth): AppTypes.Berth => ({
@@ -64,6 +73,7 @@ export function UpdateLocations() {
         locode: berth.locode,
       })
     ) || [];
+
   const tableRows = rows?.map(
     ({ datasetName, apiUpdatedTime, dbUpdatedTime, comparisonResult }, i) => (
       <Table.Tr key={i}>
@@ -74,16 +84,8 @@ export function UpdateLocations() {
       </Table.Tr>
     )
   );
-  const [apiUpdateTimes, setApiUpdateTimes] = useState<string[]>([]);
-  const formatter = useFormatter();
-  const [opened, { open, close }] = useDisclosure(false);
-  const t = useTranslations('UpdateLocations');
-  const supabase = createClient();
-  const router = useRouter();
 
-  const requestData = async (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const requestData: MouseEventHandler<HTMLButtonElement> = async (event) => {
     event.preventDefault();
 
     setLoading(true);
@@ -118,6 +120,8 @@ export function UpdateLocations() {
           .maybeSingle()
       )
     );
+
+    setLoading(false);
 
     const comparisonResults = responses.map(
       (response, i): DateComparisonResult => ({
@@ -162,7 +166,7 @@ export function UpdateLocations() {
         })
       )
     );
-    setLoading(false);
+
     open();
   };
 
@@ -220,6 +224,7 @@ export function UpdateLocations() {
           ),
       },
     ];
+
     for (const { label, query } of updateQueries) {
       const { error, status } = await query();
       if (error) {
@@ -248,12 +253,12 @@ export function UpdateLocations() {
     const deleteQueries = [
       {
         label: t('berths'),
-        query: () => supabase.from('berths').delete().neq('berth_code', null),
+        query: () => supabase.from('berths').delete().neq('berth_code', ''),
       },
       {
         label: t('portAreas'),
         query: () =>
-          supabase.from('port_areas').delete().neq('port_area_code', null),
+          supabase.from('port_areas').delete().neq('port_area_code', ''),
       },
       {
         label: t('locations'),
@@ -261,7 +266,7 @@ export function UpdateLocations() {
           const { error, status } = await supabase
             .from('locations')
             .delete()
-            .neq('locode', null);
+            .neq('locode', '');
           return { error, status };
         },
       },
@@ -271,6 +276,7 @@ export function UpdateLocations() {
           supabase.from('metadata').delete().in('dataset_name', datasets),
       },
     ];
+
     for (const { label, query } of deleteQueries) {
       const { error, status } = await query();
       if (error) {
@@ -286,12 +292,14 @@ export function UpdateLocations() {
         return;
       }
     }
+
     showNotification({
       title: t('successLabel'),
       message: t('deleteSuccessMessage'),
       icon: <IconCheck stroke={1.5} />,
       color: 'green',
     });
+
     router.refresh();
   };
 
