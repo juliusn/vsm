@@ -44,7 +44,7 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
 
     const { data, error, status } = await supabase
       .from('orders')
-      .insert({ berthing })
+      .insert({ berthing, status: 'submitted' })
       .select('id')
       .single();
 
@@ -54,13 +54,13 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
       return;
     }
 
-    const queries = services.map((service) =>
+    const serviceQueries = services.map((service) =>
       supabase
         .from('common_service_order')
         .insert({ common_service: service, order: data.id })
     );
 
-    const responses = await Promise.all(queries);
+    const responses = await Promise.all(serviceQueries);
 
     for (const response of responses) {
       if (response.error) {

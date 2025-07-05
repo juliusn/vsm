@@ -17,3 +17,11 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+button[data-variant='subtle'] {
+  &:disabled,
+  &[data-disabled] {
+    border: 'none';
+    background-color: transparent;
+  }
+}

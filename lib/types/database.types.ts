@@ -257,16 +257,19 @@ export type Database = {
           berthing: string
           created_at: string
           id: string
+          status: Database["public"]["Enums"]["order_status"]
         }
         Insert: {
           berthing: string
           created_at?: string
           id?: string
+          status?: Database["public"]["Enums"]["order_status"]
         }
         Update: {
           berthing?: string
           created_at?: string
           id?: string
+          status?: Database["public"]["Enums"]["order_status"]
         }
         Relationships: [
           {
@@ -3476,6 +3479,7 @@ export type Database = {
     }
     Enums: {
       approval_status_enum: "pending" | "approved" | "rejected"
+      order_status: "submitted" | "received" | "completed" | "cancelled"
       port_event_enum: "arrival" | "departure" | "shifting"
     }
     CompositeTypes: {

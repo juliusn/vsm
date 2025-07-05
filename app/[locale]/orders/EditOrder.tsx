@@ -202,6 +202,11 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
   }: FormValues) => {
     if (imo === '') return;
 
+    const updateOrderQuery = supabase
+      .from('orders')
+      .update({ status: 'submitted' })
+      .eq('id', order.id);
+
     const updateBerthingsQuery = supabase
       .from('berthings')
       .update({
@@ -253,6 +258,7 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
     setLoading(true);
 
     const updateResponses = await Promise.all([
+      updateOrderQuery,
       updateBerthingsQuery,
       arrivalQuery,
       departureQuery,

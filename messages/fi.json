@@ -472,6 +472,7 @@
     "arrival": "Tulo",
     "departure": "Lähtö",
     "services": "Palvelut",
+    "status": "Tila",
     "orderedServices": "Tilatut palvelut",
     "edit": "Muokkaa",
     "delete": "Poista",
@@ -495,5 +496,11 @@
     "editOrder": "Muokkaa tilausta",
     "selectBerthingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
     "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin."
+  },
+  "OrderStatus": {
+    "submitted": "Lähetetty",
+    "received": "Vastaanotettu",
+    "completed": "Toimitettu",
+    "cancelled": "Peruttu"
   }
 }

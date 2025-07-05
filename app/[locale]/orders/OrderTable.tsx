@@ -1,8 +1,10 @@
 'use client';
 
+import { OrderStatus } from '@/app/components/OrderStatus';
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { useOrderData } from '@/app/context/OrderContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
+import { OrderRowData } from '@/lib/types/order';
 import { ActionIcon, Center, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconEdit } from '@tabler/icons-react';
@@ -10,7 +12,6 @@ import { DataTableColumn } from 'mantine-datatable';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { EditOrder } from './EditOrder';
-import { OrderRowData } from '@/lib/types/order';
 
 export function OrderTable() {
   const t = useTranslations('OrderTable');
@@ -106,12 +107,19 @@ export function OrderTable() {
           .join(', '),
     },
     {
+      accessor: 'status',
+      title: t('status'),
+      noWrap: true,
+      render: (data) => <OrderStatus status={data.status} />,
+    },
+    {
       accessor: 'edit',
       title: t('edit'),
       render: (berthingRow) => (
         <Center>
           <ActionIcon
             variant="subtle"
+            disabled={berthingRow.status === 'completed'}
             onClick={() => {
               setSelectedRow(berthingRow);
               openEditModal();

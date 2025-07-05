@@ -469,6 +469,7 @@
     "arrival": "Arrival",
     "departure": "Departure",
     "services": "Services",
+    "status": "Status",
     "orderedServices": "Ordered services",
     "edit": "Edit",
     "delete": "Delete",
@@ -492,5 +493,11 @@
     "editOrder": "Edit order",
     "selectBerthingError": "Select berthing to which you want to add services.",
     "selectServicesError": "Selet services you want to add to the berthing."
+  },
+  "OrderStatus": {
+    "submitted": "Submitted",
+    "received": "Received",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
   }
 }

@@ -1,6 +1,7 @@
 export const ordersSelector = `
 id,
 created_at,
+status,
 berthing:berthings ( 
   id, 
   created_at, 

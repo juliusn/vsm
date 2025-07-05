@@ -45,6 +45,7 @@ declare global {
       berthing: Berthing;
       common_services: CommonService[];
     };
+    type OrderStatus = Database['public']['Enums']['order_status'];
   }
 }
 
