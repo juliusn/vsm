@@ -2,6 +2,10 @@
 
 import { FormButtons } from '@/app/components/FormButtons';
 import { useBerthings } from '@/app/context/BerthingContext';
+import {
+  BerthingFormProvider,
+  useBerthingFormContext,
+} from '@/app/context/FormContext';
 import { useVessels } from '@/app/context/VesselContext';
 import {
   useBerthingSavedNotification,
@@ -21,7 +25,8 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
 import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
-import { BerthingFormFields } from '../../components/BerthingFormFields';
+import { BerthingFormFields } from './BerthingFormFields';
+import { Berthing } from '@/lib/types/QueryTypes';
 
 const initialValues: BerthingFormValues = {
   vesselName: '',
@@ -36,8 +41,10 @@ const initialValues: BerthingFormValues = {
 };
 
 export function NewBerthingForm({
+  close,
   resultCallback,
 }: {
+  close(): void;
   resultCallback?: (data: BerthingRowData) => void;
 }) {
   const supabase = createClient();
@@ -209,7 +216,7 @@ export function NewBerthingForm({
 
       const port_events = portEventResponses.map((response) => response.data);
 
-      const berthing: AppTypes.Berthing = {
+      const berthing: Berthing = {
         ...berthingsResponse.data,
         port_events,
       };
@@ -238,37 +245,18 @@ export function NewBerthingForm({
   return (
     <form onSubmit={form.onSubmit(submitHandler)}>
       <Stack>
-        <BerthingFormFields
-          vesselInputsProps={{
-            vessel: vessel,
-            vesselNameProps: form.getInputProps('vesselName'),
-            vesselNameKey: form.key('vesselName'),
-            imoProps: form.getInputProps('imo'),
-            imoKey: form.key('imo'),
-            imoRef: imoRef,
-          }}
-          locationInputsProps={{
-            locode: locode,
-            portArea: portArea,
-            locodeProps: form.getInputProps('locode'),
-            locodeKey: form.key('locode'),
-            portAreaProps: form.getInputProps('portArea'),
-            portAreaKey: form.key('portArea'),
-            berthProps: form.getInputProps('berth'),
-            berthKey: form.key('berth'),
-          }}
-          etaDateProps={form.getInputProps('etaDate')}
-          etaDateKey={form.key('etaDate')}
-          etaTimeProps={form.getInputProps('etaTime')}
-          etaTimeKey={form.key('etaTime')}
-          etdDateProps={form.getInputProps('etdDate')}
-          etdDateKey={form.key('etdDate')}
-          etdTimeProps={form.getInputProps('etdTime')}
-          etdTimeKey={form.key('etdTime')}
-        />
+        <BerthingFormProvider value={form}>
+          <BerthingFormFields<BerthingFormValues>
+            useFormContext={useBerthingFormContext}
+            vessel={vessel}
+            imoRef={imoRef}
+            locode={locode}
+            portArea={portArea}
+          />
+        </BerthingFormProvider>
         <Group grow>
           <FormButtons
-            cancelButtonClickHandler={close}
+            closeButtonClickHandler={close}
             resetButtonClickHandler={() => {
               form.reset();
               setVessel(undefined);

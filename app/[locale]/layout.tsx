@@ -14,9 +14,9 @@ import 'dayjs/locale/fi';
 import { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { AuthListener } from '../components/AuthListener';
-import { HeaderContent } from '../components/HeaderContent';
-import { ProgressBar } from '../components/ProgressBar';
+import { AuthListener } from '@/app/components/AuthListener';
+import { HeaderContent } from '@/app/components/HeaderContent';
+import { ProgressBar } from '@/app/components/ProgressBar';
 import '../globals.css';
 
 export const metadata: Metadata = {

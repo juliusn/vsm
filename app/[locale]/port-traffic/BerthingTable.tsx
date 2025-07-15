@@ -1,5 +1,6 @@
 'use client';
 
+import { EditBerthingForm } from '@/app/components/BerthingForms/EditBerthingForm';
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { useBerthings } from '@/app/context/BerthingContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
@@ -11,8 +12,6 @@ import { DataTableColumn } from 'mantine-datatable';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { DeleteBerthingConfirmation } from './DeleteBerthingConfirmation';
-import { EditBerthingForm } from './EditBerthingForm';
-
 export function BerthingTable() {
   const t = useTranslations('BerthingTable');
   const format = useFormatter();

@@ -1,54 +1,89 @@
 'use client';
 
 import { BerthingPreview } from '@/app/components/BerthingPreview';
+import { FormButtons } from '@/app/components/FormButtons';
 import { useBerthings } from '@/app/context/BerthingContext';
 import { useCommonServices } from '@/app/context/CommonServiceContext';
+import { useCounterparties } from '@/app/context/CounterpartyContext';
+import { useNewOrderFormContext } from '@/app/context/FormContext';
 import {
   ActionIcon,
   Button,
   Checkbox,
   Collapse,
+  ComboboxItem,
   Fieldset,
   Group,
   InputWrapper,
   Modal,
   Paper,
+  Select,
+  Space,
   Stack,
   Text,
   Tooltip,
 } from '@mantine/core';
-import { UseFormReturnType } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { IconAnchor, IconChecklist, IconEdit } from '@tabler/icons-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { FormEventHandler, useState } from 'react';
-import { EditBerthingForm } from '../port-traffic/EditBerthingForm';
-import { NewBerthingForm } from '../port-traffic/NewBerthingForm';
-import { OrderFormValues } from '@/lib/types/order';
+
+import { EditBerthingForm } from '@/app/components/BerthingForms/EditBerthingForm';
+import { NewBerthingForm } from '@/app/components/BerthingForms/NewBerthingForm';
 import { SelectBerthingTable } from './SelectBerthingTable';
 
 interface Props {
-  form: UseFormReturnType<OrderFormValues>;
-  onEditBerthing?(data: AppTypes.Berthing): void;
-  onCancel(): void;
+  onClose(): void;
   onSubmit: FormEventHandler<HTMLFormElement>;
   loading: boolean;
 }
 
-export function OrderForm({
-  form,
-  onEditBerthing,
-  onCancel,
-  onSubmit,
-  loading,
-}: Props) {
+export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
+  const form = useNewOrderFormContext();
   const t = useTranslations('OrderForm');
+  const counterParties = useCounterparties();
   const { berthings } = useBerthings();
   const { commonServices } = useCommonServices();
   const locale = useLocale() as AppTypes.Locale;
   const initialBerthingId = form.getInitialValues()['berthing'];
   const [berthingId, setBerthingId] = useState(initialBerthingId);
   const berthing = berthings.find(({ id }) => id === berthingId);
+
+  const [senderCounterparties, setSenderCounterparties] =
+    useState(counterParties);
+
+  const [receiverCounterparties, setReceiverCounterparties] =
+    useState(counterParties);
+
+  const senderItems: ComboboxItem[] = senderCounterparties.map(
+    (counterparty) => ({
+      label:
+        counterparty.counterparty_names.find((name) => name.locale === locale)
+          ?.name || counterparty.name,
+      value: counterparty.business_id,
+    })
+  );
+
+  const receiverItems: ComboboxItem[] = receiverCounterparties.map(
+    (counterparty) => ({
+      label:
+        counterparty.counterparty_names.find((name) => name.locale === locale)
+          ?.name || counterparty.name,
+      value: counterparty.business_id,
+    })
+  );
+
+  form.watch('sender', ({ value }) => {
+    setReceiverCounterparties(
+      counterParties.filter((receiver) => receiver.business_id !== value)
+    );
+  });
+
+  form.watch('receiver', ({ value }) => {
+    setSenderCounterparties(
+      counterParties.filter((sender) => sender.business_id !== value)
+    );
+  });
 
   const berthingRowData = berthing
     ? {
@@ -99,6 +134,7 @@ export function OrderForm({
         onClose={closeNewBerthing}
         title={t('createNewBerthing')}>
         <NewBerthingForm
+          close={closeNewBerthing}
           resultCallback={(data) => {
             setBerthingId(data.id);
             form.setFieldValue('berthing', data.id);
@@ -115,15 +151,30 @@ export function OrderForm({
           <EditBerthingForm
             berthingRow={berthingRowData}
             onCancel={closeEditBerthing}
-            resultCallback={(data) => {
-              onEditBerthing?.(data);
-              closeEditBerthing();
-            }}
+            resultCallback={closeEditBerthing}
           />
         )}
       </Modal>
       <form onSubmit={onSubmit}>
         <Stack>
+          <Group grow align="start">
+            <Select
+              clearable
+              label={t('sender')}
+              placeholder={t('select')}
+              data={senderItems}
+              {...form.getInputProps('sender')}
+              key={form.key('sender')}
+            />
+            <Select
+              clearable
+              label={t('receiver')}
+              placeholder={t('select')}
+              data={receiverItems}
+              {...form.getInputProps('receiver')}
+              key={form.key('receiver')}
+            />
+          </Group>
           <InputWrapper
             required
             {...form.getInputProps('berthing')}
@@ -135,55 +186,54 @@ export function OrderForm({
                   <Text>{t('berthing')}</Text>
                 </Group>
               }>
-              <Stack>
-                <Group grow>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      openNewBerthing();
-                    }}>
-                    {t('create')}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      openSelectBerthing();
-                    }}>
-                    {t('select')}
-                  </Button>
-                  <Button
-                    variant="default"
-                    disabled={!berthingId}
-                    onClick={() => {
-                      setBerthingId(initialBerthingId);
-                      form.reset();
-                    }}>
-                    {t('removeSelection')}
-                  </Button>
-                </Group>
-                <Collapse in={!!berthingId}>
-                  <Paper
-                    withBorder
-                    shadow="sm"
-                    id="preview"
-                    style={{ position: 'relative' }}>
-                    {berthingRowData && (
-                      <BerthingPreview data={berthingRowData} />
-                    )}
-                    <ActionIcon
-                      style={{
-                        position: 'absolute',
-                        top: 10,
-                        right: 10,
-                        zIndex: 1,
-                      }}
-                      variant="subtle"
-                      onClick={openEditBerthing}>
-                      <IconEdit stroke={1.5} />
-                    </ActionIcon>
-                  </Paper>
-                </Collapse>
-              </Stack>
+              <Group grow>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    openNewBerthing();
+                  }}>
+                  {t('create')}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    openSelectBerthing();
+                  }}>
+                  {t('select')}
+                </Button>
+                <Button
+                  variant="default"
+                  disabled={!berthingId}
+                  onClick={() => {
+                    setBerthingId(initialBerthingId);
+                    form.reset();
+                  }}>
+                  {t('removeSelection')}
+                </Button>
+              </Group>
+              <Collapse in={!!berthingId}>
+                <Space h="md" />
+                <Paper
+                  withBorder
+                  shadow="sm"
+                  id="preview"
+                  style={{ position: 'relative' }}>
+                  {berthingRowData && (
+                    <BerthingPreview data={berthingRowData} />
+                  )}
+                  <ActionIcon
+                    style={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 10,
+                      zIndex: 1,
+                    }}
+                    variant="subtle"
+                    onClick={openEditBerthing}>
+                    <IconEdit stroke={1.5} />
+                  </ActionIcon>
+                </Paper>
+              </Collapse>
             </Fieldset>
           </InputWrapper>
           <Checkbox.Group
@@ -215,15 +265,14 @@ export function OrderForm({
             </Fieldset>
           </Checkbox.Group>
           <Group grow>
-            <Button variant="outline" onClick={onCancel}>
-              {t('cancelButtonLabel')}
-            </Button>
-            <Button
-              type="submit"
-              loading={loading}
-              disabled={Boolean(Object.keys(form.errors).length)}>
-              {t('saveButtonLabel')}
-            </Button>
+            <FormButtons
+              closeButtonClickHandler={onClose}
+              resetButtonClickHandler={form.reset}
+              resetButtonDisabled={form.isDirty()}
+              submitButtonDisabled={!form.isDirty() || !form.isValid()}
+              submitButtonLoading={loading}
+              submitButtonLabel={t('send')}
+            />
           </Group>
         </Stack>
       </form>

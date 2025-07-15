@@ -216,6 +216,52 @@ export type Database = {
         }
         Relationships: []
       }
+      counterparties: {
+        Row: {
+          business_id: string
+          created_at: string
+          name: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          name: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      counterparty_names: {
+        Row: {
+          counterparty: string
+          created_at: string
+          locale: Database["public"]["Enums"]["locale"]
+          name: string
+        }
+        Insert: {
+          counterparty: string
+          created_at?: string
+          locale: Database["public"]["Enums"]["locale"]
+          name: string
+        }
+        Update: {
+          counterparty?: string
+          created_at?: string
+          locale?: Database["public"]["Enums"]["locale"]
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "counterparty_names_counterparty_fkey"
+            columns: ["counterparty"]
+            referencedRelation: "counterparties"
+            referencedColumns: ["business_id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           country: string
@@ -257,18 +303,24 @@ export type Database = {
           berthing: string
           created_at: string
           id: string
+          receiver: string
+          sender: string
           status: Database["public"]["Enums"]["order_status"]
         }
         Insert: {
           berthing: string
           created_at?: string
           id?: string
+          receiver: string
+          sender: string
           status?: Database["public"]["Enums"]["order_status"]
         }
         Update: {
           berthing?: string
           created_at?: string
           id?: string
+          receiver?: string
+          sender?: string
           status?: Database["public"]["Enums"]["order_status"]
         }
         Relationships: [
@@ -277,6 +329,18 @@ export type Database = {
             columns: ["berthing"]
             referencedRelation: "berthings"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_receiver_fkey"
+            columns: ["receiver"]
+            referencedRelation: "counterparties"
+            referencedColumns: ["business_id"]
+          },
+          {
+            foreignKeyName: "orders_sender_fkey"
+            columns: ["sender"]
+            referencedRelation: "counterparties"
+            referencedColumns: ["business_id"]
           },
         ]
       }
@@ -318,7 +382,7 @@ export type Database = {
           estimated_date: string
           estimated_time: string | null
           id: string
-          type: Database["public"]["Enums"]["port_event_enum"]
+          type: Database["public"]["Enums"]["port_event"]
         }
         Insert: {
           berthing: string
@@ -326,7 +390,7 @@ export type Database = {
           estimated_date: string
           estimated_time?: string | null
           id?: string
-          type: Database["public"]["Enums"]["port_event_enum"]
+          type: Database["public"]["Enums"]["port_event"]
         }
         Update: {
           berthing?: string
@@ -334,7 +398,7 @@ export type Database = {
           estimated_date?: string
           estimated_time?: string | null
           id?: string
-          type?: Database["public"]["Enums"]["port_event_enum"]
+          type?: Database["public"]["Enums"]["port_event"]
         }
         Relationships: [
           {
@@ -347,7 +411,7 @@ export type Database = {
       }
       profiles: {
         Row: {
-          approval_status: Database["public"]["Enums"]["approval_status_enum"]
+          approval_status: Database["public"]["Enums"]["approval_status"]
           approval_status_set_by: string | null
           first_name: string
           id: string
@@ -355,7 +419,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          approval_status?: Database["public"]["Enums"]["approval_status_enum"]
+          approval_status?: Database["public"]["Enums"]["approval_status"]
           approval_status_set_by?: string | null
           first_name: string
           id: string
@@ -363,7 +427,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          approval_status?: Database["public"]["Enums"]["approval_status_enum"]
+          approval_status?: Database["public"]["Enums"]["approval_status"]
           approval_status_set_by?: string | null
           first_name?: string
           id?: string
@@ -3478,9 +3542,10 @@ export type Database = {
       }
     }
     Enums: {
-      approval_status_enum: "pending" | "approved" | "rejected"
+      approval_status: "pending" | "approved" | "rejected"
+      locale: "en" | "fi"
       order_status: "submitted" | "received" | "completed" | "cancelled"
-      port_event_enum: "arrival" | "departure" | "shifting"
+      port_event: "arrival" | "departure" | "shifting"
     }
     CompositeTypes: {
       geometry_dump: {

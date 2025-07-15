@@ -1,23 +1,25 @@
 'use client';
 
+import { NewOrderFormProvider } from '@/app/context/FormContext';
 import { useOrderData } from '@/app/context/OrderContext';
 import {
-  useOrderSavedNotification,
+  useOrderSentNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
 import { ordersSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
-import { useForm } from '@mantine/form';
+import { OrderFormValues } from '@/lib/types/order';
+import { Order } from '@/lib/types/QueryTypes';
+import { isNotEmpty, useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { OrderForm } from './OrderForm';
-import { OrderFormValues } from '@/lib/types/order';
+import { NewOrderForm } from './NewOrderForm';
 
 interface Props {
   onCancel(): void;
-  resultCallback?(data: AppTypes.OrderData): void;
+  resultCallback?(data: Order): void;
 }
 
 export function NewOrder({ onCancel, resultCallback }: Props) {
@@ -26,25 +28,31 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
   const [loading, setLoading] = useState(false);
   const { dispatchOrderData } = useOrderData();
   const getErrorNotification = usePostgresErrorNotification();
-  const getOrderSavedNotification = useOrderSavedNotification();
+  const getOrderSentNotification = useOrderSentNotification();
 
   const form = useForm<OrderFormValues>({
     mode: 'uncontrolled',
-    validateInputOnChange: true,
-    initialValues: { berthing: '', services: [] },
+    initialValues: { sender: '', receiver: '', berthing: '', services: [] },
     validate: {
-      berthing: (berthing) => (berthing ? null : t('selectBerthingError')),
+      sender: isNotEmpty(t('selectClientError')),
+      receiver: isNotEmpty(t('selectRecipientError')),
+      berthing: isNotEmpty(t('selectBerthingError')),
       services: (services) =>
         services.length ? null : t('selectServicesError'),
     },
   });
 
-  const handleSubmit = async ({ berthing, services }: OrderFormValues) => {
+  const handleSubmit = async ({
+    sender,
+    receiver,
+    berthing,
+    services,
+  }: OrderFormValues) => {
     setLoading(true);
 
     const { data, error, status } = await supabase
       .from('orders')
-      .insert({ berthing, status: 'submitted' })
+      .insert({ sender, receiver, berthing, status: 'submitted' })
       .select('id')
       .single();
 
@@ -82,29 +90,23 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
       return;
     }
 
-    const orderData: AppTypes.OrderData = {
-      ...orderResponse.data,
-      common_services: orderResponse.data.common_services.map((service) => ({
-        ...service,
-        titles: service.titles as AppTypes.ServiceTitles,
-      })),
-    };
-
     dispatchOrderData({
       type: 'added',
-      item: orderData,
+      item: orderResponse.data,
     });
+
     setLoading(false);
-    showNotification(getOrderSavedNotification());
-    resultCallback?.(orderData);
+    showNotification(getOrderSentNotification());
+    resultCallback?.(orderResponse.data);
   };
 
   return (
-    <OrderForm
-      form={form}
-      onCancel={onCancel}
-      onSubmit={form.onSubmit(handleSubmit)}
-      loading={loading}
-    />
+    <NewOrderFormProvider value={form}>
+      <NewOrderForm
+        onClose={onCancel}
+        onSubmit={form.onSubmit(handleSubmit)}
+        loading={loading}
+      />
+    </NewOrderFormProvider>
   );
 }

@@ -103,7 +103,7 @@ export function OrderTable() {
       title: t('services'),
       render: (data) =>
         data.common_services
-          .map((service) => service.titles[locale])
+          .map((service) => (service.titles as AppTypes.ServiceTitles)[locale])
           .join(', '),
     },
     {
@@ -141,7 +141,7 @@ export function OrderTable() {
         {selectedRow && (
           <EditOrder
             order={selectedRow}
-            onCancel={closeEditModal}
+            onClose={closeEditModal}
             resultCallback={closeEditModal}
           />
         )}

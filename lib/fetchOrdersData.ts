@@ -1,14 +1,20 @@
 import { LocationState } from '@/app/context/LocationContext';
 import { createClient } from './supabase/server';
-import { berthingsSelector, ordersSelector } from './querySelectors';
+import {
+  berthingsSelector,
+  counterpartiesSelector,
+  ordersSelector,
+} from './querySelectors';
+import { Berthing, Counterparty, Order } from './types/QueryTypes';
 
 type Result = {
   locationState: LocationState;
   vessels: AppTypes.Vessel[];
-  berthings: AppTypes.Berthing[];
+  berthings: Berthing[];
   berthServices: AppTypes.BerthService[];
   commonServices: AppTypes.CommonService[];
-  orderData: AppTypes.OrderData[];
+  orders: Order[];
+  counterparties: Counterparty[];
 };
 
 export const fetchOrdersData = async (): Promise<Result | undefined> => {
@@ -24,6 +30,7 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     berthServicesResponse,
     commonServicesResponse,
     ordersResponse,
+    counterpartiesResponse,
   ] = await Promise.all([
     fetch('https://meri.digitraffic.fi/api/ais/v1/vessels'),
     supabase
@@ -42,6 +49,7 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     supabase.from('berth_services').select(),
     supabase.from('common_services').select(),
     supabase.from('orders').select(ordersSelector),
+    supabase.from('counterparties').select(counterpartiesSelector),
   ]);
 
   const success =
@@ -53,7 +61,8 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     portEventsResponse.data &&
     berthServicesResponse.data &&
     commonServicesResponse.data &&
-    ordersResponse.data;
+    ordersResponse.data &&
+    counterpartiesResponse.data;
 
   if (success) {
     const vesselsData = (await vesselsResponse.json()) as AppTypes.Vessel[];
@@ -130,13 +139,14 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
         ...service,
         titles: service.titles as AppTypes.ServiceTitles,
       })),
-      orderData: ordersResponse.data.map((order) => ({
+      orders: ordersResponse.data.map((order) => ({
         ...order,
         common_services: order.common_services.map((service) => ({
           ...service,
           titles: service.titles as AppTypes.ServiceTitles,
         })),
       })),
+      counterparties: counterpartiesResponse.data,
     };
   }
 };

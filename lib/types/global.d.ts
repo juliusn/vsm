@@ -38,13 +38,6 @@ declare global {
       referencePointD: number;
     };
     type PortEvent = Database['public']['Tables']['port_events']['Row'];
-    type Berthing = Database['public']['Tables']['berthings']['Row'] & {
-      port_events: Omit<PortEvent, 'berthing'>[];
-    };
-    type OrderData = Omit<Order, 'berthing'> & {
-      berthing: Berthing;
-      common_services: CommonService[];
-    };
     type OrderStatus = Database['public']['Enums']['order_status'];
   }
 }

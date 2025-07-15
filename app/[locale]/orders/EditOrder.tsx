@@ -1,10 +1,13 @@
 'use client';
 
 import { useBerthings } from '@/app/context/BerthingContext';
+import { EditOrderFormProvider } from '@/app/context/FormContext';
 import { useOrderData } from '@/app/context/OrderContext';
 import { useVessels } from '@/app/context/VesselContext';
 import {
+  useOrderCancelledNotification,
   useOrderSavedNotification,
+  useOrderSentNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
 import useBerthingFormValidation from '@/app/hooks/useBerthingFormValidation';
@@ -16,31 +19,38 @@ import {
   BerthingFormValues,
   PortAreaIdentifier,
 } from '@/lib/types/berthing';
-import { OrderFormValues, OrderRowData } from '@/lib/types/order';
+import { OrderFormValues } from '@/lib/types/order';
+import { Order } from '@/lib/types/QueryTypes';
+import { Button, Group, Modal, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
+import equal from 'fast-deep-equal';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { EditOrderForm } from './EditOrderForm';
 
 interface Props {
-  order: OrderRowData;
-  onCancel(): void;
-  resultCallback(data: AppTypes.OrderData): void;
+  order: Order;
+  onClose(): void;
+  resultCallback(data: Order): void;
 }
 
 type FormValues = BerthingFormValues & OrderFormValues;
 
-export function EditOrder({ order, onCancel, resultCallback }: Props) {
+export function EditOrder({ order, onClose, resultCallback }: Props) {
   const t = useTranslations('EditOrder');
   const supabase = createClient();
-  const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
   const { dispatchOrderData } = useOrderData();
   const { dispatchBerthings } = useBerthings();
   const vessels = useVessels();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSavedNotification = useOrderSavedNotification();
+  const getOrderCanelledNotification = useOrderCancelledNotification();
+  const getOrderSentNotification = useOrderSentNotification();
   const existingServices = order.common_services.map((service) => service.id);
   const [locode, setLocode] = useState(order.berthing.locode || '');
   const imoRef = useRef<HTMLInputElement>(null);
@@ -86,6 +96,8 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
   );
 
   const initialValues: FormValues = {
+    sender: order.sender.business_id,
+    receiver: order.receiver.business_id,
     vesselName: vesselMatch?.imo.toString() || '',
     imo: order.berthing.vessel_imo || '',
     locode: order.berthing.locode || '',
@@ -121,6 +133,13 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
         values.berth &&
         (JSON.parse(values.berth) as BerthIdentifier).berth_code,
     }),
+    onValuesChange: (values) => {
+      const dirty = !equal(
+        values.services.sort(),
+        initialValues.services.sort()
+      );
+      form.setDirty({ services: dirty });
+    },
   });
 
   form.watch('vesselName', ({ value }) => {
@@ -188,6 +207,8 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
   });
 
   const handleSubmit = async ({
+    sender,
+    receiver,
     vesselName,
     imo,
     locode,
@@ -204,7 +225,7 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
 
     const updateOrderQuery = supabase
       .from('orders')
-      .update({ status: 'submitted' })
+      .update({ sender, receiver, status: 'submitted' })
       .eq('id', order.id);
 
     const updateBerthingsQuery = supabase
@@ -255,7 +276,7 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
           )
       : null;
 
-    setLoading(true);
+    setSubmitLoading(true);
 
     const updateResponses = await Promise.all([
       updateOrderQuery,
@@ -283,7 +304,7 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
       ordersQuery,
     ]);
 
-    setLoading(false);
+    setSubmitLoading(false);
 
     if (berthingsResponse.data) {
       dispatchBerthings({ type: 'changed', item: berthingsResponse.data });
@@ -317,45 +338,85 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
       }
     }
 
-    showNotification(getOrderSavedNotification());
+    showNotification(
+      order.status !== 'cancelled'
+        ? getOrderSavedNotification()
+        : getOrderSentNotification()
+    );
   };
 
+  const handleCancel = async () => {
+    setCancelLoading(true);
+
+    const { data, error, status } = await supabase
+      .from('orders')
+      .update({ status: 'cancelled' })
+      .eq('id', order.id)
+      .select(ordersSelector)
+      .single();
+
+    setCancelLoading(false);
+
+    if (error) {
+      showNotification(getErrorNotification(status));
+      closeCancelModal();
+      return;
+    }
+
+    dispatchOrderData({ type: 'changed', item: data });
+    showNotification(getOrderCanelledNotification());
+    closeCancelModal();
+    onClose();
+  };
+
+  const [
+    cancelModalOpened,
+    { open: openCancelModal, close: closeCancelModal },
+  ] = useDisclosure();
+
+  const cancelOrderContent = (
+    <>
+      <Modal
+        title={t('cancelModalTitle')}
+        opened={cancelModalOpened}
+        onClose={closeCancelModal}>
+        <Stack>
+          {t('cancelModalMessage')}
+          <Group grow>
+            <Button variant="outline" onClick={closeCancelModal}>
+              {t('closeButtonLabel')}
+            </Button>
+            <Button color="red" onClick={handleCancel}>
+              {t('confirmButtonLabel')}
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+      <Button
+        variant="outline"
+        color="red"
+        onClick={openCancelModal}
+        loading={cancelLoading}>
+        {t('cancelButtonLabel')}
+      </Button>
+    </>
+  );
+
   return (
-    <EditOrderForm
-      vesselInputsProps={{
-        vessel: vessel,
-        vesselNameProps: form.getInputProps('vesselName'),
-        vesselNameKey: form.key('vesselName'),
-        imoProps: form.getInputProps('imo'),
-        imoKey: form.key('imo'),
-        imoRef: imoRef,
-      }}
-      locationInputsProps={{
-        locode: locode,
-        portArea: portArea,
-        locodeProps: form.getInputProps('locode'),
-        locodeKey: form.key('locode'),
-        portAreaProps: form.getInputProps('portArea'),
-        portAreaKey: form.key('portArea'),
-        berthProps: form.getInputProps('berth'),
-        berthKey: form.key('berth'),
-      }}
-      etaDateProps={form.getInputProps('etaDate')}
-      etaDateKey={form.key('etaDate')}
-      etaTimeProps={form.getInputProps('etaTime')}
-      etaTimeKey={form.key('etaTime')}
-      etdDateProps={form.getInputProps('etdDate')}
-      etdDateKey={form.key('etdDate')}
-      etdTimeProps={form.getInputProps('etdTime')}
-      etdTimeKey={form.key('etdTime')}
-      servicesProps={form.getInputProps('services')}
-      servicesKey={form.key('services')}
-      onCancel={onCancel}
-      onSubmit={form.onSubmit(handleSubmit)}
-      loading={loading}
-      submitDisabled={
-        !form.isDirty() || Boolean(Object.keys(form.errors).length)
-      }
-    />
+    <EditOrderFormProvider value={form}>
+      <EditOrderForm
+        vessel={vessel}
+        imoRef={imoRef}
+        locode={locode}
+        portArea={portArea}
+        additionalContent={
+          order.status !== 'cancelled' ? cancelOrderContent : null
+        }
+        status={order.status}
+        onClose={onClose}
+        onSubmit={form.onSubmit(handleSubmit)}
+        loading={submitLoading}
+      />
+    </EditOrderFormProvider>
   );
 }

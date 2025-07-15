@@ -141,6 +141,8 @@
     "modalTitle": "Create a new order"
   },
   "NewOrder": {
+    "selectClientError": "Select client.",
+    "selectRecipientError": "Select recipient.",
     "selectBerthingError": "Select berthing to which you want to add services.",
     "selectServicesError": "Selet services you want to add to the berthing."
   },
@@ -279,9 +281,17 @@
     "title": "Done!",
     "message": "Berthing has been deleted."
   },
+  "OrderSentNotification": {
+    "title": "Done!",
+    "message": "Order has been sent."
+  },
   "OrderSavedNotification": {
     "title": "Done!",
     "message": "Order has been saved."
+  },
+  "OrderCancelledNotification": {
+    "title": "Done!",
+    "message": "Order has been cancelled."
   },
   "PortAreaCodePage": {
     "title": "Berths",
@@ -408,7 +418,7 @@
     "time": "Time"
   },
   "FormButtons": {
-    "cancel": "Cancel",
+    "close": "Close",
     "reset": "Reset",
     "save": "Save"
   },
@@ -477,6 +487,8 @@
     "deleteOrder": "Delete order"
   },
   "OrderForm": {
+    "sender": "Client",
+    "receiver": "Recipient",
     "berthing": "Berthing",
     "createNewBerthing": "Create a new berthing",
     "create": "Create",
@@ -486,13 +498,17 @@
     "editBerthing": "Edit berthing",
     "services": "Services",
     "servicesTooltip": "Select a berthing in order to select services.",
-    "cancelButtonLabel": "Cancel",
-    "saveButtonLabel": "Save"
+    "send": "Send order"
   },
   "EditOrder": {
     "editOrder": "Edit order",
     "selectBerthingError": "Select berthing to which you want to add services.",
-    "selectServicesError": "Selet services you want to add to the berthing."
+    "selectServicesError": "Selet services you want to add to the berthing.",
+    "cancelButtonLabel": "Cancel order",
+    "cancelModalTitle": "Confirm order cancellation",
+    "cancelModalMessage": "Are you sure you want to cancel this order?",
+    "closeButtonLabel": "No",
+    "confirmButtonLabel": "Yes"
   },
   "OrderStatus": {
     "submitted": "Submitted",

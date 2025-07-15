@@ -4,26 +4,28 @@ import { Button } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 import { MouseEventHandler } from 'react';
 
-interface FormButtonsProps {
-  cancelButtonClickHandler: MouseEventHandler<HTMLButtonElement>;
+interface Props {
+  closeButtonClickHandler: MouseEventHandler<HTMLButtonElement>;
   resetButtonClickHandler: MouseEventHandler<HTMLButtonElement>;
   resetButtonDisabled: boolean;
   submitButtonDisabled: boolean;
   submitButtonLoading: boolean;
+  submitButtonLabel?: string;
 }
 
 export function FormButtons({
-  cancelButtonClickHandler,
+  closeButtonClickHandler,
   resetButtonClickHandler,
   resetButtonDisabled,
   submitButtonDisabled,
   submitButtonLoading,
-}: FormButtonsProps) {
+  submitButtonLabel,
+}: Props) {
   const t = useTranslations('FormButtons');
   return (
     <>
-      <Button variant="outline" onClick={cancelButtonClickHandler}>
-        {t('cancel')}
+      <Button variant="outline" onClick={closeButtonClickHandler}>
+        {t('close')}
       </Button>
       <Button
         variant="outline"
@@ -35,7 +37,7 @@ export function FormButtons({
         type="submit"
         disabled={submitButtonDisabled}
         loading={submitButtonLoading}>
-        {t('save')}
+        {submitButtonLabel || t('save')}
       </Button>
     </>
   );

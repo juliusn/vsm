@@ -2,23 +2,24 @@
 
 import { reducer } from '@/lib/reducer';
 import { Action } from '@/lib/types/context';
+import { Order } from '@/lib/types/QueryTypes';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
 type ContextType = {
-  orderData: AppTypes.OrderData[];
-  dispatchOrderData: Dispatch<Action<AppTypes.OrderData>>;
+  orderData: Order[];
+  dispatchOrderData: Dispatch<Action<Order>>;
 };
 
 type Props = {
   children: React.ReactNode;
-  initialOrderData: AppTypes.OrderData[];
+  initialOrderData: Order[];
 };
 
 const Context = createContext<ContextType | null>(null);
 
 export const OrderDataProvider = ({ children, initialOrderData }: Props) => {
   const [orderData, dispatchOrderData] = useReducer(
-    reducer<AppTypes.OrderData>,
+    reducer<Order>,
     initialOrderData
   );
 

@@ -8,7 +8,7 @@ type ApprovalStatusAttributes = {
   color: DefaultMantineColor;
 };
 
-type ApprovalStatus = Database['public']['Enums']['approval_status_enum'];
+type ApprovalStatus = Database['public']['Enums']['approval_status'];
 
 export function ProfileContent({ profile }: { profile: AppTypes.Profile }) {
   const t = useTranslations('ProfileContent');

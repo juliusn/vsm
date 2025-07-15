@@ -18,7 +18,23 @@ berthing:berthings (
     estimated_time 
   )
 ),
-common_services ( id, titles )
+common_services ( id, titles ),
+sender:counterparties!orders_sender_fkey (
+  business_id,
+  name,
+  counterparty_names (
+    locale,
+    name
+  )
+),
+receiver:counterparties!orders_receiver_fkey (
+  business_id,
+  name,
+  counterparty_names (
+    locale,
+    name
+  )
+)
 `;
 
 export const berthingsSelector = `
@@ -35,5 +51,14 @@ port_events (
   type, 
   estimated_date, 
   estimated_time 
+)
+`;
+
+export const counterpartiesSelector = `
+business_id,
+name,
+counterparty_names (
+  locale,
+  name
 )
 `;

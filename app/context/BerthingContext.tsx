@@ -2,23 +2,24 @@
 
 import { reducer } from '@/lib/reducer';
 import { Action } from '@/lib/types/context';
+import { Berthing } from '@/lib/types/QueryTypes';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
 type ContextType = {
-  berthings: AppTypes.Berthing[];
-  dispatchBerthings: Dispatch<Action<AppTypes.Berthing>>;
+  berthings: Berthing[];
+  dispatchBerthings: Dispatch<Action<Berthing>>;
 };
 
 type Props = {
   children: React.ReactNode;
-  initialBerthings: AppTypes.Berthing[];
+  initialBerthings: Berthing[];
 };
 
 const BerthingContext = createContext<ContextType | null>(null);
 
 export const BerthingProvider = ({ children, initialBerthings }: Props) => {
   const [berthings, dispatchBerthings] = useReducer(
-    reducer<AppTypes.Berthing>,
+    reducer<Berthing>,
     initialBerthings
   );
   return (

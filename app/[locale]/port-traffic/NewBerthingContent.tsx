@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconPlus } from '@tabler/icons-react';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
-import { NewBerthingForm } from './NewBerthingForm';
+import { NewBerthingForm } from '@/app/components/BerthingForms/NewBerthingForm';
 
 export function NewBerthingContent() {
   const t = useTranslations('NewBerthingContent');
@@ -17,7 +17,7 @@ export function NewBerthingContent() {
         {t('buttonLabel')}
       </Button>
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
-        <NewBerthingForm resultCallback={close} />
+        <NewBerthingForm close={close} resultCallback={close} />
       </Modal>
     </>
   );

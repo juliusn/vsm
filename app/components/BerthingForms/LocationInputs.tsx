@@ -2,31 +2,31 @@
 
 import { useLocations } from '@/app/context/LocationContext';
 import { getLocationInputItems } from '@/lib/getLocationInputItems';
-import { GetInputPropsReturnType } from '@mantine/form/lib/types';
+import { UseFormReturnType } from '@mantine/form/lib/types';
 import { useMemo } from 'react';
 import { BerthInput } from './BerthInput';
 import { LocodeInput } from './LocodeInput';
 import { PortAreaInput } from './PortAreaInput';
 
-export function LocationInputs({
-  locode,
-  portArea,
-  locodeProps,
-  locodeKey,
-  portAreaProps,
-  portAreaKey,
-  berthProps,
-  berthKey,
-}: {
+type Fields = {
   locode: string;
   portArea: string;
-  locodeProps: GetInputPropsReturnType;
-  locodeKey: string;
-  portAreaProps: GetInputPropsReturnType;
-  portAreaKey: string;
-  berthProps: GetInputPropsReturnType;
-  berthKey: string;
-}) {
+  berth: string;
+};
+
+type Props<T extends Fields> = {
+  useFormContext(): UseFormReturnType<T>;
+  locode: string;
+  portArea: string;
+};
+
+export function LocationInputs<T extends Fields>({
+  useFormContext,
+  locode,
+  portArea,
+}: Props<T>) {
+  const form = useFormContext();
+
   const {
     state: { locations, portAreas, berths },
   } = useLocations();
@@ -38,13 +38,21 @@ export function LocationInputs({
 
   return (
     <>
-      <LocodeInput locations={locations} {...locodeProps} key={locodeKey} />
+      <LocodeInput
+        locations={locations}
+        {...form.getInputProps('locode')}
+        key={form.key('locode')}
+      />
       <PortAreaInput
         data={portAreaItems}
-        {...portAreaProps}
-        key={portAreaKey}
+        {...form.getInputProps('portArea')}
+        key={form.key('portArea')}
       />
-      <BerthInput data={berthsItems} {...berthProps} key={berthKey} />
+      <BerthInput
+        data={berthsItems}
+        {...form.getInputProps('berth')}
+        key={form.key('berth')}
+      />
     </>
   );
 }

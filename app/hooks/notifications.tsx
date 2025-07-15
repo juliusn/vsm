@@ -70,8 +70,34 @@ export const useBerthingDeletedNotification = () => {
   );
 };
 
+export const useOrderSentNotification = () => {
+  const t = useTranslations('OrderSentNotification');
+  return useCallback(
+    (): NotificationData => ({
+      title: t('title'),
+      message: t('message'),
+      icon: <IconCheck stroke={1.5} />,
+      color: 'green',
+    }),
+    [t]
+  );
+};
+
 export const useOrderSavedNotification = () => {
   const t = useTranslations('OrderSavedNotification');
+  return useCallback(
+    (): NotificationData => ({
+      title: t('title'),
+      message: t('message'),
+      icon: <IconCheck stroke={1.5} />,
+      color: 'green',
+    }),
+    [t]
+  );
+};
+
+export const useOrderCancelledNotification = () => {
+  const t = useTranslations('OrderCancelledNotification');
   return useCallback(
     (): NotificationData => ({
       title: t('title'),

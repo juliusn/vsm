@@ -1,3 +1,5 @@
+import { Berthing } from './QueryTypes';
+
 export interface BerthingFormValues {
   vesselName: string;
   imo: number | '';
@@ -21,8 +23,7 @@ export type BerthIdentifier = {
   berth_code: string;
 };
 
-export interface BerthingRowData
-  extends Omit<AppTypes.Berthing, 'port_events'> {
+export interface BerthingRowData extends Omit<Berthing, 'port_events'> {
   created: Date;
   arrival: Omit<AppTypes.PortEvent, 'berthing'> | null;
   departure: Omit<AppTypes.PortEvent, 'berthing'> | null;

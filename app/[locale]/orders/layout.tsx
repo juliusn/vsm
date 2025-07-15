@@ -8,6 +8,7 @@ import { NewOrderContent } from './NewOrderContent';
 import { BerthServiceProvider } from '@/app/context/BerthServiceContext';
 import { CommonServiceProvider } from '@/app/context/CommonServiceContext';
 import { OrderDataProvider } from '@/app/context/OrderContext';
+import { CounterpartyProvider } from '@/app/context/CounterpartyContext';
 
 export default async function OrdersLayout({
   children,
@@ -27,11 +28,13 @@ export default async function OrdersLayout({
         <BerthingProvider initialBerthings={data.berthings}>
           <BerthServiceProvider initialValues={data.berthServices}>
             <CommonServiceProvider initialValues={data.commonServices}>
-              <OrderDataProvider initialOrderData={data.orderData}>
-                <Stack>
-                  <NewOrderContent />
-                  {children}
-                </Stack>
+              <OrderDataProvider initialOrderData={data.orders}>
+                <CounterpartyProvider counterparties={data.counterparties}>
+                  <Stack>
+                    <NewOrderContent />
+                    {children}
+                  </Stack>
+                </CounterpartyProvider>
               </OrderDataProvider>
             </CommonServiceProvider>
           </BerthServiceProvider>

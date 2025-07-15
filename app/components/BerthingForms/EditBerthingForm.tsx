@@ -1,21 +1,5 @@
 'use client';
 
-import { FormButtons } from '@/app/components/FormButtons';
-import { useBerthings } from '@/app/context/BerthingContext';
-import { useVessels } from '@/app/context/VesselContext';
-import {
-  useBerthingSavedNotification,
-  usePostgresErrorNotification,
-} from '@/app/hooks/notifications';
-import { portEventQueryFactory } from '@/lib/portEventQueryFactory';
-import { berthingsSelector } from '@/lib/querySelectors';
-import { createClient } from '@/lib/supabase/client';
-import {
-  BerthIdentifier,
-  BerthingFormValues,
-  BerthingRowData,
-  PortAreaIdentifier,
-} from '@/lib/types/berthing';
 import { Group, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
@@ -23,12 +7,34 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
 import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
-import { BerthingFormFields } from '../../components/BerthingFormFields';
+import {
+  BerthIdentifier,
+  BerthingFormValues,
+  BerthingRowData,
+  PortAreaIdentifier,
+} from '@/lib/types/berthing';
+import { Berthing } from '@/lib/types/QueryTypes';
+import { createClient } from '@/lib/supabase/client';
+import {
+  useBerthingSavedNotification,
+  usePostgresErrorNotification,
+} from '@/app/hooks/notifications';
+import { useBerthings } from '@/app/context/BerthingContext';
+import { useVessels } from '@/app/context/VesselContext';
+import { portEventQueryFactory } from '@/lib/portEventQueryFactory';
+import { berthingsSelector } from '@/lib/querySelectors';
+import {
+  BerthingFormProvider,
+  useBerthingFormContext,
+} from '@/app/context/FormContext';
+
+import { FormButtons } from '../FormButtons';
+import { BerthingFormFields } from './BerthingFormFields';
 
 interface EditBerthingContentProps {
   berthingRow: BerthingRowData;
   onCancel(): void;
-  resultCallback(data: AppTypes.Berthing): void;
+  resultCallback(data: Berthing): void;
 }
 
 export function EditBerthingForm({
@@ -234,37 +240,18 @@ export function EditBerthingForm({
   return (
     <form onSubmit={form.onSubmit(submitHandler)}>
       <Stack>
-        <BerthingFormFields
-          vesselInputsProps={{
-            vessel: vessel,
-            vesselNameProps: form.getInputProps('vesselName'),
-            vesselNameKey: form.key('vesselName'),
-            imoProps: form.getInputProps('imo'),
-            imoKey: form.key('imo'),
-            imoRef: imoRef,
-          }}
-          locationInputsProps={{
-            locode,
-            portArea,
-            locodeProps: form.getInputProps('locode'),
-            locodeKey: form.key('locode'),
-            portAreaProps: form.getInputProps('portArea'),
-            portAreaKey: form.key('portArea'),
-            berthProps: form.getInputProps('berth'),
-            berthKey: form.key('berth'),
-          }}
-          etaDateProps={form.getInputProps('etaDate')}
-          etaDateKey={form.key('etaDate')}
-          etaTimeProps={form.getInputProps('etaTime')}
-          etaTimeKey={form.key('etaTime')}
-          etdDateProps={form.getInputProps('etdDate')}
-          etdDateKey={form.key('etdDate')}
-          etdTimeProps={form.getInputProps('etdTime')}
-          etdTimeKey={form.key('etdTime')}
-        />
+        <BerthingFormProvider value={form}>
+          <BerthingFormFields<BerthingFormValues>
+            useFormContext={useBerthingFormContext}
+            vessel={vessel}
+            imoRef={imoRef}
+            locode={locode}
+            portArea={portArea}
+          />
+        </BerthingFormProvider>
         <Group grow>
           <FormButtons
-            cancelButtonClickHandler={onCancel}
+            closeButtonClickHandler={onCancel}
             resetButtonClickHandler={() => {
               form.reset();
               setVessel(vesselMatch);

@@ -141,6 +141,8 @@
     "modalTitle": "Luo uusi tilaus"
   },
   "NewOrder": {
+    "selectClientError": "Valitse tilaaja.",
+    "selectRecipientError": "Valitse vastaanottaja.",
     "selectBerthingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
     "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin."
   },
@@ -279,9 +281,17 @@
     "title": "Valmis!",
     "message": "Laiturointi on poistettu."
   },
+  "OrderSentNotification": {
+    "title": "Valmis!",
+    "message": "Tilaus on lähetetty."
+  },
   "OrderSavedNotification": {
     "title": "Valmis!",
     "message": "Tilaus on tallennettu."
+  },
+  "OrderCancelledNotification": {
+    "title": "Valmis!",
+    "message": "Tilaus on peruttu."
   },
   "PortAreaCodePage": {
     "title": "Laiturit",
@@ -411,7 +421,7 @@
     "saveButtonLabel": "Tallenna"
   },
   "FormButtons": {
-    "cancel": "Peru",
+    "close": "Sulje",
     "reset": "Palauta",
     "save": "Tallenna"
   },
@@ -480,6 +490,8 @@
     "deleteOrder": "Poista tilaus"
   },
   "OrderForm": {
+    "sender": "Tilaaja",
+    "receiver": "Vastaanottaja",
     "berthing": "Laiturointi",
     "createNewBerthing": "Luo uusi laiturointi",
     "create": "Luo",
@@ -489,13 +501,17 @@
     "editBerthing": "Muokkaa laiturointia",
     "services": "Palvelut",
     "servicesTooltip": "Valitse laiturointi valitaksesi palveluja.",
-    "cancelButtonLabel": "Peru",
-    "saveButtonLabel": "Tallenna"
+    "send": "Lähetä tilaus"
   },
   "EditOrder": {
     "editOrder": "Muokkaa tilausta",
     "selectBerthingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
-    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin."
+    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin.",
+    "cancelButtonLabel": "Peru tilaus",
+    "cancelModalTitle": "Vahvista tilauksen peruutus",
+    "cancelModalMessage": "Haluatko varmasti perua tämän tilauksen?",
+    "closeButtonLabel": "En",
+    "confirmButtonLabel": "Kyllä"
   },
   "OrderStatus": {
     "submitted": "Lähetetty",
