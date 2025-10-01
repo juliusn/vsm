@@ -26,7 +26,7 @@ import 'dayjs/locale/fi';
 import { useRef, useState } from 'react';
 import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
 import { BerthingFormFields } from './BerthingFormFields';
-import { Berthing } from '@/lib/types/QueryTypes';
+import { Berthing } from '@/lib/types/query-types';
 
 const initialValues: BerthingFormValues = {
   vesselName: '',

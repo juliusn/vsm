@@ -1,18 +1,26 @@
 import { LocationState } from '@/app/context/LocationContext';
-import { createClient } from './supabase/server';
 import {
   berthingsSelector,
+  berthServicesSelector,
+  commonServicesSelector,
   counterpartiesSelector,
   ordersSelector,
 } from './querySelectors';
-import { Berthing, Counterparty, Order } from './types/QueryTypes';
+import { createClient } from './supabase/server';
+import {
+  Berthing,
+  BerthService,
+  CommonService,
+  Counterparty,
+  Order,
+} from './types/query-types';
 
 type Result = {
   locationState: LocationState;
   vessels: AppTypes.Vessel[];
   berthings: Berthing[];
-  berthServices: AppTypes.BerthService[];
-  commonServices: AppTypes.CommonService[];
+  berthServices: BerthService[];
+  commonServices: CommonService[];
   orders: Order[];
   counterparties: Counterparty[];
 };
@@ -46,8 +54,8 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     supabase.from('berths').select().eq('enabled', true).order('berth_name'),
     supabase.from('berthings').select(berthingsSelector),
     supabase.from('port_events').select(),
-    supabase.from('berth_services').select(),
-    supabase.from('common_services').select(),
+    supabase.from('berth_services').select(berthServicesSelector),
+    supabase.from('common_services').select(commonServicesSelector),
     supabase.from('orders').select(ordersSelector),
     supabase.from('counterparties').select(counterpartiesSelector),
   ]);
@@ -131,21 +139,9 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
       },
       vessels,
       berthings: berthingsResponse.data,
-      berthServices: berthServicesResponse.data.map((service) => ({
-        ...service,
-        titles: service.titles as AppTypes.ServiceTitles,
-      })),
-      commonServices: commonServicesResponse.data.map((service) => ({
-        ...service,
-        titles: service.titles as AppTypes.ServiceTitles,
-      })),
-      orders: ordersResponse.data.map((order) => ({
-        ...order,
-        common_services: order.common_services.map((service) => ({
-          ...service,
-          titles: service.titles as AppTypes.ServiceTitles,
-        })),
-      })),
+      berthServices: berthServicesResponse.data,
+      commonServices: commonServicesResponse.data,
+      orders: ordersResponse.data,
       counterparties: counterpartiesResponse.data,
     };
   }

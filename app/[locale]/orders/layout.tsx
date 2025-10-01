@@ -1,14 +1,20 @@
 import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
 import { BerthingProvider } from '@/app/context/BerthingContext';
-import { LocationProvider } from '@/app/context/LocationContext';
-import { VesselProvider } from '@/app/context/VesselContext';
-import { fetchOrdersData } from '@/lib/fetchOrdersData';
-import { Stack } from '@mantine/core';
-import { NewOrderContent } from './NewOrderContent';
 import { BerthServiceProvider } from '@/app/context/BerthServiceContext';
 import { CommonServiceProvider } from '@/app/context/CommonServiceContext';
-import { OrderDataProvider } from '@/app/context/OrderContext';
 import { CounterpartyProvider } from '@/app/context/CounterpartyContext';
+import { LocationProvider } from '@/app/context/LocationContext';
+import { OrderProvider } from '@/app/context/OrderContext';
+import { VesselProvider } from '@/app/context/VesselContext';
+import { fetchOrdersData } from '@/lib/fetchOrdersData';
+import { normalizeOrders, normalizeTranslations } from '@/lib/normalizers';
+import {
+  BerthService,
+  CommonService,
+  Counterparty,
+} from '@/lib/types/query-types';
+import { Stack } from '@mantine/core';
+import { NewOrderContent } from './NewOrderContent';
 
 export default async function OrdersLayout({
   children,
@@ -26,16 +32,25 @@ export default async function OrdersLayout({
       }}>
       <VesselProvider vessels={data.vessels}>
         <BerthingProvider initialBerthings={data.berthings}>
-          <BerthServiceProvider initialValues={data.berthServices}>
-            <CommonServiceProvider initialValues={data.commonServices}>
-              <OrderDataProvider initialOrderData={data.orders}>
-                <CounterpartyProvider counterparties={data.counterparties}>
+          <BerthServiceProvider
+            initialValues={normalizeTranslations<BerthService>(
+              data.berthServices
+            )}>
+            <CommonServiceProvider
+              initialValues={normalizeTranslations<CommonService>(
+                data.commonServices
+              )}>
+              <OrderProvider initialOrders={normalizeOrders(data.orders)}>
+                <CounterpartyProvider
+                  counterparties={normalizeTranslations<Counterparty>(
+                    data.counterparties
+                  )}>
                   <Stack>
                     <NewOrderContent />
                     {children}
                   </Stack>
                 </CounterpartyProvider>
-              </OrderDataProvider>
+              </OrderProvider>
             </CommonServiceProvider>
           </BerthServiceProvider>
         </BerthingProvider>

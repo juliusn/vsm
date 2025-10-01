@@ -9,32 +9,49 @@ import {
   useServiceSavedNotification,
 } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
+import { CommonService } from '@/lib/types/query-types';
+import { WithDictionary } from '@/lib/types/translation';
 import { ActionIcon, Text, TextInput } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconPencil, IconSearch, IconTrash, IconX } from '@tabler/icons-react';
 import { DataTableColumn } from 'mantine-datatable';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { useEditServiceModal } from '../../../context/EditServiceModalContext';
 import { useDeleteServiceModal } from '../DeleteServiceModalContext';
-import { useEditServiceModal } from '../EditServicesModalContext';
 
 export function CommonServiceTable() {
   const t = useTranslations('CommonServiceTable');
+  const locale = useLocale() as AppTypes.Locale;
   const getErrorNotification = usePostgresErrorNotification();
   const getServiceDeletedNotification = useServiceDeletedNotification();
   const getServiceUpdatedNotification = useServiceSavedNotification();
   const supabase = createClient();
   const [titleEnQuery, setTitleEnQuery] = useState('');
+  const [abbrvEnQuery, setAbbrvEnQuery] = useState('');
   const [titleFiQuery, setTitleFiQuery] = useState('');
+  const [abbrvFiQuery, setAbbrvFiQuery] = useState('');
   const { openDeleteModal, closeDeleteModal } = useDeleteServiceModal();
   const { openEditModal, closeEditModal } = useEditServiceModal();
   const { commonServices, dispatch } = useCommonServices();
 
-  const columns: DataTableColumn<AppTypes.CommonService>[] = [
+  const filterByQueries = (service: WithDictionary<CommonService>): boolean =>
+    new RegExp(titleEnQuery, 'i').test(service.dictionary.en.title) &&
+    new RegExp(titleFiQuery, 'i').test(service.dictionary.fi.title) &&
+    new RegExp(abbrvEnQuery, 'i').test(service.dictionary.en.abbreviation) &&
+    new RegExp(abbrvFiQuery, 'i').test(service.dictionary.fi.abbreviation);
+
+  const filteredCommonServices = commonServices
+    .filter(filterByQueries)
+    .sort((a, b) =>
+      a.dictionary[locale].title.localeCompare(b.dictionary[locale].title)
+    );
+
+  const columns: DataTableColumn<WithDictionary<CommonService>>[] = [
     {
-      accessor: 'titles.en',
+      accessor: 'dictionary.en.en',
       title: t('titleEn'),
-      render: ({ titles }) => <Text>{titles['en']}</Text>,
+      render: ({ dictionary }) => <Text>{dictionary.en.title}</Text>,
       filter: (
         <TextInput
           leftSection={<IconSearch size={16} />}
@@ -54,9 +71,31 @@ export function CommonServiceTable() {
       filtering: titleEnQuery !== '',
     },
     {
-      accessor: 'titles.fi',
+      accessor: 'dictionary.en.abbreviation',
+      title: t('abbrvEn'),
+      render: ({ dictionary }) => <Text>{dictionary.en.abbreviation}</Text>,
+      filter: (
+        <TextInput
+          leftSection={<IconSearch size={16} />}
+          rightSection={
+            <ActionIcon
+              size="sm"
+              variant="transparent"
+              c="dimmed"
+              onClick={() => setAbbrvEnQuery('')}>
+              <IconX size={14} />
+            </ActionIcon>
+          }
+          value={abbrvEnQuery}
+          onChange={(e) => setAbbrvEnQuery(e.currentTarget.value)}
+        />
+      ),
+      filtering: abbrvEnQuery !== '',
+    },
+    {
+      accessor: 'dictionary.fi.title',
       title: t('titleFi'),
-      render: ({ titles }) => <Text>{titles['fi']}</Text>,
+      render: ({ dictionary }) => <Text>{dictionary.fi.title}</Text>,
       filter: (
         <TextInput
           leftSection={<IconSearch size={16} />}
@@ -76,16 +115,40 @@ export function CommonServiceTable() {
       filtering: titleFiQuery !== '',
     },
     {
+      accessor: 'dictionary.fi.abbreviation',
+      title: t('abbrvFi'),
+      render: ({ dictionary }) => <Text>{dictionary.fi.abbreviation}</Text>,
+      filter: (
+        <TextInput
+          leftSection={<IconSearch size={16} />}
+          rightSection={
+            <ActionIcon
+              size="sm"
+              variant="transparent"
+              c="dimmed"
+              onClick={() => setAbbrvFiQuery('')}>
+              <IconX size={14} />
+            </ActionIcon>
+          }
+          value={abbrvFiQuery}
+          onChange={(e) => setAbbrvFiQuery(e.currentTarget.value)}
+        />
+      ),
+      filtering: abbrvFiQuery !== '',
+    },
+    {
       accessor: 'delete',
       title: t('delete'),
-      render: ({ id, titles }) => (
+      render: ({ id, dictionary: { en, fi } }) => (
         <ActionIcon
           variant="transparent"
           color="red"
           aria-label={t('delete')}
           onClick={() => {
             openDeleteModal({
-              previewContent: <ServicePreview titles={titles} />,
+              previewContent: (
+                <ServicePreview translationEn={en} translationFi={fi} />
+              ),
               onConfirm: async () => {
                 const { error, status } = await supabase
                   .from('common_services')
@@ -121,27 +184,44 @@ export function CommonServiceTable() {
           onClick={() => {
             openEditModal({
               title: t('editModalTitle'),
-              serviceTitles: service.titles,
-              onSave: async (titles) => {
-                const { data, error, status } = await supabase
-                  .from('common_services')
+              translationEn: service.dictionary.en,
+              translationFi: service.dictionary.fi,
+              onSave: async (translationEn, translationFi) => {
+                const queryEn = supabase
+                  .from('common_service_translations')
                   .update({
-                    titles,
+                    title: translationEn.title,
+                    abbreviation: translationEn.abbreviation,
                   })
-                  .eq('id', service.id)
-                  .select()
-                  .single();
+                  .eq('locale', 'en')
+                  .eq('common_service', service.id);
 
-                if (error) {
-                  showNotification(getErrorNotification(status));
-                  return;
+                const queryFi = supabase
+                  .from('common_service_translations')
+                  .update({
+                    title: translationFi.title,
+                    abbreviation: translationFi.abbreviation,
+                  })
+                  .eq('locale', 'fi')
+                  .eq('common_service', service.id);
+
+                const translationResponses = await Promise.all([
+                  queryEn,
+                  queryFi,
+                ]);
+
+                for (const response of translationResponses) {
+                  if (response.error) {
+                    showNotification(getErrorNotification(response.status));
+                    return;
+                  }
                 }
 
                 dispatch({
                   type: 'changed',
                   item: {
-                    ...data,
-                    titles: data.titles as AppTypes.ServiceTitles,
+                    ...service,
+                    dictionary: { en: translationEn, fi: translationFi },
                   },
                 });
 
@@ -156,5 +236,7 @@ export function CommonServiceTable() {
     },
   ];
 
-  return <PaginatedTable allRecords={commonServices} columns={columns} />;
+  return (
+    <PaginatedTable allRecords={filteredCommonServices} columns={columns} />
+  );
 }

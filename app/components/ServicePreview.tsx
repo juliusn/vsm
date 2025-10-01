@@ -3,7 +3,15 @@
 import { Paper, Table } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
-export function ServicePreview({ titles }: { titles: AppTypes.ServiceTitles }) {
+type Translation = { locale: string; title: string; abbreviation: string };
+
+export function ServicePreview({
+  translationEn,
+  translationFi,
+}: {
+  translationEn: Translation;
+  translationFi: Translation;
+}) {
   const t = useTranslations('ServicePreview');
   return (
     <Paper withBorder shadow="sm">
@@ -11,13 +19,17 @@ export function ServicePreview({ titles }: { titles: AppTypes.ServiceTitles }) {
         <Table.Thead>
           <Table.Tr>
             <Table.Th>{t('titleEn')}</Table.Th>
+            <Table.Th>{t('abbrvEn')}</Table.Th>
             <Table.Th>{t('titleFi')}</Table.Th>
+            <Table.Th>{t('abbrvFi')}</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
           <Table.Tr>
-            <Table.Td>{titles['en']}</Table.Td>
-            <Table.Td>{titles['fi']}</Table.Td>
+            <Table.Td>{translationEn.title}</Table.Td>
+            <Table.Td>{translationEn.abbreviation}</Table.Td>
+            <Table.Td>{translationFi.title}</Table.Td>
+            <Table.Td>{translationFi.abbreviation}</Table.Td>
           </Table.Tr>
         </Table.Tbody>
       </Table>

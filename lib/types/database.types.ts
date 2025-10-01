@@ -59,6 +59,34 @@ export type Database = {
   }
   public: {
     Tables: {
+      berth_service_translations: {
+        Row: {
+          abbreviation: string
+          berth_service: string
+          locale: Database["public"]["Enums"]["locale"]
+          title: string
+        }
+        Insert: {
+          abbreviation: string
+          berth_service: string
+          locale: Database["public"]["Enums"]["locale"]
+          title: string
+        }
+        Update: {
+          abbreviation?: string
+          berth_service?: string
+          locale?: Database["public"]["Enums"]["locale"]
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "berth_service_translations_service_fkey"
+            columns: ["berth_service"]
+            referencedRelation: "berth_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       berth_services: {
         Row: {
           berth_code: string
@@ -66,7 +94,6 @@ export type Database = {
           id: string
           locode: string
           port_area_code: string
-          titles: Json
         }
         Insert: {
           berth_code: string
@@ -74,7 +101,6 @@ export type Database = {
           id?: string
           locode: string
           port_area_code: string
-          titles: Json
         }
         Update: {
           berth_code?: string
@@ -82,7 +108,6 @@ export type Database = {
           id?: string
           locode?: string
           port_area_code?: string
-          titles?: Json
         }
         Relationships: [
           {
@@ -201,18 +226,43 @@ export type Database = {
           },
         ]
       }
+      common_service_translations: {
+        Row: {
+          abbreviation: string
+          common_service: string
+          locale: Database["public"]["Enums"]["locale"]
+          title: string
+        }
+        Insert: {
+          abbreviation: string
+          common_service: string
+          locale: Database["public"]["Enums"]["locale"]
+          title: string
+        }
+        Update: {
+          abbreviation?: string
+          common_service?: string
+          locale?: Database["public"]["Enums"]["locale"]
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "common_service_translations_service_fkey"
+            columns: ["common_service"]
+            referencedRelation: "common_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       common_services: {
         Row: {
           id: string
-          titles: Json
         }
         Insert: {
           id?: string
-          titles: Json
         }
         Update: {
           id?: string
-          titles?: Json
         }
         Relationships: []
       }
@@ -234,24 +284,24 @@ export type Database = {
         }
         Relationships: []
       }
-      counterparty_names: {
+      counterparty_translations: {
         Row: {
           counterparty: string
           created_at: string
           locale: Database["public"]["Enums"]["locale"]
-          name: string
+          title: string
         }
         Insert: {
           counterparty: string
           created_at?: string
           locale: Database["public"]["Enums"]["locale"]
-          name: string
+          title: string
         }
         Update: {
           counterparty?: string
           created_at?: string
           locale?: Database["public"]["Enums"]["locale"]
-          name?: string
+          title?: string
         }
         Relationships: [
           {

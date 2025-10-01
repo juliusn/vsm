@@ -1,7 +1,7 @@
 import { LocationState } from '@/app/context/LocationContext';
 import { createClient } from './supabase/server';
 import { berthingsSelector } from './querySelectors';
-import { Berthing } from './types/QueryTypes';
+import { Berthing } from './types/query-types';
 
 export const fetchPortTrafficData = async (): Promise<
   | {

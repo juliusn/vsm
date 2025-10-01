@@ -1,14 +1,15 @@
 'use client';
 
-import { Counterparty } from '@/lib/types/QueryTypes';
+import { Counterparty } from '@/lib/types/query-types';
+import { WithDictionary } from '@/lib/types/translation';
 import { createContext, useContext } from 'react';
 
 type Props = {
   children: React.ReactNode;
-  counterparties: Counterparty[];
+  counterparties: WithDictionary<Counterparty>[];
 };
 
-const Context = createContext<Counterparty[] | null>(null);
+const Context = createContext<WithDictionary<Counterparty>[] | null>(null);
 
 export const CounterpartyProvider = ({ children, counterparties }: Props) => {
   return <Context.Provider value={counterparties}>{children}</Context.Provider>;

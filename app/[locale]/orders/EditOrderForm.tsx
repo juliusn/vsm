@@ -62,7 +62,7 @@ export function EditOrderForm({
               {commonServices.map((service, index) => (
                 <Checkbox
                   value={service.id}
-                  label={service.titles[locale]}
+                  label={service.dictionary[locale].title}
                   key={index}
                 />
               ))}

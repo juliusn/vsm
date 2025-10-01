@@ -1,4 +1,4 @@
-import { Berthing } from './QueryTypes';
+import { Berthing } from './query-types';
 
 export interface BerthingFormValues {
   vesselName: string;

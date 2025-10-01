@@ -342,7 +342,7 @@
     "titleEn": "Title in English",
     "titleFi": "Title in Finnish"
   },
-  "NewBerthServiceContent": {
+  "NewBerthServiceButton": {
     "buttonLabel": "New berth service",
     "modalTitle": "Create a new berth service"
   },
@@ -353,8 +353,10 @@
     "cancelButtonLabel": "Cancel"
   },
   "EditServiceModalProvider": {
-    "titleInputLabelEn": "Service title in English",
-    "titleInputLabelFi": "Service title in Finnish",
+    "titleEnInputLabel": "Service title in English",
+    "abbrvEnInputLabel": "Service title abbreviation in English",
+    "titleFiInputLabel": "Service title in Finnish",
+    "abbrvFiInputLabel": "Service title abbreviation in Finnish",
     "saveButtonLabel": "Save",
     "cancelButtonLabel": "Cancel"
   },
@@ -383,7 +385,9 @@
     "edit": "Edit",
     "editModalTitle": "Edit service",
     "titleEn": "Title in English",
-    "titleFi": "Title in Finnish"
+    "abbrvEn": "Abbreviation in English",
+    "titleFi": "Title in Finnish",
+    "abbrvFi": "Abbreviation in Finnish"
   },
   "NewCommonServiceButton": {
     "buttonLabel": "New service",
@@ -391,7 +395,9 @@
   },
   "ServicePreview": {
     "titleEn": "Title in English",
-    "titleFi": "Title in Finnish"
+    "abbrvEn": "Abbreviation in English",
+    "titleFi": "Title in Finnish",
+    "abbrvFi": "Abbreviation in Finnish"
   },
   "PortTrafficLayout": {
     "title": "Berthings"

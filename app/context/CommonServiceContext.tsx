@@ -2,23 +2,25 @@
 
 import { reducer } from '@/lib/reducer';
 import { Action } from '@/lib/types/context';
+import { CommonService } from '@/lib/types/query-types';
+import { WithDictionary } from '@/lib/types/translation';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
 type ContextType = {
-  commonServices: AppTypes.CommonService[];
-  dispatch: Dispatch<Action<AppTypes.CommonService>>;
+  commonServices: WithDictionary<CommonService>[];
+  dispatch: Dispatch<Action<WithDictionary<CommonService>>>;
 };
 
 const Context = createContext<ContextType | null>(null);
 
 type Props = {
   children: React.ReactNode;
-  initialValues: AppTypes.CommonService[];
+  initialValues: WithDictionary<CommonService>[];
 };
 
 export const CommonServiceProvider = ({ children, initialValues }: Props) => {
   const [commonServices, dispatch] = useReducer(
-    reducer<AppTypes.CommonService>,
+    reducer<WithDictionary<CommonService>>,
     initialValues
   );
   return (

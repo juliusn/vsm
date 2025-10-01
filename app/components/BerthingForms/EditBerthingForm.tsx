@@ -13,7 +13,7 @@ import {
   BerthingRowData,
   PortAreaIdentifier,
 } from '@/lib/types/berthing';
-import { Berthing } from '@/lib/types/QueryTypes';
+import { Berthing } from '@/lib/types/query-types';
 import { createClient } from '@/lib/supabase/client';
 import {
   useBerthingSavedNotification,

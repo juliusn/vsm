@@ -52,6 +52,10 @@ const configs = [
           ],
         },
       ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { ignoreRestSiblings: true },
+      ],
     },
   },
 ];

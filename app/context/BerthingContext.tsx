@@ -2,7 +2,7 @@
 
 import { reducer } from '@/lib/reducer';
 import { Action } from '@/lib/types/context';
-import { Berthing } from '@/lib/types/QueryTypes';
+import { Berthing } from '@/lib/types/query-types';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
 type ContextType = {

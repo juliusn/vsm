@@ -57,18 +57,14 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
 
   const senderItems: ComboboxItem[] = senderCounterparties.map(
     (counterparty) => ({
-      label:
-        counterparty.counterparty_names.find((name) => name.locale === locale)
-          ?.name || counterparty.name,
+      label: counterparty.dictionary[locale].title,
       value: counterparty.business_id,
     })
   );
 
   const receiverItems: ComboboxItem[] = receiverCounterparties.map(
     (counterparty) => ({
-      label:
-        counterparty.counterparty_names.find((name) => name.locale === locale)
-          ?.name || counterparty.name,
+      label: counterparty.name,
       value: counterparty.business_id,
     })
   );
@@ -256,7 +252,7 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
                   {commonServices.map((service, index) => (
                     <Checkbox
                       value={service.id}
-                      label={service.titles[locale]}
+                      label={service.dictionary[locale].title}
                       key={index}
                     />
                   ))}

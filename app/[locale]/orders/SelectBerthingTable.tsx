@@ -2,7 +2,7 @@
 
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { useBerthings } from '@/app/context/BerthingContext';
-import { useOrderData } from '@/app/context/OrderContext';
+import { useOrders } from '@/app/context/OrderContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
 import { BerthingRowData } from '@/lib/types/berthing';
 import { DataTableColumn } from 'mantine-datatable';
@@ -18,12 +18,12 @@ export function SelectBerthingTable({
   const t = useTranslations('BerthingTable');
   const format = useFormatter();
   const { berthings } = useBerthings();
-  const { orderData } = useOrderData();
+  const { orders } = useOrders();
 
   const orderExists = useMemo(
     () => (row: BerthingRowData) =>
-      orderData.find((order) => order.berthing.id === row.id),
-    [orderData]
+      orders.find((order) => order.berthing.id === row.id),
+    [orders]
   );
 
   const columns: DataTableColumn<BerthingRowData>[] = [

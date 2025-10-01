@@ -2,7 +2,7 @@
 
 import { OrderStatus } from '@/app/components/OrderStatus';
 import { PaginatedTable } from '@/app/components/PaginatedTable';
-import { useOrderData } from '@/app/context/OrderContext';
+import { useOrders } from '@/app/context/OrderContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
 import { OrderRowData } from '@/lib/types/order';
 import { ActionIcon, Center, Modal } from '@mantine/core';
@@ -17,7 +17,7 @@ export function OrderTable() {
   const t = useTranslations('OrderTable');
   const locale = useLocale() as AppTypes.Locale;
   const format = useFormatter();
-  const { orderData } = useOrderData();
+  const { orders } = useOrders();
   const [selectedRow, setSelectedRow] = useState<OrderRowData | null>(null);
 
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
@@ -25,7 +25,7 @@ export function OrderTable() {
 
   const orderRowData = useMemo(
     () =>
-      orderData
+      orders
         .sort(
           (a, b) =>
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -72,7 +72,7 @@ export function OrderTable() {
                 )
             : t('unknown'),
         })),
-    [orderData, t, format]
+    [orders, t, format]
   );
 
   const columns: DataTableColumn<OrderRowData>[] = [
@@ -83,12 +83,13 @@ export function OrderTable() {
     {
       accessor: 'berth',
       title: t('berth'),
-      render: (data) => data.berthing.berth_code,
+      render: (orderRow) => orderRow.berthing.berth_code,
     },
     {
       accessor: 'vessel',
       title: t('vessel'),
-      render: (data) => data.berthing.vessel_name || data.berthing.vessel_imo,
+      render: (orderRow) =>
+        orderRow.berthing.vessel_name || orderRow.berthing.vessel_imo,
     },
     {
       accessor: 'arrival',
@@ -101,27 +102,27 @@ export function OrderTable() {
     {
       accessor: 'services',
       title: t('services'),
-      render: (data) =>
-        data.common_services
-          .map((service) => (service.titles as AppTypes.ServiceTitles)[locale])
+      render: (orderRow) =>
+        orderRow.common_services
+          .map((service) => service.dictionary[locale].title)
           .join(', '),
     },
     {
       accessor: 'status',
       title: t('status'),
       noWrap: true,
-      render: (data) => <OrderStatus status={data.status} />,
+      render: (orderRow) => <OrderStatus status={orderRow.status} />,
     },
     {
       accessor: 'edit',
       title: t('edit'),
-      render: (berthingRow) => (
+      render: (orderRow) => (
         <Center>
           <ActionIcon
             variant="subtle"
-            disabled={berthingRow.status === 'completed'}
+            disabled={orderRow.status === 'completed'}
             onClick={() => {
-              setSelectedRow(berthingRow);
+              setSelectedRow(orderRow);
               openEditModal();
             }}>
             <IconEdit stroke={1.5} />

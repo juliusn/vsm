@@ -1,16 +1,18 @@
 'use client';
 
 import { useDeleteServiceModal } from '@/app/[locale]/data/DeleteServiceModalContext';
-import { useEditServiceModal } from '@/app/[locale]/data/EditServicesModalContext';
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { ServicePreview } from '@/app/components/ServicePreview';
 import { useBerthServices } from '@/app/context/BerthServiceContext';
+import { useEditServiceModal } from '@/app/context/EditServiceModalContext';
 import {
   usePostgresErrorNotification,
   useServiceDeletedNotification,
   useServiceSavedNotification,
 } from '@/app/hooks/notifications';
 import { createClient } from '@/lib/supabase/client';
+import { BerthService } from '@/lib/types/query-types';
+import { WithDictionary } from '@/lib/types/translation';
 import {
   ActionIcon,
   Group,
@@ -26,7 +28,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
-export function ServicesTable() {
+export function BerthServiceTable() {
   const t = useTranslations('ServicesTable');
   const locale = useLocale() as AppTypes.Locale;
   const getErrorNotification = usePostgresErrorNotification();
@@ -52,19 +54,21 @@ export function ServicesTable() {
         berthService.locode === locode &&
         berthService.port_area_code === portAreaCode &&
         berthService.berth_code === berthCode &&
-        new RegExp(titleEnQuery, 'i').test(berthService.titles['en']) &&
-        new RegExp(titleFiQuery, 'i').test(berthService.titles['fi']) &&
+        new RegExp(titleEnQuery, 'i').test(berthService.dictionary.en.title) &&
+        new RegExp(titleFiQuery, 'i').test(berthService.dictionary.fi.title) &&
         (enabledQuery === 'all' ||
           (enabledQuery === 'enabled' && berthService.enabled) ||
           (enabledQuery === 'disabled' && !berthService.enabled))
     )
-    .sort((a, b) => a.titles[locale].localeCompare(b.titles[locale]));
+    .sort((a, b) =>
+      a.dictionary[locale].title.localeCompare(b.dictionary[locale].title)
+    );
 
-  const columns: DataTableColumn<AppTypes.BerthService>[] = [
+  const columns: DataTableColumn<WithDictionary<BerthService>>[] = [
     {
-      accessor: 'titles.en',
+      accessor: 'translation.en',
       title: t('titleEn'),
-      render: ({ titles }) => <Text>{titles['en']}</Text>,
+      render: ({ dictionary }) => <Text>{dictionary.en.title}</Text>,
       filter: (
         <TextInput
           leftSection={<IconSearch size={16} />}
@@ -84,9 +88,9 @@ export function ServicesTable() {
       filtering: titleEnQuery !== '',
     },
     {
-      accessor: 'titles.fi',
+      accessor: 'translation.fi',
       title: t('titleFi'),
-      render: ({ titles }) => <Text>{titles['fi']}</Text>,
+      render: ({ dictionary }) => <Text>{dictionary.fi.title}</Text>,
       filter: (
         <TextInput
           leftSection={<IconSearch size={16} />}
@@ -108,17 +112,15 @@ export function ServicesTable() {
     {
       accessor: 'enabled',
       title: t('enabled'),
-      render: ({ id, enabled }) => (
+      render: (service) => (
         <Switch
-          checked={enabled}
+          checked={service.enabled}
           onChange={async (event) => {
             const newChecked = event.currentTarget.checked;
-            const { data, error, status } = await supabase
+            const { error, status } = await supabase
               .from('berth_services')
               .update({ enabled: newChecked })
-              .eq('id', id)
-              .select()
-              .single();
+              .eq('id', service.id);
 
             if (error) {
               showNotification(getErrorNotification(status));
@@ -128,8 +130,8 @@ export function ServicesTable() {
             dispatch({
               type: 'changed',
               item: {
-                ...data,
-                titles: data.titles as AppTypes.ServiceTitles,
+                ...service,
+                enabled: newChecked,
               },
             });
           }}
@@ -149,14 +151,16 @@ export function ServicesTable() {
     {
       accessor: 'delete',
       title: t('delete'),
-      render: ({ id, titles }) => (
+      render: ({ id, dictionary: { en, fi } }) => (
         <ActionIcon
           variant="transparent"
           color="red"
           aria-label={t('delete')}
           onClick={() => {
             openDeleteModal({
-              previewContent: <ServicePreview titles={titles} />,
+              previewContent: (
+                <ServicePreview translationEn={en} translationFi={fi} />
+              ),
               onConfirm: async () => {
                 const { error, status } = await supabase
                   .from('berth_services')
@@ -185,34 +189,42 @@ export function ServicesTable() {
     {
       accessor: 'edit',
       title: t('edit'),
-      render: ({ id, titles }) => (
+      render: (service) => (
         <ActionIcon
           variant="transparent"
           aria-label={t('edit')}
           onClick={() => {
             openEditModal({
               title: t('editModalTitle'),
-              serviceTitles: titles,
-              onSave: async (titles) => {
-                const { data, error, status } = await supabase
-                  .from('berth_services')
-                  .update({
-                    titles,
-                  })
-                  .eq('id', id)
-                  .select()
-                  .single();
+              translationEn: service.dictionary.en,
+              translationFi: service.dictionary.fi,
+              onSave: async (translationEn, translationFi) => {
+                const queryEn = supabase
+                  .from('berth_service_translations')
+                  .update(translationEn)
+                  .eq('locale', 'en')
+                  .eq('berth_service', service.id);
 
-                if (error) {
-                  showNotification(getErrorNotification(status));
-                  return;
+                const queryFi = supabase
+                  .from('berth_service_translations')
+                  .update(translationFi)
+                  .eq('locale', 'fi')
+                  .eq('berth_service', service.id);
+
+                const responses = await Promise.all([queryEn, queryFi]);
+
+                for (const response of responses) {
+                  if (response.error) {
+                    showNotification(getErrorNotification(response.status));
+                    return;
+                  }
                 }
 
                 dispatch({
                   type: 'changed',
                   item: {
-                    ...data,
-                    titles: data.titles as AppTypes.ServiceTitles,
+                    ...service,
+                    dictionary: { en: translationEn, fi: translationFi },
                   },
                 });
 

@@ -1,5 +1,5 @@
 import { Stack } from '@mantine/core';
-import { EditServiceModalProvider } from './EditServicesModalContext';
+import { EditServiceModalProvider } from '../../context/EditServiceModalContext';
 import { DeleteServiceModalProvider } from './DeleteServiceModalContext';
 
 export default function DataLayout({

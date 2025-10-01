@@ -2,7 +2,7 @@
 
 import { useBerthings } from '@/app/context/BerthingContext';
 import { EditOrderFormProvider } from '@/app/context/FormContext';
-import { useOrderData } from '@/app/context/OrderContext';
+import { useOrders } from '@/app/context/OrderContext';
 import { useVessels } from '@/app/context/VesselContext';
 import {
   useOrderCancelledNotification,
@@ -11,6 +11,7 @@ import {
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
 import useBerthingFormValidation from '@/app/hooks/useBerthingFormValidation';
+import { normalizeOrder } from '@/lib/normalizers';
 import { portEventQueryFactory } from '@/lib/portEventQueryFactory';
 import { berthingsSelector, ordersSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
@@ -19,8 +20,7 @@ import {
   BerthingFormValues,
   PortAreaIdentifier,
 } from '@/lib/types/berthing';
-import { OrderFormValues } from '@/lib/types/order';
-import { Order } from '@/lib/types/QueryTypes';
+import { OrderData, OrderFormValues, OrderRowData } from '@/lib/types/order';
 import { Button, Group, Modal, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
@@ -32,9 +32,9 @@ import { useRef, useState } from 'react';
 import { EditOrderForm } from './EditOrderForm';
 
 interface Props {
-  order: Order;
+  order: OrderRowData;
   onClose(): void;
-  resultCallback(data: Order): void;
+  resultCallback(data: OrderData): void;
 }
 
 type FormValues = BerthingFormValues & OrderFormValues;
@@ -44,7 +44,7 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
   const supabase = createClient();
   const [submitLoading, setSubmitLoading] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
-  const { dispatchOrderData } = useOrderData();
+  const { dispatchOrders } = useOrders();
   const { dispatchBerthings } = useBerthings();
   const vessels = useVessels();
   const getErrorNotification = usePostgresErrorNotification();
@@ -310,23 +310,6 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
       dispatchBerthings({ type: 'changed', item: berthingsResponse.data });
     }
 
-    if (ordersResponse.data) {
-      const orderData = {
-        ...ordersResponse.data,
-        common_services: ordersResponse.data.common_services.map((service) => ({
-          ...service,
-          titles: service.titles as AppTypes.ServiceTitles,
-        })),
-      };
-
-      dispatchOrderData({
-        type: 'changed',
-        item: orderData,
-      });
-
-      resultCallback(orderData);
-    }
-
     for (const response of [
       ...updateResponses,
       berthingsResponse,
@@ -337,6 +320,22 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
         return;
       }
     }
+
+    const orderData = ordersResponse.data
+      ? normalizeOrder(ordersResponse.data)
+      : null;
+
+    if (!orderData) {
+      showNotification(getErrorNotification(400));
+      return;
+    }
+
+    dispatchOrders({
+      type: 'changed',
+      item: orderData,
+    });
+
+    resultCallback(orderData);
 
     showNotification(
       order.status !== 'cancelled'
@@ -363,7 +362,15 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
       return;
     }
 
-    dispatchOrderData({ type: 'changed', item: data });
+    const orderData = normalizeOrder(data);
+
+    if (!orderData) {
+      showNotification(getErrorNotification(400));
+      closeCancelModal();
+      return;
+    }
+
+    dispatchOrders({ type: 'changed', item: orderData });
     showNotification(getOrderCanelledNotification());
     closeCancelModal();
     onClose();

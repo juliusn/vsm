@@ -342,7 +342,7 @@
     "titleEn": "Nimike englanniksi",
     "titleFi": "Nimike suomeksi"
   },
-  "NewBerthServiceContent": {
+  "NewBerthServiceButton": {
     "buttonLabel": "Uusi laituripalvelu",
     "modalTitle": "Luo uusi laituripalvelu"
   },
@@ -353,8 +353,10 @@
     "cancelButtonLabel": "Peru"
   },
   "EditServiceModalProvider": {
-    "titleInputLabelEn": "Palvelun nimike englanniksi",
-    "titleInputLabelFi": "Palvelun nimike suomeksi",
+    "titleEnInputLabel": "Palvelun nimike englanniksi",
+    "abbrvEnInputLabel": "Palvelunimikkeen lyhenne englanniksi",
+    "titleFiInputLabel": "Palvelun nimike suomeksi",
+    "abbrvFiInputLabel": "Palvelunimikkeen lyhenne suomeksi",
     "saveButtonLabel": "Tallenna",
     "cancelButtonLabel": "Peru"
   },
@@ -383,7 +385,9 @@
     "edit": "Muokkaa",
     "editModalTitle": "Muokkaa palvelua",
     "titleEn": "Nimike englanniksi",
-    "titleFi": "Nimike suomeksi"
+    "abbrvEn": "Lyhenne englanniksi",
+    "titleFi": "Nimike suomeksi",
+    "abbrvFi": "Lyhenne suomeksi"
   },
   "NewCommonServiceButton": {
     "buttonLabel": "Uusi palvelu",
@@ -391,7 +395,9 @@
   },
   "ServicePreview": {
     "titleEn": "Nimike englanniksi",
-    "titleFi": "Nimike suomeksi"
+    "abbrvEn": "Lyhenne englanniksi",
+    "titleFi": "Nimike suomeksi",
+    "abbrvFi": "Lyhenne suomeksi"
   },
   "PortTrafficLayout": {
     "title": "Laituroinnit"

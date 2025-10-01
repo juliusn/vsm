@@ -2,23 +2,25 @@
 
 import { reducer } from '@/lib/reducer';
 import { Action } from '@/lib/types/context';
+import { BerthService } from '@/lib/types/query-types';
+import { WithDictionary } from '@/lib/types/translation';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
 type ContextType = {
-  berthServices: AppTypes.BerthService[];
-  dispatch: Dispatch<Action<AppTypes.BerthService>>;
+  berthServices: WithDictionary<BerthService>[];
+  dispatch: Dispatch<Action<WithDictionary<BerthService>>>;
 };
 
 const Context = createContext<ContextType | null>(null);
 
 type Props = {
   children: React.ReactNode;
-  initialValues: AppTypes.BerthService[];
+  initialValues: WithDictionary<BerthService>[];
 };
 
 export const BerthServiceProvider = ({ children, initialValues }: Props) => {
   const [berthServices, dispatch] = useReducer(
-    reducer<AppTypes.BerthService>,
+    reducer<WithDictionary<BerthService>>,
     initialValues
   );
   return (

@@ -29,9 +29,11 @@ alter table "public"."orders" add column "sender" character varying not null;
 
 alter table "public"."port_events" alter column "type" set data type port_event using "type"::text::port_event;
 
-alter table "public"."profiles" alter column "approval_status" set default 'pending'::approval_status;
+alter table "public"."profiles" alter column "approval_status" drop default;
 
 alter table "public"."profiles" alter column "approval_status" set data type approval_status using "approval_status"::text::approval_status;
+
+alter table "public"."profiles" alter column "approval_status" set default 'pending'::approval_status;
 
 drop type "public"."approval_status_enum";
 

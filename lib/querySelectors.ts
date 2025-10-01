@@ -2,7 +2,7 @@ export const ordersSelector = `
 id,
 created_at,
 status,
-berthing:berthings ( 
+berthing:berthings (
   id, 
   created_at, 
   vessel_imo, 
@@ -18,21 +18,28 @@ berthing:berthings (
     estimated_time 
   )
 ),
-common_services ( id, titles ),
+common_services (
+  id,
+  translations:common_service_translations!inner(
+    locale, 
+    title, 
+    abbreviation
+  )
+),
 sender:counterparties!orders_sender_fkey (
   business_id,
   name,
-  counterparty_names (
+  translations:counterparty_translations!inner(
     locale,
-    name
+    title
   )
 ),
 receiver:counterparties!orders_receiver_fkey (
   business_id,
   name,
-  counterparty_names (
+  translations:counterparty_translations!inner(
     locale,
-    name
+    title
   )
 )
 `;
@@ -57,8 +64,21 @@ port_events (
 export const counterpartiesSelector = `
 business_id,
 name,
-counterparty_names (
+translations:counterparty_translations!inner(
   locale,
-  name
+  title
 )
+`;
+
+export const commonServicesSelector = `
+id,
+translations:common_service_translations!inner(locale, title, abbreviation)`;
+
+export const berthServicesSelector = `
+id,
+locode,
+port_area_code,
+berth_code,
+enabled,
+translations:berth_service_translations!inner(locale, title, abbreviation)
 `;

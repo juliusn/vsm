@@ -2,43 +2,43 @@
 
 import { reducer } from '@/lib/reducer';
 import { Action } from '@/lib/types/context';
-import { Order } from '@/lib/types/QueryTypes';
+import { OrderData } from '@/lib/types/order';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
 type ContextType = {
-  orderData: Order[];
-  dispatchOrderData: Dispatch<Action<Order>>;
+  orders: OrderData[];
+  dispatchOrders: Dispatch<Action<OrderData>>;
 };
 
 type Props = {
   children: React.ReactNode;
-  initialOrderData: Order[];
+  initialOrders: OrderData[];
 };
 
 const Context = createContext<ContextType | null>(null);
 
-export const OrderDataProvider = ({ children, initialOrderData }: Props) => {
-  const [orderData, dispatchOrderData] = useReducer(
-    reducer<Order>,
-    initialOrderData
+export const OrderProvider = ({ children, initialOrders }: Props) => {
+  const [orders, dispatchOrders] = useReducer(
+    reducer<OrderData>,
+    initialOrders
   );
 
   return (
     <Context.Provider
       value={{
-        orderData,
-        dispatchOrderData,
+        orders,
+        dispatchOrders,
       }}>
       {children}
     </Context.Provider>
   );
 };
 
-export const useOrderData = () => {
+export const useOrders = () => {
   const context = useContext(Context);
 
   if (!context) {
-    throw new Error('useOrderData must be used within OrderDataProvider.');
+    throw new Error('useOrders must be used within OrderProvider.');
   }
 
   return context;

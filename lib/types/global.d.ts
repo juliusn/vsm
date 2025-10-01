@@ -10,17 +10,6 @@ declare global {
     type Berth = Database['public']['Tables']['berths']['Row'];
     type Order = Database['public']['Tables']['orders']['Row'];
     type Locale = (typeof routing.locales)[number];
-    type ServiceTitles = Record<Locale, string>;
-    type CommonService = Omit<
-      Database['public']['Tables']['common_services']['Row'],
-      'titles'
-    > & { titles: ServiceTitles };
-    type BerthService = Omit<
-      Database['public']['Tables']['berth_services']['Row'],
-      'titles'
-    > & {
-      titles: ServiceTitles;
-    };
     type Vessel = {
       name: string;
       timestamp: number;
