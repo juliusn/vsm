@@ -17,7 +17,7 @@ export type OrderFormValues = {
   services: string[];
 };
 
-export type OrderRowData = Order & {
+export type OrderRowData = OrderData & {
   created: string;
   arrival: string;
   departure: string;
