@@ -69,5 +69,9 @@
   "lint-staged": {
     "*.{ts,tsx}": "eslint",
     "*.{js,tsx,css,scss,md}": "prettier --write"
+  },
+  "engines": {
+    "node": "22.x",
+    "npm": ">=10"
   }
 }
