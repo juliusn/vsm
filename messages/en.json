@@ -165,6 +165,17 @@
     "tasks": "Tasks",
     "addTask": "Add task"
   },
+  "VesselsPage": {
+    "dataAlertTitle": "Error",
+    "dataAlertMessage": "Vessel data could not be loaded: {status} {statusText}",
+    "vessels": "Vessels"
+  },
+  "VesselsList": {
+    "searchByMmsi": "Search by MMSI",
+    "mmsi": "MMSI",
+    "searchByName": "Search by name",
+    "name": "Name"
+  },
   "VesselDetails": {
     "caption": "Vessel details",
     "notAvailable": "Not available",

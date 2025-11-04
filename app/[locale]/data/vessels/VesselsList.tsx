@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 export default function VesselsList({ vessels }: { vessels: Vessel[] }) {
-  const t = useTranslations('Data');
+  const t = useTranslations('VesselsList');
   const [mmsiSearch, setMmsiSearch] = useState<string | number>('');
   const [nameSearch, setNameSearch] = useState<string>('');
   const initialValues = vessels.map((vessel) => ({ checked: false, vessel }));

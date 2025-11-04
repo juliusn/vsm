@@ -165,6 +165,17 @@
     "tasks": "Tehtävät",
     "addTask": "Lisää tehtävä"
   },
+  "VesselsPage": {
+    "dataAlertTitle": "Virhe",
+    "dataAlertMessage": "Alusdataa ei voitu ladata: {status} {statusText}",
+    "vessels": "Alukset"
+  },
+  "VesselsList": {
+    "searchByMmsi": "Hae MMSI-numerolla",
+    "mmsi": "MMSI",
+    "searchByName": "Hae nimellä",
+    "name": "Nimi"
+  },
   "VesselDetails": {
     "caption": "Aluksen tiedot",
     "notAvailable": "Ei tiedossa",

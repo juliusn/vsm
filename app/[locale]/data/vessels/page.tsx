@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import VesselsList from './VesselsList';
 
 export default async function VesselsPage() {
-  const t = await getTranslations('Data');
+  const t = await getTranslations('VesselsPage');
   const response = await fetch(
     'https://meri.digitraffic.fi/api/ais/v1/vessels'
   );
@@ -17,7 +17,7 @@ export default async function VesselsPage() {
         color="red"
         title={t('dataAlertTitle')}
         icon={<IconExclamationCircle stroke={1.5} />}>
-        {t('dataAlertMessage', { status, statusText })}
+        {t.rich('dataAlertMessage', { status, statusText })}
       </Alert>
     );
   }
