@@ -376,7 +376,9 @@
     "modalTitle": "Delete service",
     "confirmationMessage": "Are you sure you want to delete this service from the system?",
     "deleteButtonLabel": "Delete",
-    "cancelButtonLabel": "Cancel"
+    "cancelButtonLabel": "Cancel",
+    "successTitle": "Done!",
+    "successMessage": "Service has been deleted."
   },
   "EditServiceModalProvider": {
     "titleEnInputLabel": "Service title in English",

@@ -376,7 +376,9 @@
     "modalTitle": "Poista palvelu",
     "confirmationMessage": "Oletko varma, että haluat poistaa tämän palvelun järjestelmästä?",
     "deleteButtonLabel": "Poista",
-    "cancelButtonLabel": "Peru"
+    "cancelButtonLabel": "Peru",
+    "successTitle": "Valmis!",
+    "successMessage": "Palvelu on poistettu."
   },
   "EditServiceModalProvider": {
     "titleEnInputLabel": "Palvelun nimike englanniksi",
