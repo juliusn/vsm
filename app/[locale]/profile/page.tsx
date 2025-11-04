@@ -1,16 +1,11 @@
+import { redirect } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/server';
 import { Center, Stack, Title } from '@mantine/core';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { ProfileContent } from './ProfileContent';
-import { redirect } from '@/i18n/routing';
 
-export default async function ProfilePage(props: {
-  params: Promise<{ locale: string }>;
-}) {
-  const params = await props.params;
-
-  const { locale } = params;
-
+export default async function ProfilePage() {
+  const locale = await getLocale();
   const t = await getTranslations('ProfilePage');
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
