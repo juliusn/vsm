@@ -7,41 +7,25 @@ import { useSessionStore } from '../store';
 export function AuthListener() {
   const setSession = useSessionStore((state) => state.setSession);
   const supabase = createClient();
-  const currentJWTRef = useRef<string | null>(null);
-  const initialLoadRef = useRef(true);
+  const tokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') throw new Error(`where's my window?`);
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-          if (session && session.access_token !== currentJWTRef.current) {
-            currentJWTRef.current = session.access_token;
-            setSession(session);
-          }
-        } else if (
-          event === 'TOKEN_REFRESHED' &&
-          session &&
-          session.access_token !== currentJWTRef.current
-        ) {
-          currentJWTRef.current = session.access_token;
-          setSession(session);
-        } else if (event === 'SIGNED_OUT') {
-          if (currentJWTRef.current) {
-            currentJWTRef.current = null;
-            setSession(null);
-          }
-        }
-        if (initialLoadRef.current) {
-          initialLoadRef.current = false;
-        }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const token = session?.access_token ?? null;
+
+      if (tokenRef.current !== token) {
+        tokenRef.current = token;
+        setSession(session);
       }
-    );
+    });
 
     return () => {
-      authListener.subscription.unsubscribe();
+      subscription.unsubscribe();
     };
-  }, [setSession, supabase]);
+  }, [supabase, setSession]);
 
   return null;
 }

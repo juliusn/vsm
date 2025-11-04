@@ -1,10 +1,8 @@
 import { defineRouting } from 'next-intl/routing';
 import { createNavigation } from 'next-intl/navigation';
 
-const locales: ReadonlyArray<'en' | 'fi'> = ['en', 'fi'];
-
 export const routing = defineRouting({
-  locales,
+  locales: ['en', 'fi'],
   defaultLocale: 'en',
 });
 

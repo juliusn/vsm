@@ -37,7 +37,6 @@
     "noAccount": "Ei tunnuksia? <link>Rekisteröidy tästä!</link>",
     "error": "Virhe",
     "loginError": "Sähköposti tai salasana on virheellinen.",
-    "noProfileError": "Käyttäjäprofiilia ei löytynyt käyttäjätunnukselle {email}.",
     "validate": {
       "email": "Virheellinen sähköpostiosoite",
       "password": "Virheellinen salasana"
@@ -98,12 +97,28 @@
     "passwordShouldBeDifferentError": "Uusi salasana ei saa olla sama kuin vanha salasana.",
     "serverError": "Salasanaa ei voitu päivittää palvelinvirheen takia."
   },
-  "Confirm": {
-    "successTitle": "Vahvistettu",
-    "successMessage": "Sähköpostisi on vahvistettu. Ylläpidon pitää vielä tarkastaa ja hyväksyä käyttäjäprofiilisi. <link>Klikkaa tästä</link> nähdäksesi profiilisi tilan.",
-    "warningTitle": "Tunnistautuminen vaaditaan",
-    "authFlowWarningMessage": "Näyttää siltä, että yrität viimeistellä käyttäjätunnuksen rekisteröintiä, mutta et ole kirjautuneena sisään. Koita avata vahvistuslinkki alkuperäisessä selaimessa.",
-    "noCodeWarningMessage": "Käyttäjätunnusta ei voitu vahvistaa. Käytäthän sähköpostiisi lähetettyä linkkiä."
+  "WelcomePage": {
+    "alertTitle": "Sähköposti vahvistettu",
+    "alertMessage": "Tervetuloa VSM:ään, {name}! Ylläpidon pitää vielä tarkastaa ja hyväksyä käyttäjäprofiilisi. <link>Klikkaa tästä</link> nähdäksesi profiilisi tilan."
+  },
+  "ResendPage": {
+    "alertTitle": "Varmistus epäonnistui",
+    "alertMessage": "Sähköpostilinkki on virheellinen tai vanhentunut. Voit koittaa lähettää varmistusviestin sähköpostiisi uudelleen."
+  },
+  "ResendForm": {
+    "invalidEmail": "Virheellinen sähköposti",
+    "email": "Sähköposti",
+    "submit": "Lähetä",
+    "successTitle": "Vahvistusviesti lähetetty.",
+    "successMessage": "Tarkista sähköpostisi vahvistaaksesi tunnuksesi.",
+    "errorTitle": "Virhe",
+    "errorMessage": "Pyyntöä ei voitu suorittaa."
+  },
+  "ErrorPage": {
+    "alertTitle": "Virhe",
+    "alertMessage": "Tapahtui odottamaton virhe.",
+    "alertTitleWithError": "Virhe ({status})",
+    "alertMessageWithError": "Tapahtui odottamaton virhe: {message}"
   },
   "Settings": {
     "title": "Tunnuksen asetukset",

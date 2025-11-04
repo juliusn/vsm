@@ -10,7 +10,7 @@ import {
 import { IconCheck, IconLogin2 } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
-import { useEmailStore } from '../../store';
+import { useEmailStore } from '../store';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';

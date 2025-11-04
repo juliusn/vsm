@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Fieldset, Stack, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { isEmail, useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { IconExclamationMark, IconMail } from '@tabler/icons-react';
 import { useEmailStore } from '../../store';
@@ -21,10 +21,7 @@ export function ResetPasswordForm() {
       email,
     },
     validate: {
-      email: (value) =>
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
-          ? null
-          : t('invalidEmail'),
+      email: isEmail(t('invalidEmail')),
     },
     validateInputOnBlur: true,
   });

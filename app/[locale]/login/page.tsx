@@ -1,4 +1,4 @@
-import { LoginForm } from '@/app/[locale]/login/LoginForm';
+import { LoginForm } from '@/app/components/LoginForm';
 import { ProgressBarLink } from '@/app/components/ProgressBar';
 import { Container, Stack, Text, Title } from '@mantine/core';
 import { useTranslations } from 'next-intl';

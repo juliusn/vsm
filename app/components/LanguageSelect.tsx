@@ -1,8 +1,8 @@
 'use client';
 
 import { Select } from '@mantine/core';
-import { useLocale } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/routing';
+import { hasLocale, useLocale } from 'next-intl';
+import { routing, usePathname, useRouter } from '@/i18n/routing';
 import { useProgressBar } from './ProgressBar';
 import { startTransition } from 'react';
 
@@ -17,7 +17,7 @@ export function LanguageSelect() {
       size="xs"
       defaultValue={locale}
       onChange={(value) => {
-        if (value) {
+        if (hasLocale(routing.locales, value)) {
           progress.start();
           startTransition(() => {
             router.push(pathName, { locale: value });
