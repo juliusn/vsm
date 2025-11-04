@@ -27,6 +27,7 @@ import { useRef, useState } from 'react';
 import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
 import { BerthingFormFields } from './BerthingFormFields';
 import { Berthing } from '@/lib/types/query-types';
+import { Vessel } from '@/lib/types/vessel';
 
 const initialValues: BerthingFormValues = {
   vesselName: '',
@@ -54,7 +55,7 @@ export function NewBerthingForm({
   const vessels = useVessels();
   const [loading, setLoading] = useState(false);
   const [imoValue, setImoValue] = useState<BerthingFormValues['imo']>('');
-  const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>();
+  const [vessel, setVessel] = useState<Vessel | undefined>();
   const [locode, setLocode] = useState(initialValues.locode);
   const [portArea, setPortArea] = useState(initialValues.portArea);
   const validate = useBerthingFormValidation();

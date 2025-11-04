@@ -6,6 +6,7 @@ import { ActionTypes, useLocations } from '@/app/context/LocationContext';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { usePathname } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
+import { Tables } from '@/lib/types/database.types';
 import { ActionIcon, Group, Radio, Switch, TextInput } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconSearch, IconX } from '@tabler/icons-react';
@@ -28,7 +29,7 @@ export function BerthsTable({ portAreaCode }: { portAreaCode: string }) {
     (berth) => berth.port_area_code === portAreaCode
   );
   const pathname = usePathname();
-  const columns: DataTableColumn<AppTypes.Berth>[] = [
+  const columns: DataTableColumn<Tables<'berths'>>[] = [
     {
       accessor: 'berth_code',
       title: t('berthCode'),

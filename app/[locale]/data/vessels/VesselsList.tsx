@@ -1,6 +1,6 @@
 'use client';
 
-import { Vessel } from '@/lib/types/vessels-api.types';
+import { Vessel } from '@/lib/types/vessel';
 import { Checkbox, Group, NumberInput, TextInput } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { useTranslations } from 'next-intl';

@@ -6,6 +6,7 @@ import { ActionTypes, useLocations } from '@/app/context/LocationContext';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { usePathname } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
+import { Tables } from '@/lib/types/database.types';
 import { ActionIcon, Group, Radio, Switch, TextInput } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconSearch, IconX } from '@tabler/icons-react';
@@ -38,7 +39,7 @@ export function PortAreasTable() {
         (enabledQuery === 'disabled' && !portArea.enabled))
   );
 
-  const columns: DataTableColumn<AppTypes.PortArea>[] = [
+  const columns: DataTableColumn<Tables<'port_areas'>>[] = [
     {
       accessor: 'port_area_code',
       title: t('portAreaCode'),

@@ -6,6 +6,7 @@ import {
   counterpartiesSelector,
   ordersSelector,
 } from '../querySelectors';
+import { Database } from './database.types';
 
 declare const supabase: SupabaseClient<Database>;
 

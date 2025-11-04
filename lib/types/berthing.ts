@@ -1,3 +1,4 @@
+import { Tables } from './database.types';
 import { Berthing } from './query-types';
 
 export interface BerthingFormValues {
@@ -25,6 +26,6 @@ export type BerthIdentifier = {
 
 export interface BerthingRowData extends Omit<Berthing, 'port_events'> {
   created: Date;
-  arrival: Omit<AppTypes.PortEvent, 'berthing'> | null;
-  departure: Omit<AppTypes.PortEvent, 'berthing'> | null;
+  arrival: Omit<Tables<'port_events'>, 'berthing'> | null;
+  departure: Omit<Tables<'port_events'>, 'berthing'> | null;
 }

@@ -8,14 +8,16 @@ import { IconChecklist } from '@tabler/icons-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { FormEventHandler } from 'react';
 import { BerthingFormFields } from '../../components/BerthingForms/BerthingFormFields';
+import { Vessel } from '@/lib/types/vessel';
+import { Tables } from '@/lib/types/database.types';
 
 interface Props {
-  vessel: AppTypes.Vessel | undefined;
+  vessel: Vessel | undefined;
   imoRef: React.RefObject<HTMLInputElement | null>;
   locode: string;
   portArea: string;
   additionalContent: React.ReactNode;
-  status: AppTypes.OrderStatus;
+  status: Tables<'orders'>['status'];
   onClose(): void;
   onSubmit: FormEventHandler<HTMLFormElement>;
   loading: boolean;
@@ -33,7 +35,7 @@ export function EditOrderForm({
   loading,
 }: Props) {
   const t = useTranslations('OrderForm');
-  const locale = useLocale() as AppTypes.Locale;
+  const locale = useLocale();
   const { commonServices } = useCommonServices();
   const form = useEditOrderFormContext();
 

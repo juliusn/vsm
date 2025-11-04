@@ -1,10 +1,15 @@
 'use client';
 
+import { Tables } from '@/lib/types/database.types';
 import { Badge, BadgeProps } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-export function OrderStatus({ status }: { status: AppTypes.OrderStatus }) {
+export function OrderStatus({
+  status,
+}: {
+  status: Tables<'orders'>['status'];
+}) {
   const t = useTranslations('OrderStatus');
 
   switch (status) {

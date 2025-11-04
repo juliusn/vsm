@@ -1,10 +1,11 @@
 import { ComboboxItem, ComboboxItemGroup } from '@mantine/core';
 import { PortAreaIdentifier } from './types/berthing';
+import { Tables } from './types/database.types';
 
 export function getLocationInputItems(
-  locations: AppTypes.Location[],
-  portAreas: AppTypes.PortArea[],
-  berths: AppTypes.Berth[],
+  locations: Tables<'locations'>[],
+  portAreas: Tables<'port_areas'>[],
+  berths: Tables<'berths'>[],
   locode: string,
   portArea: string
 ) {

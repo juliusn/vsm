@@ -30,7 +30,7 @@ import { useState } from 'react';
 
 export function BerthServiceTable() {
   const t = useTranslations('ServicesTable');
-  const locale = useLocale() as AppTypes.Locale;
+  const locale = useLocale();
   const getErrorNotification = usePostgresErrorNotification();
   const getServiceDeletedNotification = useServiceDeletedNotification();
   const getServiceSavedNotification = useServiceSavedNotification();

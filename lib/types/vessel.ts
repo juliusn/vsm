@@ -1,5 +1,3 @@
-export type VesselsApiResponse = Vessel[];
-
 export type Vessel = {
   name: string;
   timestamp: number;

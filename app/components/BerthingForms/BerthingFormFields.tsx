@@ -1,6 +1,9 @@
 'use client';
 
+import { LocationInputs } from '@/app/components/BerthingForms/LocationInputs';
+import { VesselInputs } from '@/app/components/BerthingForms/VesselInputs';
 import { BerthingFormValues } from '@/lib/types/berthing';
+import { Vessel } from '@/lib/types/vessel';
 import { Fieldset, Group, Stack, Text } from '@mantine/core';
 import { DateInput, TimeInput } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
@@ -11,12 +14,10 @@ import {
   IconShip,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { LocationInputs } from '@/app/components/BerthingForms/LocationInputs';
-import { VesselInputs } from '@/app/components/BerthingForms/VesselInputs';
 
 interface Props<T extends BerthingFormValues> {
   useFormContext(): UseFormReturnType<T>;
-  vessel: AppTypes.Vessel | undefined;
+  vessel: Vessel | undefined;
   imoRef: React.RefObject<HTMLInputElement | null>;
   locode: string;
   portArea: string;

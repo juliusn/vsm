@@ -1,9 +1,11 @@
 'use client';
 
 import { dateTimeFormatOptions } from '@/lib/formatOptions';
+import { Vessel } from '@/lib/types/vessel';
 import { Table } from '@mantine/core';
 import {
   DateTimeFormatOptions,
+  Messages,
   useFormatter,
   useTranslations,
 } from 'next-intl';
@@ -22,7 +24,9 @@ const etaFormatOptions: DateTimeFormatOptions = {
   minute: 'numeric',
 };
 
-export function VesselDetails({ vessel }: { vessel: AppTypes.Vessel }) {
+type ShipTypeKey = keyof Messages['VesselDetails']['shipTypes'];
+
+export function VesselDetails({ vessel }: { vessel: Vessel }) {
   const t = useTranslations('VesselDetails');
   const format = useFormatter();
   const eta = parseEta(vessel.eta);
@@ -93,7 +97,7 @@ export function VesselDetails({ vessel }: { vessel: AppTypes.Vessel }) {
   );
 }
 
-function parseShipTypeKey(typeCode: number): string {
+function parseShipTypeKey(typeCode: number): ShipTypeKey {
   if (typeCode === 0) return 'notAvailable';
 
   if (typeCode >= 1 && typeCode <= 19) return 'reservedForFutureUse';
@@ -101,7 +105,7 @@ function parseShipTypeKey(typeCode: number): string {
   if (typeCode >= 20 && typeCode <= 29) return 'wig';
 
   if (typeCode >= 30 && typeCode <= 39) {
-    const specificKeys: Record<number, string> = {
+    const specificKeys: Record<number, ShipTypeKey> = {
       31: 'towing',
       32: 'towingLarge',
       33: 'dredgingOrUnderwaterOps',
@@ -116,7 +120,7 @@ function parseShipTypeKey(typeCode: number): string {
   if (typeCode >= 40 && typeCode <= 49) return 'hsc';
 
   if (typeCode >= 50 && typeCode <= 59) {
-    const specificKeys: Record<number, string> = {
+    const specificKeys: Record<number, ShipTypeKey> = {
       50: 'pilotVessel',
       51: 'searchAndRescue',
       52: 'tug',
@@ -137,7 +141,7 @@ function parseShipTypeKey(typeCode: number): string {
 
   if (typeCode > 99) return 'reservedForFutureUse';
 
-  return 'unknownType';
+  return 'notAvailable';
 }
 
 function parseEta(encodedEta: number): Eta | null {

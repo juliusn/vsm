@@ -1,11 +1,12 @@
-import { SupabaseClient } from '@supabase/supabase-js';
 import { PostgrestBuilder } from '@supabase/postgrest-js';
+import { SupabaseClient } from '@supabase/supabase-js';
 import dayjs from 'dayjs';
+import { Tables } from './types/database.types';
 
 interface Params {
   berthing: string;
-  portEvent: Omit<AppTypes.PortEvent, 'berthing'> | null | undefined;
-  type: AppTypes.PortEvent['type'];
+  portEvent: Omit<Tables<'port_events'>, 'berthing'> | null | undefined;
+  type: Tables<'port_events'>['type'];
   newValues: {
     date: Date | '';
     time: string;

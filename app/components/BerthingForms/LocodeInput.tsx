@@ -1,10 +1,11 @@
 'use client';
 
+import { Tables } from '@/lib/types/database.types';
 import { ComboboxItem, Select, SelectProps } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
 interface LocodeInputProps extends SelectProps {
-  locations: AppTypes.Location[];
+  locations: Tables<'locations'>[];
 }
 
 export function LocodeInput({ locations, ...others }: LocodeInputProps) {

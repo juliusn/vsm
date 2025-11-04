@@ -1,11 +1,12 @@
 'use client';
 
+import { Tables } from '@/lib/types/database.types';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
 export type LocationState = {
-  locations: AppTypes.Location[];
-  portAreas: AppTypes.PortArea[];
-  berths: AppTypes.Berth[];
+  locations: Tables<'locations'>[];
+  portAreas: Tables<'port_areas'>[];
+  berths: Tables<'berths'>[];
 };
 
 export enum ActionTypes {

@@ -1,11 +1,12 @@
 'use client';
 
 import { useVessels } from '@/app/context/VesselContext';
+import { Vessel } from '@/lib/types/vessel';
 import { Collapse, ComboboxItem, Paper } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { useEffect, useMemo, useState } from 'react';
-import { VesselDetails } from './VesselDetails';
 import { ImoInput } from './ImoInput';
+import { VesselDetails } from './VesselDetails';
 import { VesselNameInput } from './VesselNameInput';
 
 type Fields = {
@@ -15,7 +16,7 @@ type Fields = {
 
 type Props<T extends Fields> = {
   useFormContext(): UseFormReturnType<T>;
-  vessel: AppTypes.Vessel | undefined;
+  vessel: Vessel | undefined;
   imoRef: React.RefObject<HTMLInputElement | null>;
 };
 
@@ -38,9 +39,9 @@ export function VesselInputs<T extends Fields>({
     [vessels]
   );
 
-  const [mostRecentVessel, setMostRecentVessel] = useState<
-    AppTypes.Vessel | undefined
-  >(undefined);
+  const [mostRecentVessel, setMostRecentVessel] = useState<Vessel | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (vessel) {

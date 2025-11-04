@@ -1,13 +1,14 @@
 'use client';
 
+import { Vessel } from '@/lib/types/vessel';
 import { createContext, useContext } from 'react';
 
 type Props = {
   children: React.ReactNode;
-  vessels: AppTypes.Vessel[];
+  vessels: Vessel[];
 };
 
-const Context = createContext<AppTypes.Vessel[] | null>(null);
+const Context = createContext<Vessel[] | null>(null);
 
 export const VesselProvider = ({ children, vessels }: Props) => {
   return <Context.Provider value={vessels}>{children}</Context.Provider>;

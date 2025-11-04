@@ -1,4 +1,4 @@
-import { VesselsApiResponse } from '@/lib/types/vessels-api.types';
+import { Vessel } from '@/lib/types/vessel';
 import { Alert, Title } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import { getTranslations } from 'next-intl/server';
@@ -21,7 +21,7 @@ export default async function VesselsPage() {
       </Alert>
     );
   }
-  const data: VesselsApiResponse = await response.json();
+  const data: Vessel[] = await response.json();
   return (
     <>
       <Title size="h4" mt="md">

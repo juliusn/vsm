@@ -1,5 +1,6 @@
 'use client';
 
+import { Enums, Tables } from '@/lib/types/database.types';
 import { Badge, DefaultMantineColor, Table } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
@@ -8,9 +9,9 @@ type ApprovalStatusAttributes = {
   color: DefaultMantineColor;
 };
 
-type ApprovalStatus = Database['public']['Enums']['approval_status'];
+type ApprovalStatus = Enums<'approval_status'>;
 
-export function ProfileContent({ profile }: { profile: AppTypes.Profile }) {
+export function ProfileContent({ profile }: { profile: Tables<'profiles'> }) {
   const t = useTranslations('ProfileContent');
   const approvalStatusMap: Record<ApprovalStatus, ApprovalStatusAttributes> = {
     pending: { label: t('pending'), color: 'yellow' },

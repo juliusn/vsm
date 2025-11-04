@@ -22,7 +22,7 @@ import { useDeleteServiceModal } from '../DeleteServiceModalContext';
 
 export function CommonServiceTable() {
   const t = useTranslations('CommonServiceTable');
-  const locale = useLocale() as AppTypes.Locale;
+  const locale = useLocale();
   const getErrorNotification = usePostgresErrorNotification();
   const getServiceDeletedNotification = useServiceDeletedNotification();
   const getServiceUpdatedNotification = useServiceSavedNotification();

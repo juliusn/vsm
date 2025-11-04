@@ -15,7 +15,7 @@ import { EditOrder } from './EditOrder';
 
 export function OrderTable() {
   const t = useTranslations('OrderTable');
-  const locale = useLocale() as AppTypes.Locale;
+  const locale = useLocale();
   const format = useFormatter();
   const { orders } = useOrders();
   const [selectedRow, setSelectedRow] = useState<OrderRowData | null>(null);

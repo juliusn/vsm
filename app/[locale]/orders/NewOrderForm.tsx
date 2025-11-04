@@ -44,7 +44,7 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
   const counterParties = useCounterparties();
   const { berthings } = useBerthings();
   const { commonServices } = useCommonServices();
-  const locale = useLocale() as AppTypes.Locale;
+  const locale = useLocale();
   const initialBerthingId = form.getInitialValues()['berthing'];
   const [berthingId, setBerthingId] = useState(initialBerthingId);
   const berthing = berthings.find(({ id }) => id === berthingId);

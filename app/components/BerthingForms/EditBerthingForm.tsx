@@ -1,12 +1,18 @@
 'use client';
 
-import { Group, Stack } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { showNotification } from '@mantine/notifications';
-import dayjs from 'dayjs';
-import 'dayjs/locale/fi';
-import { useRef, useState } from 'react';
-import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
+import { useBerthings } from '@/app/context/BerthingContext';
+import {
+  BerthingFormProvider,
+  useBerthingFormContext,
+} from '@/app/context/FormContext';
+import { useVessels } from '@/app/context/VesselContext';
+import {
+  useBerthingSavedNotification,
+  usePostgresErrorNotification,
+} from '@/app/hooks/notifications';
+import { portEventQueryFactory } from '@/lib/portEventQueryFactory';
+import { berthingsSelector } from '@/lib/querySelectors';
+import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
   BerthingFormValues,
@@ -14,20 +20,15 @@ import {
   PortAreaIdentifier,
 } from '@/lib/types/berthing';
 import { Berthing } from '@/lib/types/query-types';
-import { createClient } from '@/lib/supabase/client';
-import {
-  useBerthingSavedNotification,
-  usePostgresErrorNotification,
-} from '@/app/hooks/notifications';
-import { useBerthings } from '@/app/context/BerthingContext';
-import { useVessels } from '@/app/context/VesselContext';
-import { portEventQueryFactory } from '@/lib/portEventQueryFactory';
-import { berthingsSelector } from '@/lib/querySelectors';
-import {
-  BerthingFormProvider,
-  useBerthingFormContext,
-} from '@/app/context/FormContext';
+import { Group, Stack } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
+import dayjs from 'dayjs';
+import 'dayjs/locale/fi';
+import { useRef, useState } from 'react';
+import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
 
+import { Vessel } from '@/lib/types/vessel';
 import { FormButtons } from '../FormButtons';
 import { BerthingFormFields } from './BerthingFormFields';
 
@@ -56,9 +57,7 @@ export function EditBerthingForm({
     (vessel) => vessel.imo === berthingRow.vessel_imo
   );
 
-  const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>(
-    vesselMatch
-  );
+  const [vessel, setVessel] = useState<Vessel | undefined>(vesselMatch);
 
   const portAreaIdentifier: PortAreaIdentifier | null =
     berthingRow.locode && berthingRow.port_area_code

@@ -16,6 +16,7 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { MouseEventHandler, useState } from 'react';
 import { DeleteAllButton } from './DeleteAllButton';
 import { UpdateAllButton } from './UpdateAllButton';
+import { Tables } from '@/lib/types/database.types';
 type DatasetName = 'port_data' | 'locations' | 'port_areas' | 'berths';
 type DateComparisonResult = {
   datesMatch: boolean | null;
@@ -54,7 +55,7 @@ export function UpdateLocations() {
 
   const apiPortAreas =
     apiData?.portAreas.features.map(
-      (portArea): AppTypes.PortArea => ({
+      (portArea): Tables<'port_areas'> => ({
         enabled: true,
         port_area_code: portArea.portAreaCode,
         port_area_name: portArea.properties.portAreaName,
@@ -65,7 +66,7 @@ export function UpdateLocations() {
 
   const apiBerths =
     apiData?.berths.berths.map(
-      (berth): AppTypes.Berth => ({
+      (berth): Tables<'berths'> => ({
         enabled: true,
         berth_code: berth.berthCode,
         berth_name: berth.berthName,

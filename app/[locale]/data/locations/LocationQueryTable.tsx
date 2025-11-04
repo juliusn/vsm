@@ -4,6 +4,7 @@ import { ProgressBarLink } from '@/app/components/ProgressBar';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { usePathname } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
+import { Tables } from '@/lib/types/database.types';
 import { ActionIcon, Group, Radio, Switch, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -32,7 +33,7 @@ export function LocationQueryTable() {
     country: '',
     dbEnabledQuery: 'all',
   });
-  const [records, setRecords] = useState<AppTypes.Location[]>([]);
+  const [records, setRecords] = useState<Tables<'locations'>[]>([]);
   const [totalRecords, setTotalRecords] = useState<number | undefined>();
   const pathname = usePathname();
 

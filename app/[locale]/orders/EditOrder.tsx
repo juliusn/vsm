@@ -21,6 +21,7 @@ import {
   PortAreaIdentifier,
 } from '@/lib/types/berthing';
 import { OrderData, OrderFormValues, OrderRowData } from '@/lib/types/order';
+import { Vessel } from '@/lib/types/vessel';
 import { Button, Group, Modal, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
@@ -60,9 +61,7 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
     (vessel) => vessel.imo === order.berthing.vessel_imo
   );
 
-  const [vessel, setVessel] = useState<AppTypes.Vessel | undefined>(
-    vesselMatch
-  );
+  const [vessel, setVessel] = useState<Vessel | undefined>(vesselMatch);
 
   const arrival = order.berthing.port_events.find(
     (event) => event.type === 'arrival'

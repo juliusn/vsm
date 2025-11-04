@@ -6,6 +6,7 @@ import { ActionTypes, useLocations } from '@/app/context/LocationContext';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { usePathname } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
+import { Tables } from '@/lib/types/database.types';
 import { ActionIcon, Group, Radio, Switch, TextInput } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconSearch, IconX } from '@tabler/icons-react';
@@ -26,7 +27,7 @@ export function LocationTable() {
     state: { locations },
     dispatch,
   } = useLocations();
-  const columns: DataTableColumn<AppTypes.Location>[] = [
+  const columns: DataTableColumn<Tables<'locations'>>[] = [
     {
       accessor: 'locode',
       title: t('locode'),

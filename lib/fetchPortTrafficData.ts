@@ -1,12 +1,13 @@
 import { LocationState } from '@/app/context/LocationContext';
-import { createClient } from './supabase/server';
 import { berthingsSelector } from './querySelectors';
+import { createClient } from './supabase/server';
 import { Berthing } from './types/query-types';
+import { Vessel } from './types/vessel';
 
 export const fetchPortTrafficData = async (): Promise<
   | {
       locationState: LocationState;
-      vessels: AppTypes.Vessel[];
+      vessels: Vessel[];
       berthings: Berthing[];
     }
   | undefined
@@ -46,7 +47,7 @@ export const fetchPortTrafficData = async (): Promise<
     berthingsResponse.data;
 
   if (success) {
-    const vesselsData = (await vesselsResponse.json()) as AppTypes.Vessel[];
+    const vesselsData = (await vesselsResponse.json()) as Vessel[];
     const vessels = vesselsData
       .filter((vessel) => vessel.imo !== 0)
       .filter(

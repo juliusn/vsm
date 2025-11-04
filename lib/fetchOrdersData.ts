@@ -14,10 +14,11 @@ import {
   Counterparty,
   Order,
 } from './types/query-types';
+import { Vessel } from './types/vessel';
 
 type Result = {
   locationState: LocationState;
-  vessels: AppTypes.Vessel[];
+  vessels: Vessel[];
   berthings: Berthing[];
   berthServices: BerthService[];
   commonServices: CommonService[];
@@ -73,7 +74,7 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     counterpartiesResponse.data;
 
   if (success) {
-    const vesselsData = (await vesselsResponse.json()) as AppTypes.Vessel[];
+    const vesselsData = (await vesselsResponse.json()) as Vessel[];
 
     const vessels = vesselsData
       .filter((vessel) => vessel.imo !== 0)
