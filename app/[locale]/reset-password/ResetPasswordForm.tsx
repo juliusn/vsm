@@ -1,21 +1,29 @@
 'use client';
 
+import { useProgressBar } from '@/app/components/ProgressBar';
+import { SuccessModal } from '@/app/components/SuccessModal';
+import { useAuthErrorModal } from '@/app/hooks/feedback';
+import { createClient } from '@/lib/supabase/client';
 import { Button, Fieldset, Stack, TextInput } from '@mantine/core';
 import { isEmail, useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
-import { IconExclamationMark, IconMail } from '@tabler/icons-react';
-import { useEmailStore } from '../../store';
-import { showNotification } from '@mantine/notifications';
-import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { IconMail } from '@tabler/icons-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { SuccessModal } from '@/app/components/SuccessModal';
-import { useProgressBar } from '@/app/components/ProgressBar';
+import { useEmailStore } from '../../store';
 
 export function ResetPasswordForm() {
   const locale = useLocale();
   const email = useEmailStore((store) => store.email);
   const t = useTranslations('ResetPassword');
+  const supabase = createClient();
+  const progress = useProgressBar();
+  const { showErrorModalWithDetails } = useAuthErrorModal();
+
+  const [
+    successModalOpened,
+    { open: openSuccessModal, close: closeSuccessModal },
+  ] = useDisclosure(false);
+
   const form = useForm<{ email: string }>({
     initialValues: {
       email,
@@ -25,20 +33,11 @@ export function ResetPasswordForm() {
     },
     validateInputOnBlur: true,
   });
-  const progress = useProgressBar();
-  const [isLoading, { open: openLoading, close: closeLoading }] =
-    useDisclosure();
-  const [emailSent, setEmailSent] = useState(false);
-  const [
-    emailResetModalOpened,
-    { open: openEmailResetModal, close: closeEmailResetModal },
-  ] = useDisclosure(false);
-  const supabase = createClient();
 
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <Fieldset disabled={isLoading || emailSent}>
+        <Fieldset disabled={progress.state !== 'initial'}>
           <Stack pos="relative">
             <TextInput
               name="email"
@@ -49,7 +48,7 @@ export function ResetPasswordForm() {
             <Button
               type="submit"
               disabled={!form.isValid()}
-              loading={isLoading}
+              loading={progress.state === 'in-progress'}
               leftSection={<IconMail stroke={1.5} />}
               rightSection={<span className="w-6 invisible"></span>}
               justify="space-between"
@@ -65,8 +64,8 @@ export function ResetPasswordForm() {
         </Fieldset>
       </form>
       <SuccessModal
-        opened={emailResetModalOpened}
-        onClose={closeEmailResetModal}
+        opened={successModalOpened}
+        onClose={closeSuccessModal}
         title={t('emailSent')}>
         {t('checkYourEmail')}
       </SuccessModal>
@@ -83,25 +82,17 @@ export function ResetPasswordForm() {
     );
 
     progress.start();
-    openLoading();
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: url.href,
     });
 
     progress.done();
-    closeLoading();
 
     if (error) {
-      showNotification({
-        title: t('error'),
-        message: t('resetPasswordError'),
-        icon: <IconExclamationMark stroke={1.5} />,
-        color: 'red',
-      });
+      showErrorModalWithDetails(error);
     } else {
-      setEmailSent(true);
-      openEmailResetModal();
+      openSuccessModal();
     }
   }
 }

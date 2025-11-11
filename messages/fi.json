@@ -28,15 +28,15 @@
     "error": "Virhe",
     "logoutError": "Uloskirjautuminen epäonnistui palvelinvirheen takia."
   },
-  "Login": {
+  "LoginPage": {
     "title": "Kirjaudu sisään",
+    "noAccount": "Ei tunnuksia? <link>Rekisteröidy tästä!</link>"
+  },
+  "LoginForm": {
     "email": "Sähköposti",
     "password": "Salasana",
     "submit": "Kirjaudu",
     "forgot": "Unohtuiko salasana?",
-    "noAccount": "Ei tunnuksia? <link>Rekisteröidy tästä!</link>",
-    "error": "Virhe",
-    "loginError": "Sähköposti tai salasana on virheellinen.",
     "validate": {
       "email": "Virheellinen sähköpostiosoite",
       "password": "Virheellinen salasana"
@@ -44,8 +44,11 @@
     "loggedInTitle": "Olet kirjautunut sisään",
     "loggedInMessage": "Tervetuloa, {name}!"
   },
-  "Register": {
+  "RegisterPage": {
     "title": "Luo uusi käyttäjätunnus",
+    "alreadyHaveAccount": "Jos sinulla on jo käyttäjätunnus, <link>voit kirjautua sisään tästä.</link>"
+  },
+  "RegisterForm": {
     "readToS": "Lue palvelun käyttöehdot",
     "tosHeader": "Palvelun käyttöehdot",
     "tos": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In lobortis felis id ante fringilla, eu elementum nibh congue. Maecenas pharetra a augue a porta. Ut id laoreet orci, quis congue nibh. Vivamus id eros imperdiet, interdum ipsum nec, facilisis orci. Cras ac malesuada libero. Pellentesque a felis vel odio viverra ultrices elementum nec dolor. Nulla ac scelerisque dolor, tincidunt laoreet erat. Fusce tincidunt nibh sit amet pulvinar convallis. Suspendisse id risus vitae lectus hendrerit fermentum. Nullam quam erat, commodo in eleifend in, accumsan nec metus. Integer non arcu fringilla, cursus magna tincidunt, vestibulum massa. Aliquam laoreet erat felis, tempus tincidunt lorem rutrum sit amet. Ut fringilla nec sem et fermentum. Pellentesque non viverra mauris. Praesent feugiat eget tortor nec aliquam. Praesent turpis arcu, congue ac bibendum non, feugiat in nulla. Suspendisse convallis fermentum nisl, eu iaculis neque ornare porttitor. Nulla interdum, risus vel dignissim fermentum, lacus diam tincidunt sem, id viverra lacus massa dapibus libero. Quisque efficitur elit quis urna rhoncus consectetur. Ut ligula nisi, molestie eget gravida sit amet, bibendum at velit. In semper ultricies enim, quis vestibulum justo gravida quis. Nullam ligula mauris, tristique at sapien vitae, sollicitudin placerat odio. Nullam sit amet porttitor nisl. Interdum et malesuada fames ac ante ipsum primis in faucibus. Maecenas et pulvinar felis, ut hendrerit turpis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed quis dapibus odio. Aliquam libero est, volutpat id porta a, pharetra tempor justo. Aliquam sodales lacus ut sagittis sagittis. Fusce molestie nibh sagittis, euismod ipsum et, posuere justo. Vivamus fermentum ante venenatis quam scelerisque luctus. Ut nec nunc velit. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc ullamcorper tincidunt sem eu tempus. Nulla laoreet porta purus, eget bibendum nisl vestibulum eu. Aliquam vestibulum sem eu magna convallis fermentum. Etiam vel quam luctus, faucibus dolor nec, egestas turpis. Fusce efficitur a velit non tincidunt. Sed euismod risus scelerisque, auctor urna semper, aliquam libero. Sed gravida sed libero nec dictum. In convallis justo at sem malesuada interdum. Morbi tincidunt sollicitudin dictum. Etiam posuere fringilla mi, sit amet dictum sem scelerisque ac. Vestibulum eu porta nunc, vitae molestie ligula. Aliquam egestas finibus rutrum. Curabitur hendrerit fermentum ex consectetur mattis. Maecenas lobortis ipsum non interdum lobortis. Fusce non sem euismod, lobortis risus laoreet, porta enim. In facilisis lobortis odio vitae luctus. Nunc eget turpis a nunc egestas faucibus. Integer quis tellus sollicitudin, viverra nisi vitae, faucibus turpis. Nulla vulputate, ipsum eget dapibus ornare, quam risus interdum sapien, vestibulum commodo erat risus nec libero. Duis eu lorem at massa maximus egestas. In hac habitasse platea dictumst. Pellentesque mauris nulla, aliquet id odio id, rhoncus ultricies velit. Nunc dignissim, turpis ac mollis vulputate, nisi ex rhoncus ligula, eu rutrum libero dolor tempor quam. Phasellus consectetur velit in sollicitudin porttitor. Praesent in pellentesque enim. Mauris vitae metus congue, imperdiet ipsum ut, mollis mauris.",
@@ -57,7 +60,6 @@
     "password": "Salasana",
     "passwordAgain": "Salasana uudelleen",
     "submit": "Luo tunnus",
-    "alreadyHaveAccount": "Jos sinulla on jo käyttäjätunnus, <link>voit kirjautua sisään tästä.</link>",
     "validate": {
       "tos": "Sinun tulee hyväksyä palvelun käyttöehdot.",
       "required": "Tämä kenttä on pakollinen.",
@@ -67,7 +69,6 @@
     },
     "error": "Virhe",
     "checkUserNameError": "Käyttäjänimeä ei voitu tarkistaa palvelinvirheen takia.",
-    "signupError": "Käyttäjäunnusta ei voitu luoda palvelinvirheen takia.",
     "accountCreated": "Käyttäjätunnus luotu.",
     "checkYourEmail": "Tarkista sähköpostisi vahvistaaksesi tunnuksesi."
   },
@@ -76,26 +77,22 @@
     "email": "Sähköposti",
     "invalidEmail": "Virheellinen sähköposti",
     "submit": "Lähetä linkki",
-    "error": "Virhe",
-    "resetPasswordError": "Salasanaa ei voitu resetoida palvelinvirheen takia.",
     "emailSent": "Sähköposti lähetetty",
     "checkYourEmail": "Tarkista sähköpostisi resetoidaksesi salasanasi."
   },
-  "UpdatePassword": {
-    "title": "Päivitä salasana",
+  "UpdatePasswordPage": {
+    "title": "Päivitä salasana"
+  },
+  "UpdatePasswordForm": {
     "password": "Salasana",
     "passwordAgain": "Salasana uudelleen",
     "submit": "Päivitä",
-    "error": "Virhe",
-    "unavailableMessage": "Salasanan päivityspyyntöä ei voitu aloittaa. Pyyntö saattaa olla vanhentunut. Jos haluat resetoida salasanasi, <link>klikkaa tästä</link>!",
     "validate": {
       "password": "Salasanan tulee olla vähintään 8 merkkiä pitkä",
       "passwordAgain": "Salasanat eivät täsmää"
     },
-    "done": "Valmis!",
-    "passwordUpdated": "Salasanasi on päivitetty.",
-    "passwordShouldBeDifferentError": "Uusi salasana ei saa olla sama kuin vanha salasana.",
-    "serverError": "Salasanaa ei voitu päivittää palvelinvirheen takia."
+    "samePasswordMessage": "Uusi salasana ei saa olla sama kuin vanha salasana.",
+    "successMessage": "Salasanasi on päivitetty."
   },
   "WelcomePage": {
     "alertTitle": "Sähköposti vahvistettu",
@@ -110,9 +107,7 @@
     "email": "Sähköposti",
     "submit": "Lähetä",
     "successTitle": "Vahvistusviesti lähetetty.",
-    "successMessage": "Tarkista sähköpostisi vahvistaaksesi tunnuksesi.",
-    "errorTitle": "Virhe",
-    "errorMessage": "Pyyntöä ei voitu suorittaa."
+    "successMessage": "Tarkista sähköpostisi vahvistaaksesi tunnuksesi."
   },
   "ErrorPage": {
     "alertTitle": "Virhe",
@@ -552,5 +547,36 @@
     "received": "Vastaanotettu",
     "completed": "Toimitettu",
     "cancelled": "Peruttu"
+  },
+  "ErrorDetails": {
+    "details": "Yksityiskohdat",
+    "status": "Status",
+    "noStatus": "Ei virhestatusta",
+    "code": "Koodi",
+    "noCode": "Ei virhekoodia",
+    "message": "Kuvaus"
+  },
+  "ModalWithCloseButton": {
+    "label": "Sulje"
+  },
+  "useErrorTitle": {
+    "title": "Virhe"
+  },
+  "useSuccessTitle": {
+    "title": "Valmis!"
+  },
+  "useAuthErrorMessage": {
+    "message403": "Sinulla ei ole oikeuksia tähän toimintoon.",
+    "message422": "Pyyntöä ei voitu suorittaa.",
+    "message429": "Liian monta pyyntöä.",
+    "message500": "Palvelin vastasi virheellä.",
+    "message501": "Tämä ominaisuus ei ole käytössä.",
+    "messageDefault": "Tapahtui odottamaton virhe."
+  },
+  "useRegisterErrorModal": {
+    "userExistsMessage": "Tälle sähköpostiosoitteelle on jo luotu käyttäjätunnus."
+  },
+  "useLoginErrorModal": {
+    "invalidCredentialsMessage": "Sähköposti tai salasana on virheellinen."
   }
 }

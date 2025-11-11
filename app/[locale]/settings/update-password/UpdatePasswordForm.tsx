@@ -1,15 +1,12 @@
 'use client';
 
+import { useProgressBar } from '@/app/components/ProgressBar';
+import { useAuthErrorModal, useSuccessModal } from '@/app/hooks/feedback';
+import { createClient } from '@/lib/supabase/client';
 import { Button, Fieldset, PasswordInput, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useDisclosure } from '@mantine/hooks';
-import { showNotification } from '@mantine/notifications';
-import { IconCheck, IconExclamationMark } from '@tabler/icons-react';
-import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { ErrorModal } from '@/app/components/ErrorModal';
-import { ProgressBarLink, useProgressBar } from '@/app/components/ProgressBar';
 
 interface FormValues {
   password: string;
@@ -17,7 +14,13 @@ interface FormValues {
 }
 
 export function UpdatePasswordForm() {
-  const t = useTranslations('UpdatePassword');
+  const t = useTranslations('UpdatePasswordForm');
+  const progress = useProgressBar();
+  const [updateSuccessful, setUpdateSuccessful] = useState<boolean>(false);
+  const supabase = createClient();
+  const { showErrorModalWithDetails } = useAuthErrorModal();
+  const { showSuccessModal } = useSuccessModal();
+
   const form = useForm<FormValues>({
     initialValues: {
       password: '',
@@ -30,49 +33,32 @@ export function UpdatePasswordForm() {
     },
     validateInputOnBlur: true,
   });
-  const progress = useProgressBar();
-  const [errorModalOpened, { open: openErrorModal, close: closeErrorModal }] =
-    useDisclosure(false);
-  const [updateSuccessful, setUpdateSuccessful] = useState<boolean>(false);
-  const supabase = createClient();
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <Fieldset
-          pos="relative"
-          variant="unstyled"
-          disabled={progress.state === 'in-progress' || updateSuccessful}>
-          <Stack>
-            <PasswordInput
-              name="password"
-              label={t('password')}
-              placeholder={t('password')}
-              {...form.getInputProps('password')}
-            />
-            <PasswordInput
-              name="passwordAgain"
-              label={t('passwordAgain')}
-              placeholder={t('passwordAgain')}
-              {...form.getInputProps('passwordAgain')}
-            />
-            <Button type="submit" disabled={!form.isValid()}>
-              {t('submit')}
-            </Button>
-          </Stack>
-        </Fieldset>
-      </form>
-      <ErrorModal
-        opened={errorModalOpened}
-        onClose={closeErrorModal}
-        title={t('error')}>
-        {t.rich('unavailableMessage', {
-          link: (text) => (
-            <ProgressBarLink href="/reset-password">{text}</ProgressBarLink>
-          ),
-        })}
-      </ErrorModal>
-    </>
+    <form onSubmit={handleSubmit}>
+      <Fieldset
+        pos="relative"
+        variant="unstyled"
+        disabled={progress.state === 'in-progress' || updateSuccessful}>
+        <Stack>
+          <PasswordInput
+            name="password"
+            label={t('password')}
+            placeholder={t('password')}
+            {...form.getInputProps('password')}
+          />
+          <PasswordInput
+            name="passwordAgain"
+            label={t('passwordAgain')}
+            placeholder={t('passwordAgain')}
+            {...form.getInputProps('passwordAgain')}
+          />
+          <Button type="submit" disabled={!form.isValid()}>
+            {t('submit')}
+          </Button>
+        </Stack>
+      </Fieldset>
+    </form>
   );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -89,30 +75,14 @@ export function UpdatePasswordForm() {
     progress.done();
 
     if (error) {
-      if (error.message === 'Auth session missing!') {
-        openErrorModal();
+      if (error.code === 'same_password') {
+        form.setFieldError('password', t('samePasswordMessage'));
       } else {
-        const message =
-          error.message ===
-          'New password should be different from the old password.'
-            ? t('passwordShouldBeDifferentError')
-            : t('serverError');
-        showNotification({
-          title: t('error'),
-          message: message,
-          icon: <IconExclamationMark stroke={1.5} />,
-          color: 'red',
-        });
-        form.setFieldError('password', message);
+        showErrorModalWithDetails(error);
       }
     } else {
       setUpdateSuccessful(true);
-      showNotification({
-        title: t('done'),
-        message: t('passwordUpdated'),
-        icon: <IconCheck stroke={1.5} />,
-        color: 'green',
-      });
+      showSuccessModal({ content: t('successMessage') });
     }
   }
 }

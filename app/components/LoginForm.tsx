@@ -1,5 +1,8 @@
 'use client';
 
+import { ProgressBarLink, useProgressBar } from '@/app/components/ProgressBar';
+import { useRouter } from '@/i18n/routing';
+import { createClient } from '@/lib/supabase/client';
 import {
   Button,
   Fieldset,
@@ -7,17 +10,13 @@ import {
   Stack,
   TextInput,
 } from '@mantine/core';
-import { IconCheck, IconLogin2 } from '@tabler/icons-react';
-import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
-import { useEmailStore } from '../store';
-import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
-import { createClient } from '@/lib/supabase/client';
-import { startTransition } from 'react';
-import { ErrorModal } from '@/app/components/ErrorModal';
-import { ProgressBarLink, useProgressBar } from '@/app/components/ProgressBar';
 import { showNotification } from '@mantine/notifications';
+import { IconCheck, IconLogin2 } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
+import { startTransition } from 'react';
+import { useLoginErrorModal } from '../hooks/feedback';
+import { useEmailStore } from '../store';
 
 interface FormValues {
   email: string;
@@ -25,9 +24,8 @@ interface FormValues {
 }
 
 export function LoginForm() {
-  const t = useTranslations('Login');
-  const [errorModalOpened, { open: openErrorModal, close: closeErrorModal }] =
-    useDisclosure(false);
+  const t = useTranslations('LoginForm');
+  const { showLoginErrorModal } = useLoginErrorModal();
   const router = useRouter();
   const progress = useProgressBar();
   const email = useEmailStore((store) => store.email);
@@ -86,12 +84,6 @@ export function LoginForm() {
           </Stack>
         </Fieldset>
       </form>
-      <ErrorModal
-        opened={errorModalOpened}
-        onClose={closeErrorModal}
-        title={t('error')}>
-        {t('loginError')}
-      </ErrorModal>
     </>
   );
 
@@ -109,7 +101,7 @@ export function LoginForm() {
 
       if (error) {
         progress.done();
-        openErrorModal();
+        showLoginErrorModal(error);
         return;
       }
 

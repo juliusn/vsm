@@ -1,11 +1,13 @@
 'use client';
 
+import { useProgressBar } from '@/app/components/ProgressBar';
+import { useRegisterErrorModal, useSuccessModal } from '@/app/hooks/feedback';
+import { createClient } from '@/lib/supabase/client';
 import {
   Anchor,
   Button,
   Checkbox,
   Fieldset,
-  Group,
   Modal,
   PasswordInput,
   Stack,
@@ -13,12 +15,9 @@ import {
 } from '@mantine/core';
 import { isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
-import { IconCheck, IconSquareCheck, IconUserPlus } from '@tabler/icons-react';
-import { useState } from 'react';
+import { IconSquareCheck, IconUserPlus } from '@tabler/icons-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { createClient } from '@/lib/supabase/client';
-import { ErrorModal } from '@/app/components/ErrorModal';
-import { useProgressBar } from '@/app/components/ProgressBar';
+import { useState } from 'react';
 
 interface FormValues {
   firstName: string;
@@ -30,18 +29,14 @@ interface FormValues {
 }
 
 export function RegisterForm() {
-  const t = useTranslations('Register');
+  const t = useTranslations('RegisterForm');
   const supabase = createClient();
   const locale = useLocale();
   const [tosComplete, setTosComplete] = useState<boolean>(false);
   const [formDisabled, setFormDisabled] = useState(false);
-  const [
-    accountCreatedModalOpened,
-    { open: openAccountCreatedModal, close: closeAccountCreatedModal },
-  ] = useDisclosure(false);
+  const { showRegisterErrorModal } = useRegisterErrorModal();
+  const { showSuccessModal } = useSuccessModal();
   const [tosModalOpened, { open: openTosModal, close: closeTosModal }] =
-    useDisclosure(false);
-  const [errorModalOpened, { open: openErrorModal, close: closeErrorModal }] =
     useDisclosure(false);
   const progress = useProgressBar();
 
@@ -72,7 +67,7 @@ export function RegisterForm() {
     const { firstName, lastName, email, password } = form.values;
     const url = new URL(`/${locale}/confirm`, window.location.origin);
 
-    const response = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -84,10 +79,10 @@ export function RegisterForm() {
       },
     });
 
-    if (response.error) {
-      openErrorModal();
+    if (error) {
+      showRegisterErrorModal(error);
     } else {
-      openAccountCreatedModal();
+      showSuccessModal({ content: t('accountCreated') });
       form.reset();
       setFormDisabled(true);
     }
@@ -174,23 +169,6 @@ export function RegisterForm() {
           </Button>
         </Stack>
       </Modal>
-      <Modal
-        opened={accountCreatedModalOpened}
-        onClose={closeAccountCreatedModal}
-        title={
-          <Group c="green">
-            <IconCheck stroke={1.5} />
-            {t('accountCreated')}
-          </Group>
-        }>
-        {t('checkYourEmail')}
-      </Modal>
-      <ErrorModal
-        opened={errorModalOpened}
-        onClose={closeErrorModal}
-        title={t('error')}>
-        {t('signupError')}
-      </ErrorModal>
     </>
   );
 }

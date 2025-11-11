@@ -7,7 +7,7 @@ export default async function UpdatePasswordPage() {
 }
 
 function UpdatePasswordContent() {
-  const t = useTranslations('UpdatePassword');
+  const t = useTranslations('UpdatePasswordPage');
 
   return (
     <>

@@ -4,7 +4,7 @@ import { Container, Stack, Text, Title } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
-  const t = useTranslations('Login');
+  const t = useTranslations('LoginPage');
 
   return (
     <Container size="20rem">
