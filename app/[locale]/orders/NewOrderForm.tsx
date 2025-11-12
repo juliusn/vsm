@@ -64,7 +64,7 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
 
   const receiverItems: ComboboxItem[] = receiverCounterparties.map(
     (counterparty) => ({
-      label: counterparty.name,
+      label: counterparty.dictionary[locale].title,
       value: counterparty.business_id,
     })
   );
