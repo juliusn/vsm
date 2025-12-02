@@ -310,9 +310,9 @@
     "title": "Done!",
     "message": "Order has been saved."
   },
-  "OrderCancelledNotification": {
+  "OrderCanceledNotification": {
     "title": "Done!",
-    "message": "Order has been cancelled."
+    "message": "Order has been canceled."
   },
   "PortAreaCodePage": {
     "title": "Berths",
@@ -543,7 +543,7 @@
     "submitted": "Submitted",
     "received": "Received",
     "completed": "Completed",
-    "cancelled": "Cancelled"
+    "canceled": "Canceled"
   },
   "ErrorDetails": {
     "details": "Details",

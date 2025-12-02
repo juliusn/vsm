@@ -5,7 +5,7 @@ import { EditOrderFormProvider } from '@/app/context/FormContext';
 import { useOrders } from '@/app/context/OrderContext';
 import { useVessels } from '@/app/context/VesselContext';
 import {
-  useOrderCancelledNotification,
+  useOrderCanceledNotification,
   useOrderSavedNotification,
   useOrderSentNotification,
   usePostgresErrorNotification,
@@ -50,7 +50,7 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
   const vessels = useVessels();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSavedNotification = useOrderSavedNotification();
-  const getOrderCanelledNotification = useOrderCancelledNotification();
+  const getOrderCanelledNotification = useOrderCanceledNotification();
   const getOrderSentNotification = useOrderSentNotification();
   const existingServices = order.common_services.map((service) => service.id);
   const [locode, setLocode] = useState(order.berthing.locode || '');
@@ -337,7 +337,7 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
     resultCallback(orderData);
 
     showNotification(
-      order.status !== 'cancelled'
+      order.status !== 'canceled'
         ? getOrderSavedNotification()
         : getOrderSentNotification()
     );
@@ -348,7 +348,7 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
 
     const { data, error, status } = await supabase
       .from('orders')
-      .update({ status: 'cancelled' })
+      .update({ status: 'canceled' })
       .eq('id', order.id)
       .select(ordersSelector)
       .single();
@@ -416,7 +416,7 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
         locode={locode}
         portArea={portArea}
         additionalContent={
-          order.status !== 'cancelled' ? cancelOrderContent : null
+          order.status !== 'canceled' ? cancelOrderContent : null
         }
         status={order.status}
         onClose={onClose}

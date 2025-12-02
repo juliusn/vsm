@@ -310,7 +310,7 @@
     "title": "Valmis!",
     "message": "Tilaus on tallennettu."
   },
-  "OrderCancelledNotification": {
+  "OrderCanceledNotification": {
     "title": "Valmis!",
     "message": "Tilaus on peruttu."
   },
@@ -546,7 +546,7 @@
     "submitted": "Lähetetty",
     "received": "Vastaanotettu",
     "completed": "Toimitettu",
-    "cancelled": "Peruttu"
+    "canceled": "Peruttu"
   },
   "ErrorDetails": {
     "details": "Yksityiskohdat",

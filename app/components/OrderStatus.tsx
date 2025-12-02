@@ -19,8 +19,8 @@ export function OrderStatus({
       return <ExpandableBadge color="blue">{t('received')}</ExpandableBadge>;
     case 'completed':
       return <ExpandableBadge color="green">{t('completed')}</ExpandableBadge>;
-    case 'cancelled':
-      return <ExpandableBadge color="gray">{t('cancelled')}</ExpandableBadge>;
+    case 'canceled':
+      return <ExpandableBadge color="gray">{t('canceled')}</ExpandableBadge>;
   }
 }
 

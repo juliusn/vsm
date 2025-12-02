@@ -96,8 +96,8 @@ export const useOrderSavedNotification = () => {
   );
 };
 
-export const useOrderCancelledNotification = () => {
-  const t = useTranslations('OrderCancelledNotification');
+export const useOrderCanceledNotification = () => {
+  const t = useTranslations('OrderCanceledNotification');
   return useCallback(
     (): NotificationData => ({
       title: t('title'),

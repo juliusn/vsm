@@ -78,10 +78,10 @@ export function EditOrderForm({
             resetButtonClickHandler={form.reset}
             resetButtonDisabled={!form.isDirty()}
             submitButtonDisabled={
-              (status !== 'cancelled' && !form.isDirty()) || !form.isValid()
+              (status !== 'canceled' && !form.isDirty()) || !form.isValid()
             }
             submitButtonLoading={loading}
-            submitButtonLabel={status === 'cancelled' ? t('send') : undefined}
+            submitButtonLabel={status === 'canceled' ? t('send') : undefined}
           />
         </Group>
       </Stack>
