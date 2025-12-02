@@ -95,8 +95,8 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
   );
 
   const initialValues: FormValues = {
-    sender: order.sender.business_id,
-    receiver: order.receiver.business_id,
+    sender_counterparty_business_id: order.sender.business_id,
+    receiver_counterparty_business_id: order.receiver.business_id,
     vesselName: vesselMatch?.imo.toString() || '',
     imo: order.berthing.vessel_imo || '',
     locode: order.berthing.locode || '',
@@ -206,8 +206,8 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
   });
 
   const handleSubmit = async ({
-    sender,
-    receiver,
+    sender_counterparty_business_id: sender,
+    receiver_counterparty_business_id: receiver,
     vesselName,
     imo,
     locode,

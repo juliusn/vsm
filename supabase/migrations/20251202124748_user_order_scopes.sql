@@ -4,8 +4,11 @@ drop extension if exists "pg_net";
 
 drop extension if exists "pg_stat_statements";
 
+<<<<<<< HEAD
 drop extension if exists "pgcrypto";
 
+=======
+>>>>>>> 3921833 (Database changes)
 drop extension if exists "pgjwt";
 
 drop extension if exists "uuid-ossp";

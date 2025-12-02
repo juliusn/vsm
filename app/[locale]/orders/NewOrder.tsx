@@ -33,10 +33,15 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
 
   const form = useForm<OrderFormValues>({
     mode: 'uncontrolled',
-    initialValues: { sender: '', receiver: '', berthing: '', services: [] },
+    initialValues: {
+      sender_counterparty_business_id: '',
+      receiver_counterparty_business_id: '',
+      berthing: '',
+      services: [],
+    },
     validate: {
-      sender: isNotEmpty(t('selectClientError')),
-      receiver: isNotEmpty(t('selectRecipientError')),
+      sender_counterparty_business_id: isNotEmpty(t('selectClientError')),
+      receiver_counterparty_business_id: isNotEmpty(t('selectRecipientError')),
       berthing: isNotEmpty(t('selectBerthingError')),
       services: (services) =>
         services.length ? null : t('selectServicesError'),
@@ -44,8 +49,8 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
   });
 
   const handleSubmit = async ({
-    sender,
-    receiver,
+    sender_counterparty_business_id,
+    receiver_counterparty_business_id,
     berthing,
     services,
   }: OrderFormValues) => {
@@ -57,7 +62,12 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
       status,
     } = await supabase
       .from('orders')
-      .insert({ sender, receiver, berthing, status: 'submitted' })
+      .insert({
+        sender_counterparty_business_id,
+        receiver_counterparty_business_id,
+        berthing,
+        status: 'submitted',
+      })
       .select('id')
       .single();
 

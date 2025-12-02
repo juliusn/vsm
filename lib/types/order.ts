@@ -11,8 +11,8 @@ export type OrderData = Omit<
 };
 
 export type OrderFormValues = {
-  sender: string;
-  receiver: string;
+  sender_counterparty_business_id: string;
+  receiver_counterparty_business_id: string;
   berthing: string;
   services: string[];
 };
