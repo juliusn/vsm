@@ -21,7 +21,7 @@
     "account": "Account",
     "settings": "Settings",
     "profile": "Profile",
-    "roles": "Roles",
+    "permissions": "Permissions",
     "logout": "Log Out",
     "logoutTitle": "Bye!",
     "logoutMessage": "Logout successful.",
@@ -575,5 +575,22 @@
   },
   "useLoginErrorModal": {
     "invalidCredentialsMessage": "Invalid email or password."
+  },
+  "PermissionsLayout": {
+    "title": "User permissions"
+  },
+  "PermissionsPage": {
+    "orderHandling": "Order handling"
+  },
+  "PermissionsTable": {
+    "sender": "Sender",
+    "receiver": "Receiver",
+    "permission": "Permission",
+    "readOrders": "Can read orders",
+    "createOrders": "Can create orders",
+    "deleteOrders": "Can delete orders",
+    "markOrdersAsReceived": "Can mark orders as received",
+    "markOrdersAsCompleted": "Can mark orders as completed",
+    "markOrdersAsCanceled": "Can mark orders as canceled"
   }
 }

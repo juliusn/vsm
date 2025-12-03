@@ -63,7 +63,7 @@ export function UserMenu() {
       },
     },
     {
-      label: t('roles'),
+      label: t('permissions'),
       icon: (
         <IconUserCheck
           style={{ width: rem(16), height: rem(16) }}
@@ -73,7 +73,7 @@ export function UserMenu() {
       handler: () => {
         progress.start();
         startTransition(() => {
-          router.push('/roles');
+          router.push('/permissions');
           progress.done();
         });
       },

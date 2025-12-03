@@ -21,7 +21,7 @@
     "account": "Tili",
     "settings": "Asetukset",
     "profile": "Profiili",
-    "roles": "Roolit",
+    "permissions": "Käyttäjäoikeudet",
     "logout": "Kirjaudu Ulos",
     "logoutTitle": "Näkemiin!",
     "logoutMessage": "Uloskirjautuminen onnistui.",
@@ -578,5 +578,22 @@
   },
   "useLoginErrorModal": {
     "invalidCredentialsMessage": "Sähköposti tai salasana on virheellinen."
+  },
+  "PermissionsLayout": {
+    "title": "Käyttäjäoikeudet"
+  },
+  "PermissionsPage": {
+    "orderHandling": "Tilausten käsittely"
+  },
+  "PermissionsTable": {
+    "sender": "Lähettäjä",
+    "receiver": "Vastaanottaja",
+    "permission": "Käyttäjäoikeus",
+    "readOrders": "Voi lukea tilauksia",
+    "createOrders": "Voi luoda tilauksia",
+    "deleteOrders": "Voi poistaa tilauksia",
+    "markOrdersAsReceived": "Voi merkitä tilauksia vastaanotetuksi",
+    "markOrdersAsCompleted": "Voi merkitä tilauksia toimitetuksi",
+    "markOrdersAsCanceled": "Voi merkitä tilauksia perutuksi"
   }
 }

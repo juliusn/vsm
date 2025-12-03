@@ -5,6 +5,7 @@ import {
   commonServicesSelector,
   counterpartiesSelector,
   ordersSelector,
+  orderPermissionsSelector,
 } from '../querySelectors';
 import { Database } from './database.types';
 
@@ -37,8 +38,15 @@ const _berthServicesQuery = supabase
   .select(berthServicesSelector)
   .single();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _orderPermissionsQuery = supabase
+  .from('order_permissions')
+  .select(orderPermissionsSelector)
+  .single();
+
 export type Berthing = QueryData<typeof _berthingsQuery>;
 export type Counterparty = QueryData<typeof _counterpartiesQuery>;
 export type Order = QueryData<typeof _ordersQuery>;
 export type CommonService = QueryData<typeof _commonServicesQuery>;
 export type BerthService = QueryData<typeof _berthServicesQuery>;
+export type OrderPermission = QueryData<typeof _orderPermissionsQuery>;

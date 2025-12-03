@@ -332,6 +332,45 @@ export type Database = {
         }
         Relationships: []
       }
+      order_permissions: {
+        Row: {
+          id: string
+          order_permission: Database["public"]["Enums"]["order_permission"]
+          receiver_counterparty_business_id: string
+          sender_counterparty_business_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          order_permission: Database["public"]["Enums"]["order_permission"]
+          receiver_counterparty_business_id: string
+          sender_counterparty_business_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          order_permission?: Database["public"]["Enums"]["order_permission"]
+          receiver_counterparty_business_id?: string
+          sender_counterparty_business_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_permissions_receiver_counterparty_business_id_fkey"
+            columns: ["receiver_counterparty_business_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["business_id"]
+          },
+          {
+            foreignKeyName: "order_permissions_sender_counterparty_business_id_fkey"
+            columns: ["sender_counterparty_business_id"]
+            isOneToOne: false
+            referencedRelation: "counterparties"
+            referencedColumns: ["business_id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           berthing: string
@@ -498,45 +537,6 @@ export type Database = {
           srtext?: string | null
         }
         Relationships: []
-      }
-      user_order_scopes: {
-        Row: {
-          app_permission: Database["public"]["Enums"]["app_permission"]
-          id: string
-          receiver_counterparty_business_id: string
-          sender_counterparty_business_id: string
-          user_id: string
-        }
-        Insert: {
-          app_permission: Database["public"]["Enums"]["app_permission"]
-          id?: string
-          receiver_counterparty_business_id: string
-          sender_counterparty_business_id: string
-          user_id: string
-        }
-        Update: {
-          app_permission?: Database["public"]["Enums"]["app_permission"]
-          id?: string
-          receiver_counterparty_business_id?: string
-          sender_counterparty_business_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_order_scopes_receiver_counterparty_id_fkey"
-            columns: ["receiver_counterparty_business_id"]
-            isOneToOne: false
-            referencedRelation: "counterparties"
-            referencedColumns: ["business_id"]
-          },
-          {
-            foreignKeyName: "user_order_scopes_sender_counterparty_id_fkey"
-            columns: ["sender_counterparty_business_id"]
-            isOneToOne: false
-            referencedRelation: "counterparties"
-            referencedColumns: ["business_id"]
-          },
-        ]
       }
     }
     Views: {
@@ -714,7 +714,7 @@ export type Database = {
       authorize_orders: {
         Args: {
           receiver_business_id: string
-          requested_permission: Database["public"]["Enums"]["app_permission"]
+          requested_permission: Database["public"]["Enums"]["order_permission"]
           sender_business_id: string
         }
         Returns: boolean
@@ -1494,15 +1494,15 @@ export type Database = {
       }
     }
     Enums: {
-      app_permission:
-        | "orders.read"
-        | "orders.create"
-        | "orders.delete"
-        | "orders.mark_received"
-        | "orders.mark_completed"
-        | "orders.mark_canceled"
       approval_status: "pending" | "approved" | "rejected"
       locale: "en" | "fi"
+      order_permission:
+        | "read"
+        | "create"
+        | "delete"
+        | "mark_received"
+        | "mark_completed"
+        | "mark_canceled"
       order_status: "submitted" | "received" | "completed" | "canceled"
       port_event: "arrival" | "departure" | "shifting"
     }
@@ -1643,16 +1643,16 @@ export const Constants = {
   },
   public: {
     Enums: {
-      app_permission: [
-        "orders.read",
-        "orders.create",
-        "orders.delete",
-        "orders.mark_received",
-        "orders.mark_completed",
-        "orders.mark_canceled",
-      ],
       approval_status: ["pending", "approved", "rejected"],
       locale: ["en", "fi"],
+      order_permission: [
+        "read",
+        "create",
+        "delete",
+        "mark_received",
+        "mark_completed",
+        "mark_canceled",
+      ],
       order_status: ["submitted", "received", "completed", "canceled"],
       port_event: ["arrival", "departure", "shifting"],
     },

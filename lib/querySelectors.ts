@@ -82,3 +82,25 @@ berth_code,
 enabled,
 translations:berth_service_translations!inner(locale, title, abbreviation)
 `;
+
+export const orderPermissionsSelector = `
+id,
+user_id,
+order_permission,
+sender:counterparties!order_permissions_sender_counterparty_business_id_fkey (
+  business_id,
+  name,
+  translations:counterparty_translations!inner(
+    locale,
+    title
+  )
+),
+receiver:counterparties!order_permissions_receiver_counterparty_business_id_fkey (
+  business_id,
+  name,
+  translations:counterparty_translations!inner(
+    locale,
+    title
+  )
+)
+`;
