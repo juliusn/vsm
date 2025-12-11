@@ -719,6 +719,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       delete_user: { Args: never; Returns: undefined }
       disablelongtransactions: { Args: never; Returns: string }
       dropgeometrycolumn:
