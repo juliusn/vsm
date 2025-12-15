@@ -200,7 +200,7 @@ export function NewBerthingForm({
             .insert({
               berthing: berthingsResponse.data.id,
               type: 'departure',
-              estimated_date: dayjs(etaDate).format('YYYY-MM-DD'),
+              estimated_date: dayjs(etdDate).format('YYYY-MM-DD'),
               estimated_time: etdTime || null,
             })
             .select()
