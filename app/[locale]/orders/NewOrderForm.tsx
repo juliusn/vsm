@@ -159,7 +159,7 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
               label={t('sender')}
               placeholder={t('select')}
               data={senderItems}
-              {...form.getInputProps('sender')}
+              {...form.getInputProps('sender_counterparty_business_id')}
               key={form.key('sender')}
             />
             <Select
@@ -167,7 +167,7 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
               label={t('receiver')}
               placeholder={t('select')}
               data={receiverItems}
-              {...form.getInputProps('receiver')}
+              {...form.getInputProps('receiver_counterparty_business_id')}
               key={form.key('receiver')}
             />
           </Group>
