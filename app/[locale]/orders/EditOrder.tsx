@@ -5,7 +5,6 @@ import { EditOrderFormProvider } from '@/app/context/FormContext';
 import { useOrders } from '@/app/context/OrderContext';
 import { useVessels } from '@/app/context/VesselContext';
 import {
-  useOrderCanceledNotification,
   useOrderSavedNotification,
   useOrderSentNotification,
   usePostgresErrorNotification,
@@ -22,9 +21,7 @@ import {
 } from '@/lib/types/berthing';
 import { OrderData, OrderFormValues, OrderRowData } from '@/lib/types/order';
 import { Vessel } from '@/lib/types/vessel';
-import { Button, Group, Modal, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import equal from 'fast-deep-equal';
@@ -44,13 +41,11 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
   const t = useTranslations('EditOrder');
   const supabase = createClient();
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [cancelLoading, setCancelLoading] = useState(false);
   const { dispatchOrders } = useOrders();
   const { dispatchBerthings } = useBerthings();
   const vessels = useVessels();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSavedNotification = useOrderSavedNotification();
-  const getOrderCanelledNotification = useOrderCanceledNotification();
   const getOrderSentNotification = useOrderSentNotification();
   const existingServices = order.common_services.map((service) => service.id);
   const [locode, setLocode] = useState(order.berthing.locode || '');
@@ -343,71 +338,6 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
     );
   };
 
-  const handleCancel = async () => {
-    setCancelLoading(true);
-
-    const { data, error, status } = await supabase
-      .from('orders')
-      .update({ status: 'canceled' })
-      .eq('id', order.id)
-      .select(ordersSelector)
-      .single();
-
-    setCancelLoading(false);
-
-    if (error) {
-      showNotification(getErrorNotification(status));
-      closeCancelModal();
-      return;
-    }
-
-    const orderData = normalizeOrder(data);
-
-    if (!orderData) {
-      showNotification(getErrorNotification(400));
-      closeCancelModal();
-      return;
-    }
-
-    dispatchOrders({ type: 'changed', item: orderData });
-    showNotification(getOrderCanelledNotification());
-    closeCancelModal();
-    onClose();
-  };
-
-  const [
-    cancelModalOpened,
-    { open: openCancelModal, close: closeCancelModal },
-  ] = useDisclosure();
-
-  const cancelOrderContent = (
-    <>
-      <Modal
-        title={t('cancelModalTitle')}
-        opened={cancelModalOpened}
-        onClose={closeCancelModal}>
-        <Stack>
-          {t('cancelModalMessage')}
-          <Group grow>
-            <Button variant="outline" onClick={closeCancelModal}>
-              {t('closeButtonLabel')}
-            </Button>
-            <Button color="red" onClick={handleCancel}>
-              {t('confirmButtonLabel')}
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
-      <Button
-        variant="outline"
-        color="red"
-        onClick={openCancelModal}
-        loading={cancelLoading}>
-        {t('cancelButtonLabel')}
-      </Button>
-    </>
-  );
-
   return (
     <EditOrderFormProvider value={form}>
       <EditOrderForm
@@ -415,9 +345,6 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
         imoRef={imoRef}
         locode={locode}
         portArea={portArea}
-        additionalContent={
-          order.status !== 'canceled' ? cancelOrderContent : null
-        }
         status={order.status}
         onClose={onClose}
         onSubmit={form.onSubmit(handleSubmit)}

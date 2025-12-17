@@ -310,10 +310,6 @@
     "title": "Done!",
     "message": "Order has been saved."
   },
-  "OrderCanceledNotification": {
-    "title": "Done!",
-    "message": "Order has been canceled."
-  },
   "PortAreaCodePage": {
     "title": "Berths",
     "caption": "Select berths that you want to include in service management.",
@@ -532,14 +528,9 @@
   "EditOrder": {
     "editOrder": "Edit order",
     "selectBerthingError": "Select berthing to which you want to add services.",
-    "selectServicesError": "Selet services you want to add to the berthing.",
-    "cancelButtonLabel": "Cancel order",
-    "cancelModalTitle": "Confirm order cancellation",
-    "cancelModalMessage": "Are you sure you want to cancel this order?",
-    "closeButtonLabel": "No",
-    "confirmButtonLabel": "Yes"
+    "selectServicesError": "Selet services you want to add to the berthing."
   },
-  "OrderStatus": {
+  "OrderStatusSelect": {
     "submitted": "Submitted",
     "received": "Received",
     "completed": "Completed",

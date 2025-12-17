@@ -16,7 +16,6 @@ interface Props {
   imoRef: React.RefObject<HTMLInputElement | null>;
   locode: string;
   portArea: string;
-  additionalContent: React.ReactNode;
   status: Tables<'orders'>['status'];
   onClose(): void;
   onSubmit: FormEventHandler<HTMLFormElement>;
@@ -28,7 +27,6 @@ export function EditOrderForm({
   imoRef,
   locode,
   portArea,
-  additionalContent,
   status,
   onClose,
   onSubmit,
@@ -71,7 +69,6 @@ export function EditOrderForm({
             </Stack>
           </Fieldset>
         </Checkbox.Group>
-        {additionalContent}
         <Group grow>
           <FormButtons
             closeButtonClickHandler={onClose}

@@ -1,6 +1,5 @@
 'use client';
 
-import { OrderStatus } from '@/app/components/OrderStatus';
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { useOrders } from '@/app/context/OrderContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
@@ -12,6 +11,7 @@ import { DataTableColumn } from 'mantine-datatable';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { EditOrder } from './EditOrder';
+import OrderStatusSelect from './OrderStatusSelect';
 
 export function OrderTable() {
   const t = useTranslations('OrderTable');
@@ -111,7 +111,7 @@ export function OrderTable() {
       accessor: 'status',
       title: t('status'),
       noWrap: true,
-      render: (orderRow) => <OrderStatus status={orderRow.status} />,
+      render: (orderRow) => <OrderStatusSelect orderRow={orderRow} />,
     },
     {
       accessor: 'edit',

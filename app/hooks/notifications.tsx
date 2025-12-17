@@ -95,16 +95,3 @@ export const useOrderSavedNotification = () => {
     [t]
   );
 };
-
-export const useOrderCanceledNotification = () => {
-  const t = useTranslations('OrderCanceledNotification');
-  return useCallback(
-    (): NotificationData => ({
-      title: t('title'),
-      message: t('message'),
-      icon: <IconCheck stroke={1.5} />,
-      color: 'green',
-    }),
-    [t]
-  );
-};
