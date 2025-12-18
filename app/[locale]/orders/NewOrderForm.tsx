@@ -1,5 +1,7 @@
 'use client';
 
+import { EditBerthingForm } from '@/app/components/BerthingForms/EditBerthingForm';
+import { NewBerthingForm } from '@/app/components/BerthingForms/NewBerthingForm';
 import { BerthingPreview } from '@/app/components/BerthingPreview';
 import { FormButtons } from '@/app/components/FormButtons';
 import { useBerthings } from '@/app/context/BerthingContext';
@@ -27,9 +29,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconAnchor, IconChecklist, IconEdit } from '@tabler/icons-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { FormEventHandler, useState } from 'react';
-
-import { EditBerthingForm } from '@/app/components/BerthingForms/EditBerthingForm';
-import { NewBerthingForm } from '@/app/components/BerthingForms/NewBerthingForm';
 import { SelectBerthingTable } from './SelectBerthingTable';
 
 interface Props {
@@ -49,11 +48,21 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
   const [berthingId, setBerthingId] = useState(initialBerthingId);
   const berthing = berthings.find(({ id }) => id === berthingId);
 
-  const [senderCounterparties, setSenderCounterparties] =
-    useState(counterParties);
+  const [senderCounterparties, setSenderCounterparties] = useState(
+    counterParties.filter(
+      (counterparty) =>
+        counterparty.business_id !==
+        form.getInitialValues().receiver_counterparty_business_id
+    )
+  );
 
-  const [receiverCounterparties, setReceiverCounterparties] =
-    useState(counterParties);
+  const [receiverCounterparties, setReceiverCounterparties] = useState(
+    counterParties.filter(
+      (counterparty) =>
+        counterparty.business_id !==
+        form.getInitialValues().sender_counterparty_business_id
+    )
+  );
 
   const senderItems: ComboboxItem[] = senderCounterparties.map(
     (counterparty) => ({
@@ -69,15 +78,19 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
     })
   );
 
-  form.watch('sender', ({ value }) => {
+  form.watch('sender_counterparty_business_id', ({ value }) => {
     setReceiverCounterparties(
-      counterParties.filter((receiver) => receiver.business_id !== value)
+      counterParties.filter(
+        (counterparty) => counterparty.business_id !== value
+      )
     );
   });
 
-  form.watch('receiver', ({ value }) => {
+  form.watch('receiver_counterparty_business_id', ({ value }) => {
     setSenderCounterparties(
-      counterParties.filter((sender) => sender.business_id !== value)
+      counterParties.filter(
+        (counterparty) => counterparty.business_id !== value
+      )
     );
   });
 
@@ -125,6 +138,7 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
           }}
         />
       </Modal>
+
       <Modal
         opened={newBerthingOpened}
         onClose={closeNewBerthing}
@@ -139,6 +153,7 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
           }}
         />
       </Modal>
+
       <Modal
         opened={editBerthingOpened}
         onClose={closeEditBerthing}
@@ -151,6 +166,7 @@ export function NewOrderForm({ onClose, onSubmit, loading }: Props) {
           />
         )}
       </Modal>
+
       <form onSubmit={onSubmit}>
         <Stack>
           <Group grow align="start">

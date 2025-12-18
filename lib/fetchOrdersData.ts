@@ -4,6 +4,7 @@ import {
   berthServicesSelector,
   commonServicesSelector,
   counterpartiesSelector,
+  orderPermissionsSelector,
   ordersSelector,
 } from './querySelectors';
 import { createClient } from './supabase/server';
@@ -13,6 +14,7 @@ import {
   CommonService,
   Counterparty,
   Order,
+  OrderPermission,
 } from './types/query-types';
 import { Vessel } from './types/vessel';
 
@@ -23,11 +25,14 @@ type Result = {
   berthServices: BerthService[];
   commonServices: CommonService[];
   orders: Order[];
+  orderPermissions: OrderPermission[];
   counterparties: Counterparty[];
 };
 
 export const fetchOrdersData = async (): Promise<Result | undefined> => {
   const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
+  if (error) return;
 
   const [
     vesselsResponse,
@@ -39,6 +44,7 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     berthServicesResponse,
     commonServicesResponse,
     ordersResponse,
+    orderPermissionsResponse,
     counterpartiesResponse,
   ] = await Promise.all([
     fetch('https://meri.digitraffic.fi/api/ais/v1/vessels'),
@@ -58,6 +64,10 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     supabase.from('berth_services').select(berthServicesSelector),
     supabase.from('common_services').select(commonServicesSelector),
     supabase.from('orders').select(ordersSelector),
+    supabase
+      .from('order_permissions')
+      .select(orderPermissionsSelector)
+      .eq('user_id', data.user.id),
     supabase.from('counterparties').select(counterpartiesSelector),
   ]);
 
@@ -71,6 +81,7 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     berthServicesResponse.data &&
     commonServicesResponse.data &&
     ordersResponse.data &&
+    orderPermissionsResponse.data &&
     counterpartiesResponse.data;
 
   if (success) {
@@ -143,6 +154,7 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
       berthServices: berthServicesResponse.data,
       commonServices: commonServicesResponse.data,
       orders: ordersResponse.data,
+      orderPermissions: orderPermissionsResponse.data,
       counterparties: counterpartiesResponse.data,
     };
   }

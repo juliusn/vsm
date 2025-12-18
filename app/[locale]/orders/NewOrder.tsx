@@ -27,15 +27,25 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
   const t = useTranslations('NewOrder');
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
-  const { dispatchOrders } = useOrders();
+  const { dispatchOrders, orderPermissions } = useOrders();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSentNotification = useOrderSentNotification();
+
+  const createOrderPermissions = orderPermissions.filter(
+    (permission) => permission.order_permission === 'create'
+  );
 
   const form = useForm<OrderFormValues>({
     mode: 'uncontrolled',
     initialValues: {
-      sender_counterparty_business_id: '',
-      receiver_counterparty_business_id: '',
+      sender_counterparty_business_id:
+        createOrderPermissions.length === 1
+          ? createOrderPermissions[0].sender.business_id
+          : '',
+      receiver_counterparty_business_id:
+        createOrderPermissions.length === 1
+          ? createOrderPermissions[0].receiver.business_id
+          : '',
       berthing: '',
       services: [],
     },

@@ -40,7 +40,9 @@ export default async function OrdersLayout({
               initialValues={normalizeTranslations<CommonService>(
                 data.commonServices
               )}>
-              <OrderProvider initialOrders={normalizeOrders(data.orders)}>
+              <OrderProvider
+                initialOrders={normalizeOrders(data.orders)}
+                initialOrderPermissions={data.orderPermissions}>
                 <CounterpartyProvider
                   counterparties={normalizeTranslations<Counterparty>(
                     data.counterparties
