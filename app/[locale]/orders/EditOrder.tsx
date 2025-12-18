@@ -35,7 +35,11 @@ interface Props {
   resultCallback(data: OrderData): void;
 }
 
-type FormValues = BerthingFormValues & OrderFormValues;
+type FormValues = BerthingFormValues &
+  Omit<
+    OrderFormValues,
+    'sender_counterparty_business_id' | 'receiver_counterparty_business_id'
+  >;
 
 export function EditOrder({ order, onClose, resultCallback }: Props) {
   const t = useTranslations('EditOrder');
@@ -90,8 +94,6 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
   );
 
   const initialValues: FormValues = {
-    sender_counterparty_business_id: order.sender.business_id,
-    receiver_counterparty_business_id: order.receiver.business_id,
     vesselName: vesselMatch?.imo.toString() || '',
     imo: order.berthing.vessel_imo || '',
     locode: order.berthing.locode || '',
@@ -201,8 +203,6 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
   });
 
   const handleSubmit = async ({
-    sender_counterparty_business_id: sender,
-    receiver_counterparty_business_id: receiver,
     vesselName,
     imo,
     locode,
@@ -216,11 +216,6 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
     services,
   }: FormValues) => {
     if (imo === '') return;
-
-    const updateOrderQuery = supabase
-      .from('orders')
-      .update({ sender, receiver, status: 'submitted' })
-      .eq('id', order.id);
 
     const updateBerthingsQuery = supabase
       .from('berthings')
@@ -273,7 +268,6 @@ export function EditOrder({ order, onClose, resultCallback }: Props) {
     setSubmitLoading(true);
 
     const updateResponses = await Promise.all([
-      updateOrderQuery,
       updateBerthingsQuery,
       arrivalQuery,
       departureQuery,

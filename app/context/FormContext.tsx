@@ -22,7 +22,13 @@ export const [NewOrderFormProvider, useNewOrderFormContext] =
   createFormContext<OrderFormValues>();
 
 export const [EditOrderFormProvider, useEditOrderFormContext] =
-  createFormContext<BerthingFormValues & OrderFormValues>();
+  createFormContext<
+    BerthingFormValues &
+      Omit<
+        OrderFormValues,
+        'sender_counterparty_business_id' | 'receiver_counterparty_business_id'
+      >
+  >();
 
 export const [BerthingFormProvider, useBerthingFormContext] =
   createFormContext<BerthingFormValues>();
