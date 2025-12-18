@@ -12,12 +12,13 @@ import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { EditOrder } from './EditOrder';
 import OrderStatusSelect from './OrderStatusSelect';
+import { OrderStatus } from './OrderStatus';
 
 export function OrderTable() {
   const t = useTranslations('OrderTable');
   const locale = useLocale();
   const format = useFormatter();
-  const { orders } = useOrders();
+  const { orders, orderPermissions } = useOrders();
   const [selectedRow, setSelectedRow] = useState<OrderRowData | null>(null);
 
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
@@ -111,7 +112,12 @@ export function OrderTable() {
       accessor: 'status',
       title: t('status'),
       noWrap: true,
-      render: (orderRow) => <OrderStatusSelect orderRow={orderRow} />,
+      render: (orderRow) =>
+        orderPermissions.length ? (
+          <OrderStatusSelect orderRow={orderRow} />
+        ) : (
+          <OrderStatus status={orderRow.status} />
+        ),
     },
     {
       accessor: 'edit',

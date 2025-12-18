@@ -129,7 +129,6 @@ export default function OrderStatusSelect({
               stroke={4}
               size={14}
               style={{
-                color: 'currentColor',
                 opacity: 0.4,
               }}
             />
@@ -141,8 +140,8 @@ export default function OrderStatusSelect({
       )}
       styles={{
         input: {
-          color: value ? colors[value as Status] : 'currentcolor',
-          minWidth: '75px',
+          minWidth: '140px',
+          color: colors[value as Status],
         },
       }}
       comboboxProps={{
