@@ -9,9 +9,9 @@ import { OrderRowData } from '@/lib/types/order';
 import {
   ComboboxItem,
   Group,
-  MantineColorsTuple,
   Select,
   Text,
+  useComputedColorScheme,
   useMantineTheme,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
@@ -30,6 +30,8 @@ export default function OrderStatusSelect({
 }) {
   const t = useTranslations('OrderStatusSelect');
   const theme = useMantineTheme();
+  const colorScheme = useComputedColorScheme();
+  const shade = colorScheme === 'light' ? 8 : 6;
   const [value, setValue] = useState<string | null>(orderRow.status);
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
@@ -37,12 +39,12 @@ export default function OrderStatusSelect({
   const { dispatchOrders } = useOrders();
 
   const colors: {
-    [k in Status]: MantineColorsTuple;
+    [k in Status]: string;
   } = {
-    submitted: theme.colors.yellow,
-    received: theme.colors.blue,
-    completed: theme.colors.green,
-    canceled: theme.colors.gray,
+    submitted: theme.colors.yellow[shade],
+    received: theme.colors.blue[shade],
+    completed: theme.colors.green[shade],
+    canceled: theme.colors.gray[shade],
   };
 
   const data: ComboboxItem[] = statuses.map((status) => ({
@@ -106,14 +108,14 @@ export default function OrderStatusSelect({
               }}
             />
           )}
-          <Text size="sm" c={colors[option.value as Status][5]}>
+          <Text size="sm" c={colors[option.value as Status]}>
             {option.label}
           </Text>
         </Group>
       )}
       styles={{
         input: {
-          color: value ? colors[value as Status][5] : theme.primaryColor,
+          color: value ? colors[value as Status] : 'currentcolor',
           minWidth: '75px',
         },
       }}
