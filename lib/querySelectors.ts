@@ -20,6 +20,7 @@ berthing:berthings (
 ),
 common_services (
   id,
+  sort_order,
   translations:common_service_translations!inner(
     locale, 
     title, 
@@ -72,6 +73,7 @@ translations:counterparty_translations!inner(
 
 export const commonServicesSelector = `
 id,
+sort_order,
 translations:common_service_translations!inner(locale, title, abbreviation)`;
 
 export const berthServicesSelector = `

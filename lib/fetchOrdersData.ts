@@ -62,7 +62,10 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     supabase.from('berthings').select(berthingsSelector),
     supabase.from('port_events').select(),
     supabase.from('berth_services').select(berthServicesSelector),
-    supabase.from('common_services').select(commonServicesSelector),
+    supabase
+      .from('common_services')
+      .select(commonServicesSelector)
+      .order('sort_order'),
     supabase.from('orders').select(ordersSelector),
     supabase
       .from('order_permissions')

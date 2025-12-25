@@ -240,12 +240,15 @@ export type Database = {
       common_services: {
         Row: {
           id: string
+          sort_order: number | null
         }
         Insert: {
           id?: string
+          sort_order?: number | null
         }
         Update: {
           id?: string
+          sort_order?: number | null
         }
         Relationships: []
       }

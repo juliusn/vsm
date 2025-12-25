@@ -19,5 +19,8 @@ export function reducer<T extends IdObject>(
     case 'cascade-deleted': {
       return items.filter((item) => item[action.foreignKey] !== action.id);
     }
+    case 'replaced': {
+      return action.items;
+    }
   }
 }
