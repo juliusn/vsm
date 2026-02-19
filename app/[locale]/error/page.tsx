@@ -11,7 +11,7 @@ export default async function ErrorPage({
   const { status, message } = await searchParams;
 
   return (
-    <Container>
+    <Container size="24rem">
       {typeof message === 'string' ? (
         typeof status === 'string' ? (
           <Alert

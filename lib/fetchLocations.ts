@@ -3,6 +3,7 @@ import { createClient } from './supabase/server';
 
 export const fetchLocations = async (): Promise<LocationState | undefined> => {
   const supabase = await createClient();
+
   const [locationsResponse, portAreasResponse, berthsResponse] =
     await Promise.all([
       supabase

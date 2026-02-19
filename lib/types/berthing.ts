@@ -1,16 +1,17 @@
-import { Tables } from './database.types';
-import { Berthing } from './query-types';
-
 export interface BerthingFormValues {
-  vesselName: string;
-  imo: number | '';
-  locode: string;
-  portArea: string;
-  berth: string;
-  etaDate: Date | '';
-  etaTime: string;
-  etdDate: Date | '';
-  etdTime: string;
+  imo: number | null;
+  vesselName: string | null;
+  arrivalDate: string | null;
+  arrivalTime: string | null;
+  arrivalLocode: string | null;
+  arrivalPortArea: string | null;
+  arrivalBerth: string | null;
+  arrivalPosition: string | null;
+  departureDate: string | null;
+  departureTime: string | null;
+  departureLocode: string | null;
+  departurePortArea: string | null;
+  departureBerth: string | null;
 }
 
 export type PortAreaIdentifier = {
@@ -23,9 +24,3 @@ export type BerthIdentifier = {
   port_area_code: string;
   berth_code: string;
 };
-
-export interface BerthingRowData extends Omit<Berthing, 'port_events'> {
-  created: Date;
-  arrival: Omit<Tables<'port_events'>, 'berthing'> | null;
-  departure: Omit<Tables<'port_events'>, 'berthing'> | null;
-}

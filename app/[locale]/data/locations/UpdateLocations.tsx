@@ -1,9 +1,11 @@
 'use client';
 
+import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { useRouter } from '@/i18n/routing';
 import { dateTimeFormatOptions } from '@/lib/formatOptions';
 import { createClient } from '@/lib/supabase/client';
-import { LocationApiResponse as LocationApiResponse } from '@/lib/types/ports-api.types';
+import { Tables } from '@/lib/types/database.types';
+import { LocationApiResponse } from '@/lib/types/ports-api.types';
 import { Button, Group, Modal, Stack, Table } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -16,17 +18,20 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { MouseEventHandler, useState } from 'react';
 import { DeleteAllButton } from './DeleteAllButton';
 import { UpdateAllButton } from './UpdateAllButton';
-import { Tables } from '@/lib/types/database.types';
+
 type DatasetName = 'port_data' | 'locations' | 'port_areas' | 'berths';
+
 type DateComparisonResult = {
   datesMatch: boolean | null;
 };
+
 const datasets: DatasetName[] = [
   'locations',
   'port_areas',
   'berths',
   'port_data',
 ];
+
 interface DatasetRow {
   datasetName: React.ReactNode;
   apiUpdatedTime: React.ReactNode;
@@ -39,6 +44,7 @@ export function UpdateLocations() {
   const [loading, setLoading] = useState<boolean>(false);
   const [apiData, setApiData] = useState<LocationApiResponse>();
   const [apiUpdateTimes, setApiUpdateTimes] = useState<string[]>([]);
+  const getErrorNotification = usePostgresErrorNotification();
   const formatter = useFormatter();
   const [opened, { open, close }] = useDisclosure(false);
   const t = useTranslations('UpdateLocations');
@@ -96,7 +102,9 @@ export function UpdateLocations() {
     );
 
     if (!apiResponse.ok) {
-      throw new Error(`API responded with status ${apiResponse.status}`);
+      showNotification(getErrorNotification(apiResponse.status));
+      setLoading(false);
+      return;
     }
 
     const locationData: LocationApiResponse = await apiResponse.json();
@@ -241,6 +249,27 @@ export function UpdateLocations() {
         return;
       }
     }
+
+    setRows(
+      datasets.map((dataset, i) => ({
+        datasetName: dataset,
+        apiUpdatedTime: formatter.dateTime(
+          new Date(apiUpdateTimes[i]),
+          dateTimeFormatOptions
+        ),
+        dbUpdatedTime: formatter.dateTime(
+          new Date(apiUpdateTimes[i]),
+          dateTimeFormatOptions
+        ),
+        comparisonResult: (
+          <Group color="green" wrap="nowrap">
+            <IconCheck stroke={1.5} color="green" />
+            {t('datesMatch')}
+          </Group>
+        ),
+      }))
+    );
+
     showNotification({
       title: t('successLabel'),
       message: t('updateSuccessMessage'),
@@ -280,6 +309,17 @@ export function UpdateLocations() {
 
     for (const { label, query } of deleteQueries) {
       const { error, status } = await query();
+
+      if (error?.code === '23503') {
+        showNotification({
+          title: t('errorLabel'),
+          message: t('deleteConflictMessage'),
+          icon: <IconExclamationMark stroke={1.5} />,
+          color: 'red',
+        });
+        return;
+      }
+
       if (error) {
         showNotification({
           title: t('errorLabel'),
@@ -294,14 +334,24 @@ export function UpdateLocations() {
       }
     }
 
+    setRows(
+      datasets.map((dataset, i) => ({
+        datasetName: dataset,
+        apiUpdatedTime: formatter.dateTime(
+          new Date(apiUpdateTimes[i]),
+          dateTimeFormatOptions
+        ),
+        dbUpdatedTime: null,
+        comparisonResult: t('notFound'),
+      }))
+    );
+
     showNotification({
       title: t('successLabel'),
       message: t('deleteSuccessMessage'),
       icon: <IconCheck stroke={1.5} />,
       color: 'green',
     });
-
-    router.refresh();
   };
 
   return (

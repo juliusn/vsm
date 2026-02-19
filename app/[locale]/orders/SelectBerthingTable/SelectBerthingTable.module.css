@@ -1,0 +1,34 @@
+.selectableRow:hover {
+  background-color: var(--mantine-color-default-hover);
+  cursor: pointer;
+}
+
+.disabledRow {
+  color: var(--mantine-color-dimmed);
+  cursor: not-allowed;
+}
+
+.selectedRow {
+  color: var(--mantine-primary-color-light-color);
+  cursor: not-allowed;
+}
+
+.selectedRow > td {
+  box-shadow:
+    inset 0 0.1rem 0 0 var(--mantine-primary-color-light-color),
+    inset 0 -0.1rem 0 0 var(--mantine-primary-color-light-color);
+}
+
+.selectedRow > td:first-child {
+  box-shadow:
+    inset 0.1rem 0 0 0 var(--mantine-primary-color-light-color),
+    inset 0 0.1rem 0 0 var(--mantine-primary-color-light-color),
+    inset 0 -0.1rem 0 0 var(--mantine-primary-color-light-color);
+}
+
+.selectedRow > td:last-child {
+  box-shadow:
+    inset -0.1rem 0 0 0 var(--mantine-primary-color-light-color),
+    inset 0 0.1rem 0 0 var(--mantine-primary-color-light-color),
+    inset 0 -0.1rem 0 0 var(--mantine-primary-color-light-color);
+}

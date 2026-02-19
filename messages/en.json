@@ -154,7 +154,8 @@
     "selectClientError": "Select client.",
     "selectRecipientError": "Select recipient.",
     "selectBerthingError": "Select berthing to which you want to add services.",
-    "selectServicesError": "Selet services you want to add to the berthing."
+    "selectServicesError": "Selet services you want to add to the berthing.",
+    "sendOrder": "Send order"
   },
   "BerthServiceSelect": {
     "tasks": "Tasks",
@@ -248,6 +249,7 @@
     "updateSuccessMessage": "Update successful.",
     "deleteSuccessMessage": "Delete successful.",
     "updateErrorMessage": "Update query on {label} failed. Server responded with status code {status}.",
+    "deleteConflictMessage": "Could not complete the request because data is in use.",
     "deleteErrorMessage": "Delete query on {label} failed. Server responded with status code {status}."
   },
   "UpdateAllButton": {
@@ -427,20 +429,23 @@
   },
   "BerthingFormFields": {
     "vessel": "Vessel",
+    "arrival": "Arrival",
+    "date": "Date",
+    "selectDate": "Select date",
+    "time": "Time",
+    "departure": "Departure"
+  },
+  "useBerthingFormValidation": {
     "imoRequiredError": "Vessel IMO number is required.",
     "imoLengthError": "Vessel IMO number must be 7 digits.",
     "enterDateOrRemoveTimeError": "Enter date or remove time.",
+    "arrivalDateAfterDepartureDateError": "ETA date after ETD date.",
     "timeWithoutDateError": "Time without date.",
-    "etaDateAfterEtdDateError": "ETA date after ETD date.",
-    "etdDateBeforeEtaDateError": "ETD date before ETA date.",
-    "etaAfterEtdError": "ETA after ETD.",
-    "etdBeforeEtaError": "ETD before ETA.",
-    "berth": "Berth",
-    "arrival": "Arrival",
-    "departure": "Departure",
-    "date": "Date",
-    "selectDate": "Select date",
-    "time": "Time"
+    "arrivalDateMissingError": "Enter arrival date first.",
+    "departureDateBeforeArrivalDateError": "Departure date before arrival date.",
+    "etaAfterEtdError": "Arrival time after departure time.",
+    "etdBeforeEtaError": "Departure time before arrival time.",
+    "departureDateMissingError": "Enter departure date first."
   },
   "FormButtons": {
     "close": "Close",
@@ -450,12 +455,10 @@
   "BerthingTable": {
     "noResults": "No results",
     "created": "Created",
-    "vesselImo": "IMO",
-    "vesselName": "Name",
+    "vesselName": "Vessel name",
+    "vesselImo": "Vessel IMO",
     "locode": "Locode",
     "portAreaCode": "Port area code",
-    "berthCode": "Berth code",
-    "berth": "Berth",
     "arrival": "Arrival",
     "departure": "Departure",
     "unknown": "Unknown",
@@ -475,6 +478,9 @@
   "ImoInput": {
     "imo": "IMO",
     "enterImo": "Enter IMO"
+  },
+  "LocationInputs": {
+    "locationAndPortArea": "Location and port area"
   },
   "LocodeInput": {
     "location": "Location",
@@ -499,11 +505,8 @@
     "unknown": "Unknown",
     "berthing": "Berthing",
     "created": "Created",
-    "berth": "Berth",
-    "vessel": "Vessel",
-    "arrival": "Arrival",
-    "departure": "Departure",
     "services": "Services",
+    "resource": "Resource",
     "status": "Status",
     "orderedServices": "Ordered services",
     "edit": "Edit",
@@ -522,13 +525,13 @@
     "removeSelection": "Remove selection",
     "editBerthing": "Edit berthing",
     "services": "Services",
-    "servicesTooltip": "Select a berthing in order to select services.",
-    "send": "Send order"
+    "servicesTooltip": "Select a berthing in order to select services."
   },
   "EditOrder": {
     "editOrder": "Edit order",
     "selectBerthingError": "Select berthing to which you want to add services.",
-    "selectServicesError": "Selet services you want to add to the berthing."
+    "selectServicesError": "Selet services you want to add to the berthing.",
+    "saveChanges": "Save changes"
   },
   "OrderStatusSelect": {
     "submitted": "Submitted",

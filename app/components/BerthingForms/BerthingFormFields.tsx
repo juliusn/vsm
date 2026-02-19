@@ -2,36 +2,120 @@
 
 import { LocationInputs } from '@/app/components/BerthingForms/LocationInputs';
 import { VesselInputs } from '@/app/components/BerthingForms/VesselInputs';
-import { BerthingFormValues } from '@/lib/types/berthing';
-import { Vessel } from '@/lib/types/vessel';
-import { Fieldset, Group, Stack, Text } from '@mantine/core';
+import { useBerthingFormContext } from '@/app/context/BerthingFormContext';
+import { useBerthingInputData } from '@/app/context/BerthingInputDataContext';
+import { BerthIdentifier, PortAreaIdentifier } from '@/lib/types/berthing';
+import { Fieldset, Group, Space, Stack, Text } from '@mantine/core';
 import { DateInput, TimeInput } from '@mantine/dates';
-import { UseFormReturnType } from '@mantine/form';
 import {
-  IconAnchor,
   IconArrowBarRight,
   IconArrowBarToRight,
   IconShip,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
-interface Props<T extends BerthingFormValues> {
-  useFormContext(): UseFormReturnType<T>;
-  vessel: Vessel | undefined;
-  imoRef: React.RefObject<HTMLInputElement | null>;
-  locode: string;
-  portArea: string;
-}
-
-export function BerthingFormFields<T extends BerthingFormValues>({
-  useFormContext,
-  vessel,
-  imoRef,
-  locode,
-  portArea,
-}: Props<T>) {
+export function BerthingFormFields() {
   const t = useTranslations('BerthingFormFields');
-  const form = useFormContext();
+  const form = useBerthingFormContext();
+
+  const {
+    arrivalLocode,
+    setArrivalLocode,
+    arrivalPortArea,
+    setArrivalPortArea,
+    departureLocode,
+    setDepartureLocode,
+    departurePortArea,
+    setDeparturePortArea,
+  } = useBerthingInputData();
+
+  form.watch('arrivalDate', ({ value }) => {
+    if (value === null) {
+      form.setFieldValue('arrivalTime', null);
+      form.setFieldValue('arrivalLocode', null);
+      form.setFieldValue('arrivalPortArea', null);
+      form.setFieldValue('arrivalBerth', null);
+      form.setFieldValue('arrivalPosition', null);
+      return;
+    }
+    form.validateField('arrivalTime');
+    form.validateField('departureDate');
+  });
+
+  form.watch('arrivalTime', () => {
+    form.validateField('departureTime');
+  });
+
+  form.watch('arrivalLocode', ({ previousValue, value }) => {
+    setArrivalLocode(value);
+    if (previousValue !== null && previousValue !== value) {
+      form.setFieldValue('arrivalPortArea', null);
+    }
+  });
+
+  form.watch('arrivalPortArea', ({ previousValue, value }) => {
+    setArrivalPortArea(value);
+    if (previousValue !== null && previousValue !== value) {
+      form.setFieldValue('arrivalBerth', null);
+    }
+    if (value) {
+      const { locode }: PortAreaIdentifier = JSON.parse(value);
+      form.setFieldValue('arrivalLocode', locode);
+    }
+  });
+
+  form.watch('arrivalBerth', ({ value }) => {
+    if (value) {
+      const { locode, port_area_code }: BerthIdentifier = JSON.parse(value);
+      form.setFieldValue('arrivalLocode', locode);
+      const portArea: PortAreaIdentifier = { locode, port_area_code };
+      form.setFieldValue('arrivalPortArea', JSON.stringify(portArea));
+    }
+  });
+
+  form.watch('departureDate', ({ value }) => {
+    if (value === null) {
+      form.setFieldValue('departureTime', null);
+      form.setFieldValue('departureLocode', null);
+      form.setFieldValue('departurePortArea', null);
+      form.setFieldValue('departureBerth', null);
+      return;
+    }
+    form.validateField('departureTime');
+    form.validateField('arrivalDate');
+  });
+
+  form.watch('departureTime', () => {
+    form.validateField('arrivalTime');
+  });
+
+  form.watch('departureLocode', ({ previousValue, value }) => {
+    setDepartureLocode(value);
+    if (previousValue !== null && previousValue !== value) {
+      form.setFieldValue('departurePortArea', null);
+      form.setFieldValue('departureBerth', null);
+    }
+  });
+
+  form.watch('departurePortArea', ({ previousValue, value }) => {
+    setDeparturePortArea(value);
+    if (previousValue !== null && previousValue !== value) {
+      form.setFieldValue('departureBerth', null);
+    }
+    if (value) {
+      const { locode }: PortAreaIdentifier = JSON.parse(value);
+      form.setFieldValue('departureLocode', locode);
+    }
+  });
+
+  form.watch('departureBerth', ({ value }) => {
+    if (value) {
+      const { locode, port_area_code }: BerthIdentifier = JSON.parse(value);
+      form.setFieldValue('departureLocode', locode);
+      const portArea: PortAreaIdentifier = { locode, port_area_code };
+      form.setFieldValue('departurePortArea', JSON.stringify(portArea));
+    }
+  });
 
   return (
     <>
@@ -43,28 +127,12 @@ export function BerthingFormFields<T extends BerthingFormValues>({
           </Group>
         }>
         <Stack>
-          <VesselInputs<T>
-            useFormContext={useFormContext}
-            vessel={vessel}
-            imoRef={imoRef}
-          />
+          <VesselInputs />
         </Stack>
       </Fieldset>
-      <Fieldset
-        legend={
-          <Group>
-            <IconAnchor size={20} color="var(--mantine-color-blue-5)" />
-            <Text>{t('berth')}</Text>
-          </Group>
-        }>
-        <Stack>
-          <LocationInputs<T>
-            useFormContext={useFormContext}
-            locode={locode}
-            portArea={portArea}
-          />
-        </Stack>
-      </Fieldset>
+
+      <Space h="lg" />
+
       <Fieldset
         legend={
           <Group>
@@ -82,16 +150,29 @@ export function BerthingFormFields<T extends BerthingFormValues>({
             label={t('date')}
             placeholder={t('selectDate')}
             clearable
-            {...form.getInputProps('etaDate')}
-            key={form.key('etaDate')}
+            {...form.getInputProps('arrivalDate')}
+            key={form.key('arrivalDate')}
           />
           <TimeInput
             label={t('time')}
-            {...form.getInputProps('etaTime')}
-            key={form.key('etaTime')}
+            {...form.getInputProps('arrivalTime')}
+            key={form.key('arrivalTime')}
+          />
+          <LocationInputs
+            locode={arrivalLocode}
+            portArea={arrivalPortArea}
+            locodeInputKey={form.key('arrivalLocode')}
+            locodeInputProps={form.getInputProps('arrivalLocode')}
+            portAreaInputKey={form.key('arrivalPortArea')}
+            portAreaInputProps={form.getInputProps('arrivalPortArea')}
+            berthInputKey={form.key('arrivalBerth')}
+            berthInputProps={form.getInputProps('arrivalBerth')}
           />
         </Stack>
       </Fieldset>
+
+      <Space h="lg" />
+
       <Fieldset
         legend={
           <Group>
@@ -106,13 +187,23 @@ export function BerthingFormFields<T extends BerthingFormValues>({
             label={t('date')}
             placeholder={t('selectDate')}
             clearable
-            {...form.getInputProps('etdDate')}
-            key={form.key('etdDate')}
+            {...form.getInputProps('departureDate')}
+            key={form.key('departureDate')}
           />
           <TimeInput
             label={t('time')}
-            {...form.getInputProps('etdTime')}
-            key={form.key('etdTime')}
+            {...form.getInputProps('departureTime')}
+            key={form.key('departureTime')}
+          />
+          <LocationInputs
+            locode={departureLocode}
+            portArea={departurePortArea}
+            locodeInputKey={form.key('departureLocode')}
+            locodeInputProps={form.getInputProps('departureLocode')}
+            portAreaInputKey={form.key('departurePortArea')}
+            portAreaInputProps={form.getInputProps('departurePortArea')}
+            berthInputKey={form.key('departureBerth')}
+            berthInputProps={form.getInputProps('departureBerth')}
           />
         </Stack>
       </Fieldset>

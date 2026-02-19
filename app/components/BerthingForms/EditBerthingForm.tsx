@@ -1,259 +1,282 @@
 'use client';
 
 import { useBerthings } from '@/app/context/BerthingContext';
+
 import {
   BerthingFormProvider,
-  useBerthingFormContext,
-} from '@/app/context/FormContext';
-import { useVessels } from '@/app/context/VesselContext';
+  useBerthingForm,
+} from '@/app/context/BerthingFormContext';
+import { useBerthingInputData } from '@/app/context/BerthingInputDataContext';
 import {
   useBerthingSavedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
-import { portEventQueryFactory } from '@/lib/portEventQueryFactory';
 import { berthingsSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
   BerthingFormValues,
-  BerthingRowData,
   PortAreaIdentifier,
 } from '@/lib/types/berthing';
+import { TablesInsert } from '@/lib/types/database.types';
 import { Berthing } from '@/lib/types/query-types';
 import { Group, Stack } from '@mantine/core';
-import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
-
-import { Vessel } from '@/lib/types/vessel';
 import { FormButtons } from '../FormButtons';
 import { BerthingFormFields } from './BerthingFormFields';
 
-interface EditBerthingContentProps {
-  berthingRow: BerthingRowData;
+interface EditBerthingFormProps {
+  initialBerthing: Berthing;
   onCancel(): void;
   resultCallback(data: Berthing): void;
 }
 
 export function EditBerthingForm({
-  berthingRow,
+  initialBerthing,
   onCancel,
   resultCallback,
-}: EditBerthingContentProps) {
+}: EditBerthingFormProps) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
   const getBerthingSavedNotification = useBerthingSavedNotification();
   const { dispatchBerthings } = useBerthings();
-  const vessels = useVessels();
   const [loading, setLoading] = useState(false);
-  const [locode, setLocode] = useState(berthingRow.locode || '');
   const validate = useBerthingFormValidation();
-  const imoRef = useRef<HTMLInputElement>(null);
 
-  const vesselMatch = vessels.find(
-    (vessel) => vessel.imo === berthingRow.vessel_imo
-  );
-
-  const [vessel, setVessel] = useState<Vessel | undefined>(vesselMatch);
-
-  const portAreaIdentifier: PortAreaIdentifier | null =
-    berthingRow.locode && berthingRow.port_area_code
-      ? {
-          locode: berthingRow.locode,
-          port_area_code: berthingRow.port_area_code,
-        }
-      : null;
-
-  const berthIdentifier: BerthIdentifier | null =
-    berthingRow.locode && berthingRow.port_area_code && berthingRow.berth_code
-      ? {
-          locode: berthingRow.locode,
-          port_area_code: berthingRow.port_area_code,
-          berth_code: berthingRow.berth_code,
-        }
-      : null;
-
-  const [portArea, setPortArea] = useState(
-    portAreaIdentifier ? JSON.stringify(portAreaIdentifier) : ''
-  );
+  const {
+    berthingVessel,
+    selectedVessel,
+    setSelectedVessel,
+    arrivalPortAreaIdentifier,
+    arrivalBerthIdentifier,
+    departurePortAreaIdentifier,
+    departureBerthIdentifier,
+  } = useBerthingInputData();
 
   const initialValues: BerthingFormValues = {
-    vesselName: berthingRow.vessel_imo.toString(),
-    imo: berthingRow.vessel_imo,
-    locode: berthingRow.locode || '',
-    portArea: portAreaIdentifier ? JSON.stringify(portAreaIdentifier) : '',
-    berth: berthIdentifier ? JSON.stringify(berthIdentifier) : '',
-    etaDate: berthingRow.arrival
-      ? dayjs(berthingRow.arrival.estimated_date).toDate()
-      : '',
-    etaTime: berthingRow.arrival?.estimated_time
-      ? berthingRow.arrival.estimated_time.slice(0, 5)
-      : '',
-    etdDate: berthingRow.departure
-      ? dayjs(berthingRow.departure.estimated_date).toDate()
-      : '',
-    etdTime: berthingRow.departure?.estimated_time
-      ? berthingRow.departure.estimated_time.slice(0, 5)
-      : '',
+    imo: initialBerthing.vessel_imo ?? null,
+    vesselName: initialBerthing.vessel_imo.toString() ?? null,
+    arrivalDate: initialBerthing.arrival?.estimated_date ?? null,
+    arrivalTime: initialBerthing.arrival?.estimated_time
+      ? initialBerthing.arrival.estimated_time.slice(0, 5)
+      : null,
+    arrivalLocode: initialBerthing.arrival?.locode ?? null,
+    arrivalPortArea: arrivalPortAreaIdentifier
+      ? JSON.stringify(arrivalPortAreaIdentifier)
+      : null,
+    arrivalBerth: arrivalBerthIdentifier
+      ? JSON.stringify(arrivalBerthIdentifier)
+      : null,
+    arrivalPosition: initialBerthing.arrival?.position ?? null,
+    departureDate: initialBerthing.departure?.estimated_date ?? null,
+    departureTime: initialBerthing.departure?.estimated_time
+      ? initialBerthing.departure.estimated_time.slice(0, 5)
+      : null,
+    departureLocode: initialBerthing.departure?.locode ?? null,
+    departurePortArea: departurePortAreaIdentifier
+      ? JSON.stringify(departurePortAreaIdentifier)
+      : null,
+    departureBerth: departureBerthIdentifier
+      ? JSON.stringify(departureBerthIdentifier)
+      : null,
   };
 
-  const form = useForm<BerthingFormValues>({
+  const form = useBerthingForm({
     mode: 'uncontrolled',
     initialValues,
     validate,
     validateInputOnBlur: true,
     transformValues: (values) => ({
       ...values,
-      vesselName: vessel?.name || '',
-      portArea:
-        values.portArea &&
-        (JSON.parse(values.portArea) as PortAreaIdentifier).port_area_code,
-      berth:
-        values.berth &&
-        (JSON.parse(values.berth) as BerthIdentifier).berth_code,
+      vesselName: selectedVessel?.name || null,
+      arrivalTime: values.arrivalTime ? `${values.arrivalTime}:00` : null,
+      arrivalPortArea:
+        values.arrivalPortArea &&
+        (JSON.parse(values.arrivalPortArea) as PortAreaIdentifier)
+          .port_area_code,
+      arrivalBerth:
+        values.arrivalBerth &&
+        (JSON.parse(values.arrivalBerth) as BerthIdentifier).berth_code,
+      departureTime: values.departureTime ? `${values.departureTime}:00` : null,
+      departurePortArea:
+        values.departurePortArea &&
+        (JSON.parse(values.departurePortArea) as PortAreaIdentifier)
+          .port_area_code,
+      departureBerth:
+        values.departureBerth &&
+        (JSON.parse(values.departureBerth) as BerthIdentifier).berth_code,
     }),
-  });
-
-  form.watch('vesselName', ({ value }) => {
-    if (value) {
-      form.setFieldValue('imo', Number(value));
-      setTimeout(() => {
-        imoRef.current?.select();
-      }, 0);
-    } else {
-      form.setFieldValue('imo', '');
-      form.getInputNode('vesselName')?.focus();
-    }
-  });
-
-  form.watch('imo', ({ value }) => {
-    const match = vessels.find((vessel) => vessel.imo === value);
-    setVessel(match);
-    if (match) {
-      form.setFieldValue('vesselName', match.imo.toString());
-    }
-  });
-
-  form.watch('locode', ({ previousValue, value }) => {
-    setLocode(value);
-    if (previousValue && previousValue !== value) {
-      form.setFieldValue('portArea', '');
-      form.setFieldValue('berth', '');
-    }
-  });
-
-  form.watch('portArea', ({ previousValue, value }) => {
-    setPortArea(value);
-    if (previousValue && previousValue !== value) {
-      form.setFieldValue('berth', '');
-    }
-    if (value) {
-      const { locode }: PortAreaIdentifier = JSON.parse(value);
-      form.setFieldValue('locode', locode);
-    }
-  });
-
-  form.watch('berth', ({ value }) => {
-    if (value) {
-      const { locode, port_area_code }: BerthIdentifier = JSON.parse(value);
-      form.setFieldValue('locode', locode);
-      const portArea: PortAreaIdentifier = { locode, port_area_code };
-      form.setFieldValue('portArea', JSON.stringify(portArea));
-    }
   });
 
   const submitHandler = async ({
     imo,
     vesselName,
-    locode,
-    portArea,
-    berth,
-    etaDate,
-    etaTime,
-    etdDate,
-    etdTime,
+    arrivalDate,
+    arrivalTime,
+    arrivalLocode,
+    arrivalPortArea,
+    arrivalBerth,
+    arrivalPosition,
+    departureDate,
+    departureTime,
+    departureLocode,
+    departurePortArea,
+    departureBerth,
   }: BerthingFormValues) => {
-    if (imo === '') {
+    if (imo === null) {
       return;
     }
 
-    const berthingsQuery = supabase
-      .from('berthings')
-      .update({
-        vessel_imo: imo,
-        vessel_name: vesselName || null,
-        locode: locode || null,
-        port_area_code: portArea || null,
-        berth_code: berth || null,
-      })
-      .eq('id', berthingRow.id);
-
-    const arrivalQuery = portEventQueryFactory({
-      berthing: berthingRow.id,
-      portEvent: berthingRow.arrival,
+    const arrivalValues: TablesInsert<'port_events'> = {
       type: 'arrival',
-      newValues: { date: etaDate, time: etaTime },
-    })?.(supabase);
+      estimated_date: dayjs(arrivalDate).format('YYYY-MM-DD'),
+      estimated_time: arrivalTime || null,
+      locode: arrivalLocode || null,
+      port_area_code: arrivalPortArea || null,
+      berth_code: arrivalBerth || null,
+      position: arrivalPosition || null,
+    };
 
-    const departureQuery = portEventQueryFactory({
-      berthing: berthingRow.id,
-      portEvent: berthingRow.departure,
+    const departureValues: TablesInsert<'port_events'> = {
       type: 'departure',
-      newValues: { date: etdDate, time: etdTime },
-    })?.(supabase);
+      estimated_date: dayjs(departureDate).format('YYYY-MM-DD'),
+      estimated_time: departureTime || null,
+      locode: departureLocode || null,
+      port_area_code: departurePortArea || null,
+      berth_code: departureBerth || null,
+    };
+
+    const { arrival, departure } = initialBerthing;
+
+    const arrivalFields = Object.keys(arrivalValues) as Array<
+      keyof TablesInsert<'port_events'>
+    >;
+
+    const changedArrivalFields = arrivalFields.filter((key) =>
+      arrival ? arrivalValues[key] !== arrival[key] : key
+    );
+
+    const arrivalPayload = changedArrivalFields.reduce<
+      Partial<TablesInsert<'port_events'>>
+    >((payload, key) => ({ ...payload, [key]: arrivalValues[key] }), {});
+
+    const departureFields = Object.keys(departureValues) as Array<
+      keyof typeof departureValues
+    >;
+
+    const changedDepartureFields = departureFields.filter((key) =>
+      departure ? departureValues[key] !== departure[key] : key
+    );
+
+    const departurePayload = changedDepartureFields.reduce<
+      Partial<TablesInsert<'port_events'>>
+    >((payload, key) => ({ ...payload, [key]: departureValues[key] }), {});
+
+    const arrivalQuery = arrival
+      ? arrivalDate
+        ? changedArrivalFields.length
+          ? supabase
+              .from('port_events')
+              .update(arrivalPayload)
+              .eq('id', arrival.id)
+              .select('id')
+              .single()
+          : null
+        : supabase.from('port_events').delete().eq('id', arrival.id)
+      : arrivalDate
+        ? supabase
+            .from('port_events')
+            .insert(arrivalValues)
+            .select('id')
+            .single()
+        : null;
+
+    const departureQuery = departure
+      ? departureDate
+        ? changedDepartureFields.length
+          ? supabase
+              .from('port_events')
+              .update(departurePayload)
+              .eq('id', departure.id)
+              .select('id')
+              .single()
+          : null
+        : supabase.from('port_events').delete().eq('id', departure.id)
+      : departureDate
+        ? supabase
+            .from('port_events')
+            .insert(departureValues)
+            .select('id')
+            .single()
+        : null;
 
     setLoading(true);
 
-    const updateResponses = await Promise.all([
-      berthingsQuery,
+    const [arrivalResponse, departureResponse] = await Promise.all([
       arrivalQuery,
       departureQuery,
     ]);
 
+    if (arrivalResponse?.error) {
+      showNotification(getErrorNotification(arrivalResponse.status));
+      setLoading(false);
+      return;
+    }
+
+    if (departureResponse?.error) {
+      showNotification(getErrorNotification(departureResponse.status));
+      setLoading(false);
+      return;
+    }
+
+    const berthingsPayload = {
+      vessel_imo: imo,
+      vessel_name: vesselName || null,
+      arrival: arrivalDate ? arrivalResponse?.data?.id || arrival?.id : null,
+      departure: departureDate
+        ? departureResponse?.data?.id || departure?.id
+        : null,
+    };
+
     const berthingsResponse = await supabase
       .from('berthings')
+      .update(berthingsPayload)
+      .eq('id', initialBerthing.id)
       .select(berthingsSelector)
-      .eq('id', berthingRow.id)
       .single();
 
     setLoading(false);
 
-    if (berthingsResponse.data) {
-      dispatchBerthings({ type: 'changed', item: berthingsResponse.data });
-      resultCallback(berthingsResponse.data);
+    if (berthingsResponse.error) {
+      showNotification(getErrorNotification(berthingsResponse.status));
+      return;
     }
 
-    for (const response of [...updateResponses, berthingsResponse]) {
-      if (response?.error) {
-        showNotification(getErrorNotification(berthingsResponse.status));
-        return;
-      }
-    }
-
+    dispatchBerthings({ type: 'changed', item: berthingsResponse.data });
+    resultCallback(berthingsResponse.data);
     showNotification(getBerthingSavedNotification());
   };
 
   return (
-    <form onSubmit={form.onSubmit(submitHandler)}>
+    <form
+      onSubmit={(event) => {
+        event.stopPropagation();
+        form.onSubmit(submitHandler)(event);
+      }}>
       <Stack>
-        <BerthingFormProvider value={form}>
-          <BerthingFormFields<BerthingFormValues>
-            useFormContext={useBerthingFormContext}
-            vessel={vessel}
-            imoRef={imoRef}
-            locode={locode}
-            portArea={portArea}
-          />
+        <BerthingFormProvider form={form}>
+          <BerthingFormFields />
         </BerthingFormProvider>
         <Group grow>
           <FormButtons
             closeButtonClickHandler={onCancel}
             resetButtonClickHandler={() => {
               form.reset();
-              setVessel(vesselMatch);
+              setSelectedVessel(berthingVessel);
             }}
             resetButtonDisabled={!form.isDirty()}
             submitButtonDisabled={

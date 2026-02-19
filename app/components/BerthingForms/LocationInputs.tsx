@@ -1,31 +1,38 @@
-'use client';
-
 import { useLocations } from '@/app/context/LocationContext';
 import { getLocationInputItems } from '@/lib/getLocationInputItems';
-import { UseFormReturnType } from '@mantine/form/lib/types';
+import { Button, Collapse, Flex, Stack } from '@mantine/core';
+import { GetInputPropsReturnType } from '@mantine/form/lib/types';
+import { useDisclosure } from '@mantine/hooks';
+import { IconCaretDownFilled, IconCaretRightFilled } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import { BerthInput } from './BerthInput';
 import { LocodeInput } from './LocodeInput';
 import { PortAreaInput } from './PortAreaInput';
 
-type Fields = {
-  locode: string;
-  portArea: string;
-  berth: string;
-};
+interface Props {
+  locode: string | null;
+  portArea: string | null;
+  locodeInputProps: GetInputPropsReturnType;
+  locodeInputKey: string;
+  portAreaInputProps: GetInputPropsReturnType;
+  portAreaInputKey: string;
+  berthInputProps: GetInputPropsReturnType;
+  berthInputKey: string;
+}
 
-type Props<T extends Fields> = {
-  useFormContext(): UseFormReturnType<T>;
-  locode: string;
-  portArea: string;
-};
-
-export function LocationInputs<T extends Fields>({
-  useFormContext,
+export function LocationInputs({
   locode,
   portArea,
-}: Props<T>) {
-  const form = useFormContext();
+  locodeInputProps,
+  locodeInputKey,
+  portAreaInputProps,
+  portAreaInputKey,
+  berthInputProps,
+  berthInputKey,
+}: Props) {
+  const t = useTranslations('LocationInputs');
+  const [opened, { toggle }] = useDisclosure(false);
 
   const {
     state: { locations, portAreas, berths },
@@ -38,21 +45,34 @@ export function LocationInputs<T extends Fields>({
 
   return (
     <>
-      <LocodeInput
-        locations={locations}
-        {...form.getInputProps('locode')}
-        key={form.key('locode')}
-      />
-      <PortAreaInput
-        data={portAreaItems}
-        {...form.getInputProps('portArea')}
-        key={form.key('portArea')}
-      />
-      <BerthInput
-        data={berthsItems}
-        {...form.getInputProps('berth')}
-        key={form.key('berth')}
-      />
+      <Flex>
+        <Button
+          size="compact-sm"
+          variant="transparent"
+          onClick={toggle}
+          leftSection={
+            opened ? (
+              <IconCaretDownFilled size={14} />
+            ) : (
+              <IconCaretRightFilled size={14} />
+            )
+          }>
+          {t('locationAndPortArea')}
+        </Button>
+      </Flex>
+      <Collapse in={opened} component={Stack}>
+        <LocodeInput
+          locations={locations}
+          {...locodeInputProps}
+          key={locodeInputKey}
+        />
+        <PortAreaInput
+          data={portAreaItems}
+          {...portAreaInputProps}
+          key={portAreaInputKey}
+        />
+      </Collapse>
+      <BerthInput data={berthsItems} {...berthInputProps} key={berthInputKey} />
     </>
   );
 }

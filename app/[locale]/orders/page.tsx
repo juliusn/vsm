@@ -1,4 +1,4 @@
-import { OrderTable } from './OrderTable';
+import { OrderTable } from './OrderTable/OrderTable';
 
 export default function OrdersPage() {
   return <OrderTable />;

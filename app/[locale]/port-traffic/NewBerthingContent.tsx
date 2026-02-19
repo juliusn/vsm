@@ -6,6 +6,7 @@ import { IconPlus } from '@tabler/icons-react';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
 import { NewBerthingForm } from '@/app/components/BerthingForms/NewBerthingForm';
+import { BerthingInputDataProvider } from '@/app/context/BerthingInputDataContext';
 
 export function NewBerthingContent() {
   const t = useTranslations('NewBerthingContent');
@@ -17,7 +18,9 @@ export function NewBerthingContent() {
         {t('buttonLabel')}
       </Button>
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
-        <NewBerthingForm close={close} resultCallback={close} />
+        <BerthingInputDataProvider>
+          <NewBerthingForm close={close} resultCallback={close} />
+        </BerthingInputDataProvider>
       </Modal>
     </>
   );

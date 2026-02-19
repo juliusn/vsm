@@ -1,0 +1,9 @@
+.berthing {
+  max-width: 6rem;
+}
+
+@media (min-width: $mantine-breakpoint-md) {
+  .berthing {
+    max-width: 12rem;
+  }
+}

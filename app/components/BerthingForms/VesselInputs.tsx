@@ -1,53 +1,64 @@
 'use client';
 
+import { useBerthingInputData } from '@/app/context/BerthingInputDataContext';
+import { useBerthingFormContext } from '@/app/context/BerthingFormContext';
 import { useVessels } from '@/app/context/VesselContext';
 import { Vessel } from '@/lib/types/vessel';
 import { Collapse, ComboboxItem, Paper } from '@mantine/core';
-import { UseFormReturnType } from '@mantine/form';
-import { useEffect, useMemo, useState } from 'react';
+import { useDisclosure } from '@mantine/hooks';
+import { useEffect, useState } from 'react';
 import { ImoInput } from './ImoInput';
 import { VesselDetails } from './VesselDetails';
 import { VesselNameInput } from './VesselNameInput';
 
-type Fields = {
-  vesselName: string;
-  imo: number | '';
-};
-
-type Props<T extends Fields> = {
-  useFormContext(): UseFormReturnType<T>;
-  vessel: Vessel | undefined;
-  imoRef: React.RefObject<HTMLInputElement | null>;
-};
-
-export function VesselInputs<T extends Fields>({
-  vessel,
-  imoRef,
-  useFormContext,
-}: Props<T>) {
+export function VesselInputs() {
   const vessels = useVessels();
-  const form = useFormContext();
+  const form = useBerthingFormContext();
 
-  const vesselItems = useMemo(
-    () =>
-      vessels.map(
-        (vessel): ComboboxItem => ({
-          value: vessel.imo.toString(),
-          label: vessel.name,
-        })
-      ),
-    [vessels]
+  const { selectedVessel, setSelectedVessel, imoInputRef } =
+    useBerthingInputData();
+
+  const vesselItems = vessels.map(
+    (vessel): ComboboxItem => ({
+      value: vessel.imo.toString(),
+      label: vessel.name,
+    })
   );
 
-  const [mostRecentVessel, setMostRecentVessel] = useState<Vessel | undefined>(
-    undefined
+  const [mostRecentVessel, setMostRecentVessel] = useState<Vessel | null>(
+    selectedVessel
   );
+
+  const [opened, { open, close }] = useDisclosure(!!mostRecentVessel);
+
+  form.watch('vesselName', ({ value }) => {
+    if (value) {
+      form.setFieldValue('imo', Number(value));
+      setTimeout(() => {
+        imoInputRef.current?.select();
+      }, 0);
+    } else {
+      form.setFieldValue('imo', null);
+      form.getInputNode('vesselName')?.focus();
+    }
+  });
+
+  form.watch('imo', ({ value }) => {
+    const match = vessels.find((vessel) => vessel.imo === value);
+    setSelectedVessel(match || null);
+    if (match) {
+      form.setFieldValue('vesselName', match.imo.toString());
+    }
+  });
 
   useEffect(() => {
-    if (vessel) {
-      setMostRecentVessel(vessel);
+    if (selectedVessel) {
+      open();
+      setMostRecentVessel(selectedVessel);
+    } else {
+      close();
     }
-  }, [vessel]);
+  }, [selectedVessel, open, close]);
 
   return (
     <>
@@ -59,9 +70,9 @@ export function VesselInputs<T extends Fields>({
       <ImoInput
         {...form.getInputProps('imo')}
         key={form.key('imo')}
-        ref={imoRef}
+        ref={imoInputRef}
       />
-      <Collapse in={!!vessel}>
+      <Collapse in={opened}>
         <Paper withBorder shadow="sm">
           {mostRecentVessel && <VesselDetails vessel={mostRecentVessel} />}
         </Paper>

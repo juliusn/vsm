@@ -7,15 +7,27 @@ berthing:berthings (
   created_at, 
   vessel_imo, 
   vessel_name, 
-  locode, 
-  port_area_code, 
-  berth_code, 
-  port_events ( 
+  arrival:port_events!arrival (
     id, 
     created_at, 
     type, 
     estimated_date, 
-    estimated_time 
+    estimated_time, 
+    locode, 
+    port_area_code, 
+    berth_code,
+    position
+  ),
+  departure:port_events!departure (
+    id, 
+    created_at, 
+    type, 
+    estimated_date, 
+    estimated_time, 
+    locode, 
+    port_area_code, 
+    berth_code,
+    position
   )
 ),
 common_services (
@@ -50,15 +62,30 @@ id,
 created_at, 
 vessel_imo, 
 vessel_name, 
-locode, 
-port_area_code, 
-berth_code, 
-port_events ( 
+arrival:port_events!arrival (
   id, 
   created_at, 
   type, 
   estimated_date, 
-  estimated_time 
+  estimated_time, 
+  locode, 
+  port_area_code, 
+  berth_code,
+  position
+),
+departure:port_events!departure (
+  id, 
+  created_at, 
+  type, 
+  estimated_date, 
+  estimated_time, 
+  locode, 
+  port_area_code, 
+  berth_code,
+  position
+),
+order:orders!orders_berthing_fkey (
+  id
 )
 `;
 

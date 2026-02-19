@@ -1,0 +1,9 @@
+.vesselName {
+  max-width: 6rem;
+}
+
+@media (min-width: $mantine-breakpoint-md) {
+  .vesselName {
+    max-width: 12rem;
+  }
+}

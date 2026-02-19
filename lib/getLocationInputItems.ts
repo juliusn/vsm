@@ -6,8 +6,8 @@ export function getLocationInputItems(
   locations: Tables<'locations'>[],
   portAreas: Tables<'port_areas'>[],
   berths: Tables<'berths'>[],
-  locode: string,
-  portArea: string
+  locode: string | null,
+  portArea: string | null
 ) {
   const filteredPortAreas = portAreas.filter((portArea) =>
     locode ? portArea.locode === locode : true

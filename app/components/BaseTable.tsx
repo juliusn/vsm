@@ -1,5 +1,6 @@
 'use client';
 
+import { IconChevronUp, IconSelector } from '@tabler/icons-react';
 import { DataTable, DataTableProps } from 'mantine-datatable';
 import { useTranslations } from 'next-intl';
 
@@ -25,6 +26,10 @@ export function BaseTable<T>({ records, ...props }: BaseTableProps<T>) {
       borderRadius="sm"
       noRecordsText={t('noResults')}
       minHeight={records && records.length ? 0 : 180}
+      sortIcons={{
+        sorted: <IconChevronUp size={14} />,
+        unsorted: <IconSelector size={14} />,
+      }}
       records={records}
       {...props}
     />

@@ -154,7 +154,8 @@
     "selectClientError": "Valitse tilaaja.",
     "selectRecipientError": "Valitse vastaanottaja.",
     "selectBerthingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
-    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin."
+    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin.",
+    "sendOrder": "Lähetä tilaus"
   },
   "BerthServiceSelect": {
     "tasks": "Tehtävät",
@@ -248,6 +249,7 @@
     "updateSuccessMessage": "Päivitys onnistui.",
     "deleteSuccessMessage": "Rivit poistettu.",
     "updateErrorMessage": "Päivitys epäonnistui kohteessa {label}. Palvelin vastasi statuskoodilla {status}.",
+    "deleteConflictMessage": "Pyyntöä ei voitu suorittaa, koska data on käytössä.",
     "deleteErrorMessage": "Rivien poisto epäonnistui kohteessa {label}. Palvelin vastasi statuskoodilla {status}."
   },
   "UpdateAllButton": {
@@ -427,23 +429,23 @@
   },
   "BerthingFormFields": {
     "vessel": "Alus",
-    "imoRequiredError": "Aluksen IMO-tunnus vaaditaan.",
-    "imoLengthError": "Aluksen IMO-tunnus täytyy olla 7 numeroa pitkä.",
-    "enterDateOrRemoveTimeError": "Syötä päivämäärä tai poista aika.",
-    "timeWithoutDateError": "Aika ilman päivämäärää.",
-    "etaDateAfterEtdDateError": "Saapumispäivä lähtöpäivän jälkeen.",
-    "etdDateBeforeEtaDateError": "Lähtöpäivä ennen saapumispäivää.",
-    "etaAfterEtdError": "Saapumisaika lähtöajan jälkeen.",
-    "etdBeforeEtaError": "Lähtöaika ennen saapumisaikaa.",
-    "berth": "Laituri",
     "arrival": "Saapuminen",
-    "departure": "Lähtö",
     "date": "Päivämäärä",
     "selectDate": "Valitse päivämäärä",
     "time": "Aika",
-    "cancelButtonLabel": "Peru",
-    "resetButtonLabel": "Palauta",
-    "saveButtonLabel": "Tallenna"
+    "departure": "Lähtö"
+  },
+  "useBerthingFormValidation": {
+    "imoRequiredError": "Aluksen IMO-tunnus vaaditaan.",
+    "imoLengthError": "Aluksen IMO-tunnus täytyy olla 7 numeroa pitkä.",
+    "enterDateOrRemoveTimeError": "Syötä päivämäärä tai poista aika.",
+    "arrivalDateAfterDepartureDateError": "Saapumispäivä lähtöpäivän jälkeen.",
+    "timeWithoutDateError": "Aika ilman päivämäärää.",
+    "arrivalDateMissingError": "Syötä ensin saapumisaika.",
+    "departureDateBeforeArrivalDateError": "Lähtöpäivä ennen saapumispäivää.",
+    "etaAfterEtdError": "Saapumisaika lähtöajan jälkeen.",
+    "etdBeforeEtaError": "Lähtöaika ennen saapumisaikaa.",
+    "departureDateMissingError": "Syötä ensin lähtöaika."
   },
   "FormButtons": {
     "close": "Sulje",
@@ -453,12 +455,10 @@
   "BerthingTable": {
     "noResults": "Ei tuloksia",
     "created": "Luotu",
-    "vesselImo": "IMO",
-    "vesselName": "Nimi",
+    "vesselName": "Aluksen nimi",
+    "vesselImo": "Aluksen IMO",
     "locode": "Geokoodi",
     "portAreaCode": "Satama-alueen tunnus",
-    "berthCode": "Laituritunnus",
-    "berth": "Laituri",
     "arrival": "Tulo",
     "departure": "Lähtö",
     "unknown": "Ei tiedossa",
@@ -478,6 +478,9 @@
   "ImoInput": {
     "imo": "IMO",
     "enterImo": "Syötä IMO"
+  },
+  "LocationInputs": {
+    "locationAndPortArea": "Sijainti ja satama-alue"
   },
   "LocodeInput": {
     "location": "Sijainti",
@@ -502,11 +505,8 @@
     "unknown": "Ei tiedossa",
     "berthing": "Laiturointi",
     "created": "Luotu",
-    "berth": "Laituri",
-    "vessel": "Alus",
-    "arrival": "Tulo",
-    "departure": "Lähtö",
     "services": "Palvelut",
+    "resource": "Resursoi",
     "status": "Tila",
     "orderedServices": "Tilatut palvelut",
     "edit": "Muokkaa",
@@ -525,13 +525,13 @@
     "removeSelection": "Poista valinta",
     "editBerthing": "Muokkaa laiturointia",
     "services": "Palvelut",
-    "servicesTooltip": "Valitse laiturointi valitaksesi palveluja.",
-    "send": "Lähetä tilaus"
+    "servicesTooltip": "Valitse laiturointi valitaksesi palveluja."
   },
   "EditOrder": {
     "editOrder": "Muokkaa tilausta",
     "selectBerthingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
-    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin."
+    "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin.",
+    "saveChanges": "Tallenna muutokset"
   },
   "OrderStatusSelect": {
     "submitted": "Lähetetty",

@@ -1,7 +1,10 @@
 'use client';
 
-import { NewOrderFormProvider } from '@/app/context/FormContext';
 import { useOrders } from '@/app/context/OrderContext';
+import {
+  OrderFormProvider,
+  useOrderForm,
+} from '@/app/context/OrderFormContext';
 import {
   useOrderSentNotification,
   usePostgresErrorNotification,
@@ -9,14 +12,13 @@ import {
 import { normalizeOrder } from '@/lib/normalizers';
 import { ordersSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
-import { OrderFormValues } from '@/lib/types/order';
 import { Order } from '@/lib/types/query-types';
-import { isNotEmpty, useForm } from '@mantine/form';
+import { isNotEmpty, TransformedValues } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { NewOrderForm } from './NewOrderForm';
+import { OrderForm } from './OrderForm';
 
 interface Props {
   onCancel(): void;
@@ -35,20 +37,22 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
     (permission) => permission.order_permission === 'create'
   );
 
-  const form = useForm<OrderFormValues>({
+  const initialValues = {
+    sender_counterparty_business_id:
+      createOrderPermissions.length === 1
+        ? createOrderPermissions[0].sender.business_id
+        : null,
+    receiver_counterparty_business_id:
+      createOrderPermissions.length === 1
+        ? createOrderPermissions[0].receiver.business_id
+        : null,
+    berthing: null,
+    services: [],
+  };
+
+  const form = useOrderForm({
     mode: 'uncontrolled',
-    initialValues: {
-      sender_counterparty_business_id:
-        createOrderPermissions.length === 1
-          ? createOrderPermissions[0].sender.business_id
-          : '',
-      receiver_counterparty_business_id:
-        createOrderPermissions.length === 1
-          ? createOrderPermissions[0].receiver.business_id
-          : '',
-      berthing: '',
-      services: [],
-    },
+    initialValues,
     validate: {
       sender_counterparty_business_id: isNotEmpty(t('selectClientError')),
       receiver_counterparty_business_id: isNotEmpty(t('selectRecipientError')),
@@ -56,6 +60,13 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
       services: (services) =>
         services.length ? null : t('selectServicesError'),
     },
+    transformValues: (values) => ({
+      sender_counterparty_business_id: values.sender_counterparty_business_id!,
+      receiver_counterparty_business_id:
+        values.receiver_counterparty_business_id!,
+      berthing: values.berthing!,
+      services: values.services,
+    }),
   });
 
   const handleSubmit = async ({
@@ -63,7 +74,7 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
     receiver_counterparty_business_id,
     berthing,
     services,
-  }: OrderFormValues) => {
+  }: TransformedValues<typeof form>) => {
     setLoading(true);
 
     const {
@@ -134,12 +145,13 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
   };
 
   return (
-    <NewOrderFormProvider value={form}>
-      <NewOrderForm
+    <OrderFormProvider form={form}>
+      <OrderForm
         onClose={onCancel}
         onSubmit={form.onSubmit(handleSubmit)}
         loading={loading}
+        submitButtonLabel={t('sendOrder')}
       />
-    </NewOrderFormProvider>
+    </OrderFormProvider>
   );
 }

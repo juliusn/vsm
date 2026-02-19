@@ -65,7 +65,6 @@ export function RegisterForm() {
     event.preventDefault();
     progress.start();
     const { firstName, lastName, email, password } = form.values;
-    const url = new URL(`/${locale}/confirm`, window.location.origin);
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -74,15 +73,18 @@ export function RegisterForm() {
         data: {
           first_name: firstName,
           last_name: lastName,
+          locale,
         },
-        emailRedirectTo: url.href,
       },
     });
 
     if (error) {
       showRegisterErrorModal(error);
     } else {
-      showSuccessModal({ content: t('accountCreated') });
+      showSuccessModal({
+        title: t('accountCreated'),
+        content: t('checkYourEmail'),
+      });
       form.reset();
       setFormDisabled(true);
     }

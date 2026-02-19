@@ -1,12 +1,12 @@
 'use client';
 
-import { NumberInput, NumberInputProps } from '@mantine/core';
+import { NumberInput } from '@mantine/core';
 import { useTranslations } from 'next-intl';
-interface ImoInputProps extends NumberInputProps {
-  ref?: React.Ref<HTMLInputElement>;
-}
+import { ComponentPropsWithRef } from 'react';
 
-export function ImoInput({ ref, ...props }: ImoInputProps) {
+export function ImoInput({
+  ...props
+}: ComponentPropsWithRef<typeof NumberInput>) {
   const t = useTranslations('ImoInput');
 
   return (
@@ -17,7 +17,6 @@ export function ImoInput({ ref, ...props }: ImoInputProps) {
       maxLength={7}
       required
       {...props}
-      ref={ref}
     />
   );
 }

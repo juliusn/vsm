@@ -4,41 +4,43 @@ import { FormButtons } from '@/app/components/FormButtons';
 import { useBerthings } from '@/app/context/BerthingContext';
 import {
   BerthingFormProvider,
-  useBerthingFormContext,
-} from '@/app/context/FormContext';
+  useBerthingForm,
+} from '@/app/context/BerthingFormContext';
+import { useBerthingInputData } from '@/app/context/BerthingInputDataContext';
 import { useVessels } from '@/app/context/VesselContext';
 import {
   useBerthingSavedNotification,
   usePostgresErrorNotification,
 } from '@/app/hooks/notifications';
+import { berthingsSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
 import {
   BerthIdentifier,
   BerthingFormValues,
-  BerthingRowData,
   PortAreaIdentifier,
 } from '@/lib/types/berthing';
-import { Group, Stack } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { Group, Space } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fi';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import useBerthingFormValidation from '../../hooks/useBerthingFormValidation';
 import { BerthingFormFields } from './BerthingFormFields';
-import { Berthing } from '@/lib/types/query-types';
-import { Vessel } from '@/lib/types/vessel';
 
 const initialValues: BerthingFormValues = {
-  vesselName: '',
-  imo: '',
-  locode: '',
-  portArea: '',
-  berth: '',
-  etaDate: '',
-  etaTime: '',
-  etdDate: '',
-  etdTime: '',
+  vesselName: null,
+  imo: null,
+  arrivalDate: null,
+  arrivalTime: null,
+  arrivalLocode: null,
+  arrivalPortArea: null,
+  arrivalBerth: null,
+  arrivalPosition: null,
+  departureDate: null,
+  departureTime: null,
+  departureLocode: null,
+  departurePortArea: null,
+  departureBerth: null,
 };
 
 export function NewBerthingForm({
@@ -46,129 +48,116 @@ export function NewBerthingForm({
   resultCallback,
 }: {
   close(): void;
-  resultCallback?: (data: BerthingRowData) => void;
+  resultCallback(newBerthingId: string): void;
 }) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
   const getBerthingSavedNotification = useBerthingSavedNotification();
   const { dispatchBerthings } = useBerthings();
   const vessels = useVessels();
-  const [loading, setLoading] = useState(false);
-  const [imoValue, setImoValue] = useState<BerthingFormValues['imo']>('');
-  const [vessel, setVessel] = useState<Vessel | undefined>();
-  const [locode, setLocode] = useState(initialValues.locode);
-  const [portArea, setPortArea] = useState(initialValues.portArea);
+  const { setSelectedVessel } = useBerthingInputData();
   const validate = useBerthingFormValidation();
-  const imoRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
 
-  const form = useForm<BerthingFormValues>({
+  const form = useBerthingForm({
     mode: 'uncontrolled',
     initialValues,
     validate,
     validateInputOnBlur: true,
     transformValues: (values) => ({
       ...values,
-      vesselName: vessel?.name || '',
-      portArea:
-        values.portArea &&
-        (JSON.parse(values.portArea) as PortAreaIdentifier).port_area_code,
-      berth:
-        values.berth &&
-        (JSON.parse(values.berth) as BerthIdentifier).berth_code,
+      vesselName:
+        vessels.find((vessel) => vessel.imo === values.imo)?.name || '',
+      arrivalPortArea:
+        values.arrivalPortArea &&
+        (JSON.parse(values.arrivalPortArea) as PortAreaIdentifier)
+          .port_area_code,
+      arrivalBerth:
+        values.arrivalBerth &&
+        (JSON.parse(values.arrivalBerth) as BerthIdentifier).berth_code,
+      departurePortArea:
+        values.departurePortArea &&
+        (JSON.parse(values.departurePortArea) as PortAreaIdentifier)
+          .port_area_code,
+      departureBerth:
+        values.departureBerth &&
+        (JSON.parse(values.departureBerth) as BerthIdentifier).berth_code,
     }),
-  });
-
-  form.watch('vesselName', ({ value }) => {
-    if (value) {
-      form.setFieldValue('imo', Number(value));
-      setTimeout(() => {
-        imoRef.current?.select();
-      }, 0);
-    } else {
-      form.setFieldValue('imo', '');
-      form.getInputNode('vesselName')?.focus();
-    }
-  });
-
-  form.watch('imo', ({ value }) => {
-    setImoValue(value);
-    const match = vessels.find((vessel) => vessel.imo === value);
-    setVessel(match);
-    if (match) {
-      form.setFieldValue('vesselName', match.imo.toString());
-    }
-  });
-
-  form.watch('locode', ({ previousValue, value }) => {
-    setLocode(value);
-    if (previousValue && previousValue !== value) {
-      form.setFieldValue('portArea', '');
-      form.setFieldValue('berth', '');
-    }
-  });
-
-  form.watch('portArea', ({ previousValue, value }) => {
-    setPortArea(value);
-    if (previousValue && previousValue !== value) {
-      form.setFieldValue('berth', '');
-    }
-    if (value) {
-      const { locode }: PortAreaIdentifier = JSON.parse(value);
-      form.setFieldValue('locode', locode);
-    }
-  });
-
-  form.watch('berth', ({ value }) => {
-    if (value) {
-      const { locode, port_area_code }: BerthIdentifier = JSON.parse(value);
-      form.setFieldValue('locode', locode);
-      const portArea: PortAreaIdentifier = { locode, port_area_code };
-      form.setFieldValue('portArea', JSON.stringify(portArea));
-    }
-  });
-
-  form.watch('etaDate', () => {
-    form.validateField('etdDate');
-  });
-
-  form.watch('etaTime', () => {
-    form.validateField('etdTime');
-  });
-
-  form.watch('etdDate', () => {
-    form.validateField('etaDate');
-  });
-
-  form.watch('etdTime', () => {
-    form.validateField('etaTime');
   });
 
   const submitHandler = async ({
     imo,
     vesselName,
-    locode,
-    portArea,
-    berth,
-    etaDate,
-    etaTime,
-    etdDate,
-    etdTime,
+    arrivalDate,
+    arrivalTime,
+    arrivalLocode,
+    arrivalPortArea,
+    arrivalBerth,
+    departureDate,
+    departureTime,
+    departureLocode,
+    departurePortArea,
+    departureBerth,
   }: BerthingFormValues) => {
-    if (imo === '') return;
+    if (imo === null) return;
 
     setLoading(true);
 
     try {
+      const arrivalQuery = arrivalDate
+        ? supabase
+            .from('port_events')
+            .insert({
+              type: 'arrival',
+              estimated_date: dayjs(arrivalDate).format('YYYY-MM-DD'),
+              estimated_time: arrivalTime,
+              locode: arrivalLocode,
+              port_area_code: arrivalPortArea,
+              berth_code: arrivalBerth,
+            })
+            .select()
+            .single()
+        : null;
+
+      const departureQuery = departureDate
+        ? supabase
+            .from('port_events')
+            .insert({
+              type: 'departure',
+              estimated_date: dayjs(departureDate).format('YYYY-MM-DD'),
+              estimated_time: departureTime,
+              locode: departureLocode,
+              port_area_code: departurePortArea,
+              berth_code: departureBerth,
+            })
+            .select()
+            .single()
+        : null;
+
+      const portEventQueries = [arrivalQuery, departureQuery];
+
+      const [arrivalResponse, departureResponse] =
+        await Promise.all(portEventQueries);
+
+      if (arrivalResponse?.error) {
+        showNotification(getErrorNotification(arrivalResponse.status));
+        return;
+      }
+
+      if (departureResponse?.error) {
+        showNotification(getErrorNotification(departureResponse.status));
+        return;
+      }
+
       const berthingsResponse = await supabase
         .from('berthings')
         .insert({
           vessel_imo: imo,
-          vessel_name: vesselName || null,
-          locode: locode || null,
-          port_area_code: portArea || null,
-          berth_code: berth || null,
+          vessel_name: vesselName,
+          arrival: arrivalResponse?.data?.id,
+          departure: departureResponse?.data?.id,
         })
-        .select()
+        .select(berthingsSelector)
         .single();
 
       if (berthingsResponse.error) {
@@ -176,65 +165,8 @@ export function NewBerthingForm({
         return;
       }
 
-      const queries = [];
-
-      if (etaDate) {
-        queries.push(
-          supabase
-            .from('port_events')
-            .insert({
-              berthing: berthingsResponse.data.id,
-              type: 'arrival',
-              estimated_date: dayjs(etaDate).format('YYYY-MM-DD'),
-              estimated_time: etaTime || null,
-            })
-            .select()
-            .single()
-        );
-      }
-
-      if (etdDate) {
-        queries.push(
-          supabase
-            .from('port_events')
-            .insert({
-              berthing: berthingsResponse.data.id,
-              type: 'departure',
-              estimated_date: dayjs(etdDate).format('YYYY-MM-DD'),
-              estimated_time: etdTime || null,
-            })
-            .select()
-            .single()
-        );
-      }
-
-      const portEventResponses = await Promise.all(queries);
-
-      if (!portEventResponses.every((response) => response.data !== null)) {
-        showNotification(getErrorNotification(500));
-        return;
-      }
-
-      const port_events = portEventResponses.map((response) => response.data);
-
-      const berthing: Berthing = {
-        ...berthingsResponse.data,
-        port_events,
-      };
-
-      dispatchBerthings({ type: 'added', item: berthing });
-
-      const resultData: BerthingRowData = {
-        ...berthingsResponse.data,
-        created: new Date(berthingsResponse.data.created_at),
-        arrival:
-          port_events.find((portEvent) => portEvent.type === 'arrival') || null,
-        departure:
-          port_events.find((portEvent) => portEvent.type === 'departure') ||
-          null,
-      };
-
-      resultCallback?.(resultData);
+      dispatchBerthings({ type: 'added', item: berthingsResponse.data });
+      resultCallback(berthingsResponse.data.id);
       showNotification(getBerthingSavedNotification());
     } catch {
       showNotification(getErrorNotification(500));
@@ -245,31 +177,22 @@ export function NewBerthingForm({
 
   return (
     <form onSubmit={form.onSubmit(submitHandler)}>
-      <Stack>
-        <BerthingFormProvider value={form}>
-          <BerthingFormFields<BerthingFormValues>
-            useFormContext={useBerthingFormContext}
-            vessel={vessel}
-            imoRef={imoRef}
-            locode={locode}
-            portArea={portArea}
-          />
-        </BerthingFormProvider>
-        <Group grow>
-          <FormButtons
-            closeButtonClickHandler={close}
-            resetButtonClickHandler={() => {
-              form.reset();
-              setVessel(undefined);
-            }}
-            resetButtonDisabled={!form.isDirty()}
-            submitButtonDisabled={
-              !imoValue || Boolean(Object.keys(form.errors).length)
-            }
-            submitButtonLoading={loading}
-          />
-        </Group>
-      </Stack>
+      <BerthingFormProvider form={form}>
+        <BerthingFormFields />
+      </BerthingFormProvider>
+      <Space h="lg" />
+      <Group grow>
+        <FormButtons
+          closeButtonClickHandler={close}
+          resetButtonClickHandler={() => {
+            form.reset();
+            setSelectedVessel(null);
+          }}
+          resetButtonDisabled={!form.isDirty()}
+          submitButtonDisabled={Boolean(Object.keys(form.errors).length)}
+          submitButtonLoading={loading}
+        />
+      </Group>
     </form>
   );
 }

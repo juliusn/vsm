@@ -5,7 +5,7 @@ import { usePostgresErrorNotification } from '@/app/hooks/notifications';
 import { normalizeOrder } from '@/lib/normalizers';
 import { ordersSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
-import { OrderRowData } from '@/lib/types/order';
+import { OrderData } from '@/lib/types/order';
 import {
   ComboboxItem,
   Group,
@@ -19,14 +19,14 @@ import { IconCheck } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-type Status = OrderRowData['status'];
+type Status = OrderData['status'];
 
 const statuses: Status[] = ['submitted', 'received', 'completed', 'canceled'];
 
 export default function OrderStatusSelect({
   orderRow,
 }: {
-  orderRow: OrderRowData;
+  orderRow: OrderData;
 }) {
   const t = useTranslations('OrderStatusSelect');
   const theme = useMantineTheme();
@@ -139,8 +139,11 @@ export default function OrderStatusSelect({
         </Group>
       )}
       styles={{
+        wrapper: {
+          minWidth: '9rem',
+          maxWidth: '11rem',
+        },
         input: {
-          minWidth: '140px',
           color: colors[value as Status],
         },
       }}

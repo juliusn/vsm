@@ -203,6 +203,12 @@ sender_name = "env(SMTP_SENDER_NAME)"
 subject = "Confirm your email"
 content_path = "./supabase/templates/confirmation.html"
 
+# Increase rate limits FOR TESTING ONLY:
+[auth.rate_limit]
+sign_in_sign_ups = 20
+token_verifications = 20
+email_sent = 20
+
 # Uncomment to customize email template
 
 # [auth.email.template.invite]
