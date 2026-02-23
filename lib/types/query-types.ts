@@ -4,8 +4,8 @@ import {
   berthServicesSelector,
   commonServicesSelector,
   counterpartiesSelector,
-  ordersSelector,
   orderPermissionsSelector,
+  ordersSelector,
 } from '../querySelectors';
 import { Database } from './database.types';
 

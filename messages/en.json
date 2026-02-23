@@ -11,7 +11,8 @@
     "home": "Home",
     "portTraffic": "Port Traffic",
     "orders": "Orders",
-    "data": "Data"
+    "data": "Data",
+    "admin": "Admin"
   },
   "AuthNav": {
     "login": "Log In",
@@ -312,6 +313,10 @@
     "title": "Done!",
     "message": "Order has been saved."
   },
+  "ApprovalStatusUpdatedNotification": {
+    "title": "Done!",
+    "message": "Approval status has been updated."
+  },
   "PortAreaCodePage": {
     "title": "Berths",
     "caption": "Select berths that you want to include in service management.",
@@ -586,5 +591,28 @@
     "markOrdersAsReceived": "Can mark orders as received",
     "markOrdersAsCompleted": "Can mark orders as completed",
     "markOrdersAsCanceled": "Can mark orders as canceled"
+  },
+  "UserTable": {
+    "id": "ID",
+    "email": "Email",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "approvalStatus": "Approval Status",
+    "admin": "Admin"
+  },
+  "useApprovalStatus": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "ApprovalStatusSelect": {
+    "approvalStatus": "Approval Status"
+  },
+  "AdminStatusChangeConfirmation": {
+    "grantAdminConfirmation": "Are you sure you want to grant admin privileges to this user?",
+    "revokeAdminConfirmation": "Are you sure you want to revoke admin privileges from this user?",
+    "cancel": "Cancel",
+    "grant": "Grant privileges",
+    "revoke": "Revoke privileges"
   }
 }

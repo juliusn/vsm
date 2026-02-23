@@ -7,16 +7,20 @@ import { HeaderNavbarLinks } from '../HeaderNavbarLinks';
 import { HeaderTabs } from '../HeaderTabs/HeaderTabs';
 import { HeaderTopShelf } from '../HeaderTopShelf';
 import classes from './Header.module.css';
+import { useAuthStore } from '@/app/store';
 
 export function Header({ children }: { children: React.ReactNode }) {
   const t = useTranslations('Header');
   const [opened, { toggle }] = useDisclosure(false);
+  const { user } = useAuthStore();
+
   const navItems = [
     { label: t('home'), href: '/' },
     { label: t('portTraffic'), href: '/port-traffic' },
     { label: t('orders'), href: '/orders' },
     { label: t('data'), href: '/data' },
-  ];
+    { label: t('admin'), href: '/admin' },
+  ].filter((item) => item.href !== '/admin' || user?.admin);
 
   return (
     <AppShell

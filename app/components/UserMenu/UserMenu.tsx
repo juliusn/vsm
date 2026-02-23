@@ -1,9 +1,10 @@
 'use client';
 
+import { AuthUser } from '@/app/store';
+import { useRouter } from '@/i18n/routing';
+import { createClient } from '@/lib/supabase/client';
 import { Avatar, Group, Menu, Text, UnstyledButton, rem } from '@mantine/core';
-import { ReactNode, startTransition, useState } from 'react';
-import classes from './UserMenu.module.css';
-import cx from 'clsx';
+import { showNotification } from '@mantine/notifications';
 import {
   IconCheck,
   IconChevronDown,
@@ -13,19 +14,16 @@ import {
   IconUserCheck,
   IconUserCircle,
 } from '@tabler/icons-react';
-import { useSessionStore } from '@/app/store';
-import { showNotification } from '@mantine/notifications';
+import cx from 'clsx';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
-import { createClient } from '@/lib/supabase/client';
+import { ReactNode, startTransition, useState } from 'react';
 import { useProgressBar } from '../ProgressBar';
+import classes from './UserMenu.module.css';
 type MenuItem = { label: string; icon: ReactNode; handler: () => void };
 
-export function UserMenu() {
+export function UserMenu({ user }: { user: AuthUser }) {
   const t = useTranslations('UserMenu');
   const supabase = createClient();
-  const session = useSessionStore((store) => store.session);
-  const setSession = useSessionStore((store) => store.setSession);
   const router = useRouter();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const progress = useProgressBar();
@@ -100,7 +98,6 @@ export function UserMenu() {
             });
           } else if (error.status === 403) {
             progress.done();
-            setSession(null);
           } else {
             progress.done();
             showNotification({
@@ -121,34 +118,32 @@ export function UserMenu() {
       onClose={() => setUserMenuOpened(false)}
       onOpen={() => setUserMenuOpened(true)}
       withinPortal>
-      {session && (
-        <Menu.Target>
-          <UnstyledButton
-            className={cx(classes.user, {
-              [classes.userActive]: userMenuOpened,
-            })}>
-            <Group gap={7}>
-              <Avatar
-                src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
-                alt={`${session?.user.user_metadata.first_name}`}
-                radius="xl"
-                size={20}
-              />
-              <Text fw={500} size="sm" lh={1} mr={3}>
-                {session.user.user_metadata.first_name}
-                <span className="hidden sm:inline">
-                  {' '}
-                  {session.user.user_metadata.last_name}
-                </span>
-              </Text>
-              <IconChevronDown
-                style={{ width: rem(12), height: rem(12) }}
-                stroke={1.5}
-              />
-            </Group>
-          </UnstyledButton>
-        </Menu.Target>
-      )}
+      <Menu.Target>
+        <UnstyledButton
+          className={cx(classes.user, {
+            [classes.userActive]: userMenuOpened,
+          })}>
+          <Group gap={7}>
+            <Avatar
+              src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
+              alt={`${user.userMetadata.first_name}`}
+              radius="xl"
+              size={20}
+            />
+            <Text fw={500} size="sm" lh={1} mr={3}>
+              {user.userMetadata.first_name}
+              <span className="hidden sm:inline">
+                {' '}
+                {user.userMetadata.last_name}
+              </span>
+            </Text>
+            <IconChevronDown
+              style={{ width: rem(12), height: rem(12) }}
+              stroke={1.5}
+            />
+          </Group>
+        </UnstyledButton>
+      </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>{t('account')}</Menu.Label>
         {items.map(({ handler, icon, label }, i) => (

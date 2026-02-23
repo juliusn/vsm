@@ -1,24 +1,15 @@
 'use client';
 
-import { Enums, Tables } from '@/lib/types/database.types';
-import { Badge, DefaultMantineColor, Table } from '@mantine/core';
+import { useApprovalStatus } from '@/app/hooks/approvalStatus';
+import { Tables } from '@/lib/types/database.types';
+import { Badge, Table } from '@mantine/core';
 import { useTranslations } from 'next-intl';
-
-type ApprovalStatusAttributes = {
-  label: string;
-  color: DefaultMantineColor;
-};
-
-type ApprovalStatus = Enums<'approval_status'>;
 
 export function ProfileContent({ profile }: { profile: Tables<'profiles'> }) {
   const t = useTranslations('ProfileContent');
-  const approvalStatusMap: Record<ApprovalStatus, ApprovalStatusAttributes> = {
-    pending: { label: t('pending'), color: 'yellow' },
-    approved: { label: t('approved'), color: 'green' },
-    rejected: { label: t('rejected'), color: 'red' },
-  };
-  const approvalStatus = approvalStatusMap[profile.approval_status];
+  const { approvalStatusColors, approvalStatusLabels } = useApprovalStatus();
+  const color = approvalStatusColors[profile.approval_status];
+  const label = approvalStatusLabels[profile.approval_status];
 
   return (
     <Table>
@@ -34,8 +25,8 @@ export function ProfileContent({ profile }: { profile: Tables<'profiles'> }) {
         <Table.Tr>
           <Table.Td>{t('approvalStatus')}</Table.Td>
           <Table.Td>
-            <Badge radius="xs" color={approvalStatus.color}>
-              {approvalStatus.label}
+            <Badge radius="xs" color={color}>
+              {label}
             </Badge>
           </Table.Td>
         </Table.Tr>

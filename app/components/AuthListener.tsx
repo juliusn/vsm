@@ -1,26 +1,47 @@
 'use client';
 
 import { createClient } from '@/lib/supabase/client';
+import { Session } from '@supabase/supabase-js';
 import { useEffect, useRef } from 'react';
-import { useSessionStore } from '../store';
+import { useAuthStore } from '../store';
 
 export function AuthListener() {
-  const setSession = useSessionStore((state) => state.setSession);
+  const setUser = useAuthStore((state) => state.setUser);
   const supabase = createClient();
   const tokenRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') throw new Error(`where's my window?`);
+    let latestRequest = 0;
+
+    const updateClaims = async (
+      userMetadata: Session['user']['user_metadata']
+    ) => {
+      const requestId = ++latestRequest;
+      const { data } = await supabase.auth.getClaims();
+
+      if (requestId === latestRequest) {
+        if (data?.claims.app_metadata?.admin) {
+          setUser({
+            admin: true,
+            userMetadata,
+          });
+        } else {
+          setUser({ admin: false, userMetadata });
+        }
+      }
+    };
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
-        setSession(null);
+        setUser(null);
       } else if (session) {
         const token = session.access_token;
+
         if (tokenRef.current !== token) {
           tokenRef.current = token;
-          setSession(session);
+          updateClaims(session.user.user_metadata);
         }
       }
     });
@@ -28,7 +49,7 @@ export function AuthListener() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase, setSession]);
+  }, [supabase, setUser]);
 
   return null;
 }

@@ -509,6 +509,7 @@ export type Database = {
           approval_status_set_by: string | null
           first_name: string
           id: string
+          is_admin: boolean
           last_name: string | null
           updated_at: string | null
         }
@@ -517,6 +518,7 @@ export type Database = {
           approval_status_set_by?: string | null
           first_name: string
           id: string
+          is_admin?: boolean
           last_name?: string | null
           updated_at?: string | null
         }
@@ -525,6 +527,7 @@ export type Database = {
           approval_status_set_by?: string | null
           first_name?: string
           id?: string
+          is_admin?: boolean
           last_name?: string | null
           updated_at?: string | null
         }
@@ -870,6 +873,7 @@ export type Database = {
       geomfromewkt: { Args: { "": string }; Returns: unknown }
       gettransactionid: { Args: never; Returns: unknown }
       install_available_extensions_and_test: { Args: never; Returns: boolean }
+      is_admin: { Args: never; Returns: boolean }
       longtransactionsenabled: { Args: never; Returns: boolean }
       orders_mark_canceled: { Args: { p_order_id: string }; Returns: undefined }
       orders_mark_completed: {
