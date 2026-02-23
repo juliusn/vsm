@@ -505,29 +505,29 @@ export type Database = {
       }
       profiles: {
         Row: {
+          admin: boolean
           approval_status: Database["public"]["Enums"]["approval_status"]
           approval_status_set_by: string | null
           first_name: string
           id: string
-          is_admin: boolean
           last_name: string | null
           updated_at: string | null
         }
         Insert: {
+          admin?: boolean
           approval_status?: Database["public"]["Enums"]["approval_status"]
           approval_status_set_by?: string | null
           first_name: string
           id: string
-          is_admin?: boolean
           last_name?: string | null
           updated_at?: string | null
         }
         Update: {
+          admin?: boolean
           approval_status?: Database["public"]["Enums"]["approval_status"]
           approval_status_set_by?: string | null
           first_name?: string
           id?: string
-          is_admin?: boolean
           last_name?: string | null
           updated_at?: string | null
         }

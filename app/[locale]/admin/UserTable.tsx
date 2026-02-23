@@ -90,7 +90,7 @@ export default function UserTable() {
 
     const { data, error, status } = await supabase
       .from('profiles')
-      .update({ is_admin: admin })
+      .update({ admin })
       .eq('id', profile.id)
       .select('*')
       .single();
@@ -151,12 +151,12 @@ export default function UserTable() {
       ),
     },
     {
-      accessor: 'is_admin',
+      accessor: 'admin',
       title: t('admin'),
       sortable: true,
       render: (profile) => (
         <Switch
-          checked={profile.is_admin}
+          checked={profile.admin}
           onChange={handleAdminSwitchChange(profile)}
           disabled={adminUpdatePending[profile.id]}
         />

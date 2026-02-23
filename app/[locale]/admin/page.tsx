@@ -1,6 +1,6 @@
+import { ProfileProvider } from '@/app/context/ProfileContext';
 import { createClient } from '@/lib/supabase/server';
 import UserTable from './UserTable';
-import { ProfileProvider } from '@/app/context/ProfileContext';
 
 export default async function AdminPage() {
   const supabase = await createClient();
