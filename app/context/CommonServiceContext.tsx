@@ -6,21 +6,27 @@ import { CommonService } from '@/lib/types/query-types';
 import { WithDictionary } from '@/lib/types/translation';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
+export type SortableCommonService = Omit<CommonService, 'sort_order'> & {
+  sort_order: number;
+};
+
+type NormalizedService = WithDictionary<SortableCommonService>;
+
 type ContextType = {
-  commonServices: WithDictionary<CommonService>[];
-  dispatch: Dispatch<Action<WithDictionary<CommonService>>>;
+  commonServices: NormalizedService[];
+  dispatch: Dispatch<Action<NormalizedService>>;
 };
 
 const Context = createContext<ContextType | null>(null);
 
 type Props = {
   children: React.ReactNode;
-  initialValues: WithDictionary<CommonService>[];
+  initialValues: NormalizedService[];
 };
 
 export const CommonServiceProvider = ({ children, initialValues }: Props) => {
   const [commonServices, dispatch] = useReducer(
-    reducer<WithDictionary<CommonService>>,
+    reducer<NormalizedService>,
     initialValues
   );
   return (

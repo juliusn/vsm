@@ -23,11 +23,12 @@ type Status = OrderData['status'];
 
 const statuses: Status[] = ['submitted', 'received', 'completed', 'canceled'];
 
-export default function OrderStatusSelect({
-  orderRow,
-}: {
+interface Props {
   orderRow: OrderData;
-}) {
+  disabled: boolean;
+}
+
+export default function OrderStatusSelect({ orderRow, disabled }: Props) {
   const t = useTranslations('OrderStatusSelect');
   const theme = useMantineTheme();
   const colorScheme = useComputedColorScheme();
@@ -119,7 +120,7 @@ export default function OrderStatusSelect({
     <Select
       data={data}
       defaultValue={orderRow.status}
-      disabled={loading}
+      disabled={disabled || loading}
       onChange={handleChange}
       allowDeselect={false}
       renderOption={({ option, checked }) => (

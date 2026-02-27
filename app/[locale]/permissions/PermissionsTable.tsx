@@ -43,5 +43,13 @@ export default function PermissionsTable({
     },
   ];
 
-  return <PaginatedTable allRecords={orderPermissions} columns={columns} />;
+  return (
+    <PaginatedTable
+      allRecords={orderPermissions}
+      columns={columns}
+      defaultColumnProps={{
+        noWrap: true,
+      }}
+    />
+  );
 }

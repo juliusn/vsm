@@ -313,9 +313,9 @@
     "title": "Valmis!",
     "message": "Tilaus on tallennettu."
   },
-  "ApprovalStatusUpdatedNotification": {
+  "UserPermissionsUpdatedNotification": {
     "title": "Valmis!",
-    "message": "Hyväksynnän tila on päivitetty."
+    "message": "Käyttäjän oikeudet on päivitetty."
   },
   "PortAreaCodePage": {
     "title": "Laiturit",
@@ -598,7 +598,11 @@
     "firstName": "Etunimi",
     "lastName": "Sukunimi",
     "approvalStatus": "Hyväksynnän tila",
-    "admin": "Admin"
+    "permissions": "Käyttöoikeudet",
+    "managePermissions": "Hallinnoi käyttöoikeuksia",
+    "edit": "Muokkaa",
+    "admin": "Admin",
+    "confirmAdminStatusChange": "Vahvista käyttäjän oikeuksien päivitys"
   },
   "useApprovalStatus": {
     "pending": "Odottaa",
@@ -614,5 +618,26 @@
     "cancel": "Peru",
     "grant": "Myönnä oikeudet",
     "revoke": "Poista oikeudet"
+  },
+  "ManagePermissions": {
+    "title": "Tilausten käsittely",
+    "user": "Käyttäjä",
+    "readOrders": "Voi lukea tilauksia",
+    "createOrders": "Voi luoda tilauksia",
+    "deleteOrders": "Voi poistaa tilauksia",
+    "markOrdersAsReceived": "Voi merkitä tilauksia vastaanotetuksi",
+    "markOrdersAsCompleted": "Voi merkitä tilauksia toimitetuksi",
+    "markOrdersAsCanceled": "Voi merkitä tilauksia perutuksi",
+    "close": "Sulje",
+    "reset": "Palauta",
+    "save": "Tallenna"
+  },
+  "OrderRelationship": {
+    "sender": "Lähettäjä",
+    "receiver": "Vastaanottaja"
+  },
+  "RestrictedContentAlert": {
+    "title": "Rajoitettu sisältö",
+    "message": "Sinulla ei ole käyttäjäoikeuksia tämän sisällön katsomiseen."
   }
 }

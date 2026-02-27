@@ -13,7 +13,6 @@ import { DataTableColumn, DataTableSortStatus } from 'mantine-datatable';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { EditOrder } from '../EditOrder';
-import { OrderStatus } from '../OrderStatus';
 import OrderStatusSelect from '../OrderStatusSelect';
 import classes from './OrderTable.module.css';
 
@@ -24,6 +23,12 @@ const statusRank: Record<Enums<'order_status'>, number> = {
   canceled: 3,
 };
 
+const statusPermissions: Enums<'order_permission'>[] = [
+  'mark_received',
+  'mark_completed',
+  'mark_canceled',
+];
+
 export function OrderTable() {
   const t = useTranslations('OrderTable');
   const locale = useLocale();
@@ -31,6 +36,14 @@ export function OrderTable() {
   const { orders, orderPermissions } = useOrders();
   const [records, setRecords] = useState(orders);
   const [selectedRow, setSelectedRow] = useState<OrderData | null>(null);
+
+  const permissions = orderPermissions.map(
+    (permission) => permission.order_permission
+  );
+
+  const canChangeOrderStatus = permissions.some((permission) =>
+    statusPermissions.includes(permission)
+  );
 
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
     useDisclosure(false);
@@ -67,14 +80,16 @@ export function OrderTable() {
       title: t('services'),
       render: (orderRow) => (
         <Group gap={4}>
-          {orderRow.common_services.map((service) => (
-            <Badge
-              key={service.id}
-              variant="default"
-              styles={{ root: { flexShrink: 0 } }}>
-              {service.dictionary[locale].abbreviation}
-            </Badge>
-          ))}
+          {orderRow.common_services
+            .sort((a, b) => a.sort_order - b.sort_order)
+            .map((service) => (
+              <Badge
+                key={service.id}
+                variant="default"
+                styles={{ root: { flexShrink: 0 } }}>
+                {service.dictionary[locale].abbreviation}
+              </Badge>
+            ))}
         </Group>
       ),
       width: '0%',
@@ -82,12 +97,12 @@ export function OrderTable() {
     {
       accessor: 'status',
       title: t('status'),
-      render: (orderRow) =>
-        orderPermissions.length ? (
-          <OrderStatusSelect orderRow={orderRow} />
-        ) : (
-          <OrderStatus status={orderRow.status} />
-        ),
+      render: (orderRow) => (
+        <OrderStatusSelect
+          orderRow={orderRow}
+          disabled={canChangeOrderStatus}
+        />
+      ),
       sortable: true,
     },
     {

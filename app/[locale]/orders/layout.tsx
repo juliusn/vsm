@@ -1,13 +1,20 @@
 import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
 import { BerthingProvider } from '@/app/context/BerthingContext';
 import { BerthServiceProvider } from '@/app/context/BerthServiceContext';
-import { CommonServiceProvider } from '@/app/context/CommonServiceContext';
+import {
+  CommonServiceProvider,
+  SortableCommonService,
+} from '@/app/context/CommonServiceContext';
 import { CounterpartyProvider } from '@/app/context/CounterpartyContext';
 import { LocationProvider } from '@/app/context/LocationContext';
 import { OrderProvider } from '@/app/context/OrderContext';
 import { VesselProvider } from '@/app/context/VesselContext';
 import { fetchOrdersData } from '@/lib/fetchOrdersData';
-import { normalizeOrders, normalizeTranslations } from '@/lib/normalizers';
+import {
+  normalizeOrders,
+  normalizeSortables,
+  normalizeTranslations,
+} from '@/lib/normalizers';
 import {
   BerthService,
   CommonService,
@@ -37,8 +44,8 @@ export default async function OrdersLayout({
               data.berthServices
             )}>
             <CommonServiceProvider
-              initialValues={normalizeTranslations<CommonService>(
-                data.commonServices
+              initialValues={normalizeTranslations<SortableCommonService>(
+                normalizeSortables<CommonService>(data.commonServices)
               )}>
               <OrderProvider
                 initialOrders={normalizeOrders(data.orders)}

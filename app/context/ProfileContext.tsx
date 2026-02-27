@@ -2,10 +2,8 @@
 
 import { reducer } from '@/lib/reducer';
 import { Action } from '@/lib/types/context';
-import { Tables } from '@/lib/types/database.types';
+import { Profile } from '@/lib/types/query-types';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
-
-type Profile = Tables<'profiles'>;
 
 type ContextType = {
   profiles: Profile[];

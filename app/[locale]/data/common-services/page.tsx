@@ -1,6 +1,9 @@
 import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
-import { CommonServiceProvider } from '@/app/context/CommonServiceContext';
-import { normalizeTranslations } from '@/lib/normalizers';
+import {
+  CommonServiceProvider,
+  SortableCommonService,
+} from '@/app/context/CommonServiceContext';
+import { normalizeSortables, normalizeTranslations } from '@/lib/normalizers';
 import { commonServicesSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/server';
 import { Group, Title } from '@mantine/core';
@@ -19,7 +22,9 @@ export default async function CommonServicesPage() {
 
   return data ? (
     <CommonServiceProvider
-      initialValues={normalizeTranslations<CommonService>(data)}>
+      initialValues={normalizeTranslations<SortableCommonService>(
+        normalizeSortables<CommonService>(data)
+      )}>
       <Group justify="space-between">
         <Title size="h2">{t('title')}</Title>
         <NewCommonServiceButton />

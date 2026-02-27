@@ -71,10 +71,16 @@ export function NewCommonServiceButton() {
       return;
     }
 
+    if (data.sort_order === null) {
+      showNotification(getErrorNotification(500));
+      return;
+    }
+
     dispatch({
       type: 'added',
       item: {
         ...data,
+        sort_order: data.sort_order,
         dictionary: { en: translationEn, fi: translationFi },
       },
     });

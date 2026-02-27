@@ -1,8 +1,9 @@
+import { SortableCommonService } from '@/app/context/CommonServiceContext';
 import { OrderData } from './types/order';
-import { CommonService, Order } from './types/query-types';
+import { Order } from './types/query-types';
 import { RowWithTranslations, WithDictionary } from './types/translation';
 
-function normalizeRow<T extends RowWithTranslations>(
+export function normalizeRow<T extends RowWithTranslations>(
   row: T
 ): WithDictionary<T> | null {
   const en = row.translations.find((t) => t.locale === 'en');
@@ -32,13 +33,14 @@ export function normalizeTranslations<T extends RowWithTranslations>(
 export function normalizeOrder(order: Order): OrderData | null {
   const sender = normalizeRow(order.sender);
   const receiver = normalizeRow(order.receiver);
+  const sortableCommonServices = normalizeSortables(order.common_services);
 
   if (!sender || !receiver) return null;
 
   return {
     ...order,
-    common_services: normalizeTranslations<CommonService>(
-      order.common_services
+    common_services: normalizeTranslations<SortableCommonService>(
+      sortableCommonServices
     ),
     sender,
     receiver,
@@ -55,4 +57,16 @@ export function normalizeOrders(orders: Order[]): OrderData[] {
 
     return array;
   }, []);
+}
+
+type MaybeSortable = { sort_order: number | null };
+type Sortable = { sort_order: number };
+type ReturnType<T extends MaybeSortable> = Omit<T, 'sort_order'> & Sortable;
+
+export function normalizeSortables<T extends MaybeSortable>(
+  sortables: T[]
+): ReturnType<T>[] {
+  return sortables.flatMap((sortable) =>
+    sortable.sort_order !== null ? [sortable as ReturnType<T>] : []
+  );
 }

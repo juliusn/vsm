@@ -2,16 +2,18 @@
 
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { ServicePreview } from '@/app/components/ServicePreview';
-import { useCommonServices } from '@/app/context/CommonServiceContext';
+import {
+  SortableCommonService,
+  useCommonServices,
+} from '@/app/context/CommonServiceContext';
 import {
   usePostgresErrorNotification,
   useServiceDeletedNotification,
   useServiceSavedNotification,
 } from '@/app/hooks/notifications';
-import { normalizeTranslations } from '@/lib/normalizers';
+import { normalizeSortables, normalizeTranslations } from '@/lib/normalizers';
 import { commonServicesSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
-import { CommonService } from '@/lib/types/query-types';
 import { WithDictionary } from '@/lib/types/translation';
 import {
   DragDropContext,
@@ -61,12 +63,15 @@ export function CommonServiceTable() {
       return;
     }
 
-    const normalizedServices = normalizeTranslations<CommonService>(data);
+    const sortableServices = normalizeSortables(data);
+
+    const normalizedServices =
+      normalizeTranslations<SortableCommonService>(sortableServices);
 
     dispatch({ type: 'replaced', items: normalizedServices });
   };
 
-  const columns: DataTableColumn<WithDictionary<CommonService>>[] = [
+  const columns: DataTableColumn<WithDictionary<SortableCommonService>>[] = [
     { accessor: '', hiddenContent: true, width: 30 },
     {
       accessor: 'dictionary.en.en',
@@ -190,7 +195,7 @@ export function CommonServiceTable() {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <PaginatedTable<WithDictionary<CommonService>>
+      <PaginatedTable<WithDictionary<SortableCommonService>>
         allRecords={commonServices}
         columns={columns}
         tableWrapper={({ children }) => (

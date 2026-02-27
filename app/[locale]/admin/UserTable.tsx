@@ -7,20 +7,31 @@ import {
   useApprovalStatus,
 } from '@/app/hooks/approvalStatus';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
+import { profileSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
-import { Enums, Tables } from '@/lib/types/database.types';
-import { Modal, SelectProps, Switch, SwitchProps } from '@mantine/core';
+import { Enums } from '@/lib/types/database.types';
+import { Profile } from '@/lib/types/query-types';
+import {
+  ActionIcon,
+  Center,
+  Indicator,
+  Modal,
+  SelectProps,
+  Switch,
+  SwitchProps,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { IconSettings } from '@tabler/icons-react';
 import { sortBy } from 'lodash';
 import { DataTableColumn, DataTableSortStatus } from 'mantine-datatable';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
-import ApprovalStatusSelect from './ApprovalStatusSelect';
-import { useDisclosure } from '@mantine/hooks';
+import { useMemo, useState } from 'react';
 import { AdminStatusChangeConfirmation } from './AdminStatusChangeConfirmation';
+import ApprovalStatusSelect from './ApprovalStatusSelect';
+import ManagePermissions from './ManagePermissions';
 import UserPreview from './UserPreview';
 
-type Profile = Tables<'profiles'>;
 type OnChange = SelectProps['onChange'];
 type AdminStateTransfer = { profile: Profile; admin: boolean };
 
@@ -30,10 +41,11 @@ const isApprovalStatus = (v: string | null): v is Enums<'approval_status'> =>
 export default function UserTable() {
   const { profiles, dispatchProfiles } = useProfiles();
   const { approvalStatusColors, approvalStatusSortOrder } = useApprovalStatus();
-  const [records, setRecords] = useState(profiles);
   const t = useTranslations('UserTable');
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedProfile = profiles.find((profile) => selectedId === profile.id);
 
   const [adminStateTransfer, setAdminStateTransfer] =
     useState<AdminStateTransfer | null>(null);
@@ -50,6 +62,36 @@ export default function UserTable() {
     columnAccessor: 'updated_at',
     direction: 'desc',
   });
+
+  const records = useMemo(() => {
+    let data: Profile[];
+
+    switch (sortStatus.columnAccessor) {
+      case 'updated_at': {
+        data = sortBy(profiles, (profile) =>
+          profile.updated_at ? new Date(profile.updated_at) : null
+        );
+        break;
+      }
+      case 'approval_status': {
+        data = sortBy(
+          profiles,
+          (profile) => approvalStatusSortOrder[profile.approval_status]
+        );
+        break;
+      }
+      default: {
+        data = sortBy(profiles, sortStatus.columnAccessor);
+      }
+    }
+
+    return sortStatus.direction === 'desc' ? data.reverse() : data;
+  }, [sortStatus, profiles, approvalStatusSortOrder]);
+
+  const [
+    managePermissionsModalOpened,
+    { open: openManagePermissionsModal, close: closeManagePermissionsModal },
+  ] = useDisclosure(false);
 
   const [
     confirmAdminStatusModalOpened,
@@ -68,7 +110,7 @@ export default function UserTable() {
         .from('profiles')
         .update({ approval_status: value })
         .eq('id', id)
-        .select('*')
+        .select(profileSelector)
         .single();
 
       setStatusUpdatePending((others) => ({ ...others, [id]: false }));
@@ -92,7 +134,7 @@ export default function UserTable() {
       .from('profiles')
       .update({ admin })
       .eq('id', profile.id)
-      .select('*')
+      .select(profileSelector)
       .single();
 
     setAdminUpdatePending((others) => ({ ...others, [id]: false }));
@@ -151,6 +193,24 @@ export default function UserTable() {
       ),
     },
     {
+      accessor: 'manage_permissions',
+      title: t('permissions'),
+      render: (profile) => (
+        <Center>
+          <Indicator size="1rem" label={profile.order_permissions.length}>
+            <ActionIcon
+              variant="subtle"
+              onClick={() => {
+                setSelectedId(profile.id);
+                openManagePermissionsModal();
+              }}>
+              <IconSettings stroke={1.5} />
+            </ActionIcon>
+          </Indicator>
+        </Center>
+      ),
+    },
+    {
       accessor: 'admin',
       title: t('admin'),
       sortable: true,
@@ -164,34 +224,22 @@ export default function UserTable() {
     },
   ];
 
-  useEffect(() => {
-    let data: Profile[];
-
-    switch (sortStatus.columnAccessor) {
-      case 'updated_at': {
-        data = sortBy(profiles, (profile) =>
-          profile.updated_at ? new Date(profile.updated_at) : null
-        );
-        break;
-      }
-      case 'approval_status': {
-        data = sortBy(
-          profiles,
-          (profile) => approvalStatusSortOrder[profile.approval_status]
-        );
-        break;
-      }
-      default: {
-        data = sortBy(profiles, sortStatus.columnAccessor);
-      }
-    }
-
-    setRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
-  }, [sortStatus, profiles, approvalStatusSortOrder]);
-
   return (
     <>
       <Modal
+        title={t('managePermissions')}
+        opened={managePermissionsModalOpened}
+        onClose={closeManagePermissionsModal}
+        size="auto">
+        {selectedProfile && (
+          <ManagePermissions
+            profile={selectedProfile}
+            onClose={closeManagePermissionsModal}
+          />
+        )}
+      </Modal>
+      <Modal
+        title={t('confirmAdminStatusChange')}
         opened={confirmAdminStatusModalOpened}
         onClose={closeAdminStatusModal}>
         {adminStateTransfer && (

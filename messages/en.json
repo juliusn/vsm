@@ -313,9 +313,9 @@
     "title": "Done!",
     "message": "Order has been saved."
   },
-  "ApprovalStatusUpdatedNotification": {
+  "UserPermissionsUpdatedNotification": {
     "title": "Done!",
-    "message": "Approval status has been updated."
+    "message": "User permissions have been updated."
   },
   "PortAreaCodePage": {
     "title": "Berths",
@@ -598,7 +598,11 @@
     "firstName": "First name",
     "lastName": "Last name",
     "approvalStatus": "Approval Status",
-    "admin": "Admin"
+    "permissions": "Permissions",
+    "managePermissions": "Manage permissions",
+    "edit": "Edit",
+    "admin": "Admin",
+    "confirmAdminStatusChange": "Confirm update on user privileges"
   },
   "useApprovalStatus": {
     "pending": "Pending",
@@ -614,5 +618,26 @@
     "cancel": "Cancel",
     "grant": "Grant privileges",
     "revoke": "Revoke privileges"
+  },
+  "ManagePermissions": {
+    "title": "Order handling",
+    "user": "User",
+    "readOrders": "Can read orders",
+    "createOrders": "Can create orders",
+    "deleteOrders": "Can delete orders",
+    "markOrdersAsReceived": "Can mark orders as received",
+    "markOrdersAsCompleted": "Can mark orders as completed",
+    "markOrdersAsCanceled": "Can mark orders as canceled",
+    "close": "Close",
+    "reset": "Reset",
+    "save": "Save"
+  },
+  "OrderRelationship": {
+    "sender": "Sender",
+    "receiver": "Receiver"
+  },
+  "RestrictedContentAlert": {
+    "title": "Restricted content",
+    "message": "You don't have the user privileges to view this content."
   }
 }
