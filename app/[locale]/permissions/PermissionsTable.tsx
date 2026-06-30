@@ -1,12 +1,11 @@
 'use client';
 
 import { PaginatedTable } from '@/app/components/PaginatedTable';
+import { useOrderPermissions } from '@/app/hooks/orderPermissions';
 import { OrderPermission } from '@/lib/types/query-types';
 import { Text } from '@mantine/core';
 import { DataTableColumn } from 'mantine-datatable';
 import { useTranslations } from 'next-intl';
-
-type Permission = OrderPermission['order_permission'];
 
 export default function PermissionsTable({
   orderPermissions,
@@ -14,15 +13,7 @@ export default function PermissionsTable({
   orderPermissions: OrderPermission[];
 }) {
   const t = useTranslations('PermissionsTable');
-
-  const permissionTranslations: { [_ in Permission]: string } = {
-    read: t('readOrders'),
-    create: t('createOrders'),
-    delete: t('deleteOrders'),
-    mark_received: t('markOrdersAsReceived'),
-    mark_completed: t('markOrdersAsCompleted'),
-    mark_canceled: t('markOrdersAsCanceled'),
-  };
+  const { permissionTranslations } = useOrderPermissions();
 
   const columns: DataTableColumn<OrderPermission>[] = [
     {

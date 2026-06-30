@@ -9,19 +9,15 @@ import { useMemo } from 'react';
 
 type ApprovalStatus = Enums<'approval_status'>;
 
-const keys: Record<ApprovalStatus, true> = {
-  pending: true,
-  approved: true,
-  rejected: true,
-};
-
-export const approvalStatuses = Object.keys(keys) as ApprovalStatus[];
-
-const approvalStatusSortOrder: Record<ApprovalStatus, number> = {
+const MODEL: Record<ApprovalStatus, number> = {
   pending: 0,
   approved: 1,
   rejected: 2,
 };
+
+export const APPROVAL_STATUSES = (Object.keys(MODEL) as ApprovalStatus[]).sort(
+  (a, b) => MODEL[a] - MODEL[b]
+);
 
 export const useApprovalStatus = () => {
   const t = useTranslations('useApprovalStatus');
@@ -51,6 +47,5 @@ export const useApprovalStatus = () => {
   return {
     approvalStatusLabels,
     approvalStatusColors,
-    approvalStatusSortOrder,
   };
 };

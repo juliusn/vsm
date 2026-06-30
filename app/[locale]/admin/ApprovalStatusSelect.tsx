@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  approvalStatuses,
+  APPROVAL_STATUSES,
   useApprovalStatus,
 } from '@/app/hooks/approvalStatus';
 import { Enums } from '@/lib/types/database.types';
@@ -11,7 +11,7 @@ import { IconCheck } from '@tabler/icons-react';
 export default function ApprovalStatusSelect(props: SelectProps) {
   const { approvalStatusLabels, approvalStatusColors } = useApprovalStatus();
 
-  const approvalStatusItems: ComboboxItem[] = approvalStatuses.map(
+  const approvalStatusItems: ComboboxItem[] = APPROVAL_STATUSES.map(
     (status) => ({
       label: approvalStatusLabels[status],
       value: status,

@@ -37,32 +37,7 @@ export default function OrderStatusSelect({ orderRow, disabled }: Props) {
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
-  const { dispatchOrders, orderPermissions } = useOrders();
-
-  const scopedPermissions = orderPermissions.filter(
-    ({ sender, receiver }) =>
-      sender.business_id === orderRow.sender.business_id &&
-      receiver.business_id === orderRow.receiver.business_id
-  );
-
-  const permissionReceive = scopedPermissions.some(
-    (permission) => permission.order_permission === 'mark_received'
-  );
-
-  const permissionComplete = scopedPermissions.some(
-    (permission) => permission.order_permission === 'mark_completed'
-  );
-
-  const permissionCancel = scopedPermissions.some(
-    (permission) => permission.order_permission === 'mark_canceled'
-  );
-
-  const permissions: { [k in Status]: boolean } = {
-    submitted: false,
-    received: permissionReceive,
-    completed: permissionComplete,
-    canceled: permissionCancel,
-  };
+  const { dispatchOrders } = useOrders();
 
   const colors: {
     [k in Status]: string;
@@ -76,7 +51,6 @@ export default function OrderStatusSelect({ orderRow, disabled }: Props) {
   const data: ComboboxItem[] = statuses.map((status) => ({
     label: t(status),
     value: status,
-    disabled: !permissions[status],
   }));
 
   const handleChange: (

@@ -619,15 +619,15 @@
     "grant": "Grant privileges",
     "revoke": "Revoke privileges"
   },
+  "useOrderPermissions": {
+    "read": "Can read orders",
+    "create": "Can create orders",
+    "edit": "Can edit orders",
+    "delete": "Can delete orders"
+  },
   "ManagePermissions": {
     "title": "Order handling",
     "user": "User",
-    "readOrders": "Can read orders",
-    "createOrders": "Can create orders",
-    "deleteOrders": "Can delete orders",
-    "markOrdersAsReceived": "Can mark orders as received",
-    "markOrdersAsCompleted": "Can mark orders as completed",
-    "markOrdersAsCanceled": "Can mark orders as canceled",
     "close": "Close",
     "reset": "Reset",
     "save": "Save"

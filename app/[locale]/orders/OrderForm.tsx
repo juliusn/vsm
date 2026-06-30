@@ -5,9 +5,9 @@ import { NewBerthingForm } from '@/app/components/BerthingForms/NewBerthingForm'
 import { BerthingPreview } from '@/app/components/BerthingPreview';
 import { FormButtons } from '@/app/components/FormButtons';
 import { useBerthings } from '@/app/context/BerthingContext';
+import { BerthingInputDataProvider } from '@/app/context/BerthingInputDataContext';
 import { useCommonServices } from '@/app/context/CommonServiceContext';
 import { useCounterparties } from '@/app/context/CounterpartyContext';
-import { BerthingInputDataProvider } from '@/app/context/BerthingInputDataContext';
 import { useOrderFormContext } from '@/app/context/OrderFormContext';
 import {
   ActionIcon,
@@ -253,11 +253,11 @@ export function OrderForm({
         </InputWrapper>
         <Checkbox.Group
           defaultValue={[]}
+          disabled={!selectedBerthingId}
           {...form.getInputProps('services')}
           key={form.key('services')}
           onChange={(value) => servicesProps.onChange([...value].sort())}>
           <Fieldset
-            disabled={!selectedBerthingId}
             legend={
               <Group>
                 <IconChecklist size={20} color="var(--mantine-color-blue-5)" />

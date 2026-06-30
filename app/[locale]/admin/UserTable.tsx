@@ -3,7 +3,7 @@
 import { PaginatedTable } from '@/app/components/PaginatedTable';
 import { useProfiles } from '@/app/context/ProfileContext';
 import {
-  approvalStatuses,
+  APPROVAL_STATUSES,
   useApprovalStatus,
 } from '@/app/hooks/approvalStatus';
 import { usePostgresErrorNotification } from '@/app/hooks/notifications';
@@ -36,11 +36,11 @@ type OnChange = SelectProps['onChange'];
 type AdminStateTransfer = { profile: Profile; admin: boolean };
 
 const isApprovalStatus = (v: string | null): v is Enums<'approval_status'> =>
-  typeof v === 'string' && (approvalStatuses as readonly string[]).includes(v);
+  typeof v === 'string' && (APPROVAL_STATUSES as readonly string[]).includes(v);
 
 export default function UserTable() {
   const { profiles, dispatchProfiles } = useProfiles();
-  const { approvalStatusColors, approvalStatusSortOrder } = useApprovalStatus();
+  const { approvalStatusColors } = useApprovalStatus();
   const t = useTranslations('UserTable');
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
@@ -74,9 +74,8 @@ export default function UserTable() {
         break;
       }
       case 'approval_status': {
-        data = sortBy(
-          profiles,
-          (profile) => approvalStatusSortOrder[profile.approval_status]
+        data = sortBy(profiles, (profile) =>
+          APPROVAL_STATUSES.indexOf(profile.approval_status)
         );
         break;
       }
@@ -86,7 +85,7 @@ export default function UserTable() {
     }
 
     return sortStatus.direction === 'desc' ? data.reverse() : data;
-  }, [sortStatus, profiles, approvalStatusSortOrder]);
+  }, [sortStatus, profiles]);
 
   const [
     managePermissionsModalOpened,

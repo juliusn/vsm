@@ -152,30 +152,12 @@ grant truncate on table "public"."order_permissions" to "postgres";
 grant update on table "public"."order_permissions" to "postgres";
 
 
-  create policy "Authorize cancel"
+  create policy "Authorize edit"
   on "public"."orders"
   as permissive
   for update
   to authenticated
-using (public.authorize_orders('mark_canceled'::public.order_permission, sender_counterparty_business_id, receiver_counterparty_business_id));
-
-
-
-  create policy "Authorize complete"
-  on "public"."orders"
-  as permissive
-  for update
-  to authenticated
-using (public.authorize_orders('mark_completed'::public.order_permission, sender_counterparty_business_id, receiver_counterparty_business_id));
-
-
-
-  create policy "Authorize receive"
-  on "public"."orders"
-  as permissive
-  for update
-  to authenticated
-using (public.authorize_orders('mark_received'::public.order_permission, sender_counterparty_business_id, receiver_counterparty_business_id));
+using (public.authorize_orders('edit'::public.order_permission, sender_counterparty_business_id, receiver_counterparty_business_id));
 
 
 CREATE TRIGGER common_services_insert_trigger BEFORE INSERT ON public.common_services FOR EACH ROW EXECUTE FUNCTION public.set_sort_order();

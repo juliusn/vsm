@@ -6,10 +6,14 @@ import {
   usePostgresErrorNotification,
   useUserPermissionsUpdatedNotification,
 } from '@/app/hooks/notifications';
+import {
+  ORDER_PERMISSIONS,
+  useOrderPermissions,
+} from '@/app/hooks/orderPermissions';
 import { orderPermissionsSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
-import { Enums, TablesInsert } from '@/lib/types/database.types';
-import { OrderPermission, Profile } from '@/lib/types/query-types';
+import { TablesInsert } from '@/lib/types/database.types';
+import { Profile } from '@/lib/types/query-types';
 import {
   Button,
   Checkbox,
@@ -26,19 +30,6 @@ import { showNotification } from '@mantine/notifications';
 import { useState } from 'react';
 import { useTranslations } from 'use-intl';
 import OrderRelationship from './OrderRelationship';
-
-const permissionsModel: Record<Enums<'order_permission'>, true> = {
-  create: true,
-  read: true,
-  delete: true,
-  mark_received: true,
-  mark_completed: true,
-  mark_canceled: true,
-};
-
-type Permission = OrderPermission['order_permission'];
-
-const permissions = Object.keys(permissionsModel) as Permission[];
 
 interface Props {
   profile: Profile;
@@ -57,20 +48,13 @@ export default function ManagePermissions({ profile, onClose }: Props) {
 
   const getErrorNotification = usePostgresErrorNotification();
 
-  const permissionTranslations: { [_ in Permission]: string } = {
-    read: t('readOrders'),
-    create: t('createOrders'),
-    delete: t('deleteOrders'),
-    mark_received: t('markOrdersAsReceived'),
-    mark_completed: t('markOrdersAsCompleted'),
-    mark_canceled: t('markOrdersAsCanceled'),
-  };
+  const { permissionTranslations } = useOrderPermissions();
 
   const currentPermissions = profile.order_permissions.map(
     (permission) => permission.order_permission
   );
 
-  const initialItems = permissions.map((permission) => ({
+  const initialItems = ORDER_PERMISSIONS.map((permission) => ({
     label: permissionTranslations[permission],
     checked: currentPermissions.includes(permission),
     key: permission,

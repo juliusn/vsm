@@ -1,4 +1,4 @@
-create type "public"."order_permission" as enum ('read', 'create', 'delete', 'mark_received', 'mark_completed', 'mark_canceled');
+create type "public"."order_permission" as enum ('read', 'create', 'edit', 'delete');
 
 drop policy "orders_create_scoped" on "public"."orders";
 

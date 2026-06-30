@@ -619,15 +619,15 @@
     "grant": "Myönnä oikeudet",
     "revoke": "Poista oikeudet"
   },
+  "useOrderPermissions": {
+    "read": "Voi lukea tilauksia",
+    "create": "Voi luoda tilauksia",
+    "edit": "Voi muokata tilauksia",
+    "delete": "Voi poistaa tilauksia"
+  },
   "ManagePermissions": {
     "title": "Tilausten käsittely",
     "user": "Käyttäjä",
-    "readOrders": "Voi lukea tilauksia",
-    "createOrders": "Voi luoda tilauksia",
-    "deleteOrders": "Voi poistaa tilauksia",
-    "markOrdersAsReceived": "Voi merkitä tilauksia vastaanotetuksi",
-    "markOrdersAsCompleted": "Voi merkitä tilauksia toimitetuksi",
-    "markOrdersAsCanceled": "Voi merkitä tilauksia perutuksi",
     "close": "Sulje",
     "reset": "Palauta",
     "save": "Tallenna"

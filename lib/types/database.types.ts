@@ -1524,13 +1524,7 @@ export type Database = {
     Enums: {
       approval_status: "pending" | "approved" | "rejected"
       locale: "en" | "fi"
-      order_permission:
-        | "read"
-        | "create"
-        | "delete"
-        | "mark_received"
-        | "mark_completed"
-        | "mark_canceled"
+      order_permission: "read" | "create" | "edit" | "delete"
       order_status: "submitted" | "received" | "completed" | "canceled"
       port_event: "arrival" | "departure" | "shifting"
     }
@@ -1673,14 +1667,7 @@ export const Constants = {
     Enums: {
       approval_status: ["pending", "approved", "rejected"],
       locale: ["en", "fi"],
-      order_permission: [
-        "read",
-        "create",
-        "delete",
-        "mark_received",
-        "mark_completed",
-        "mark_canceled",
-      ],
+      order_permission: ["read", "create", "edit", "delete"],
       order_status: ["submitted", "received", "completed", "canceled"],
       port_event: ["arrival", "departure", "shifting"],
     },

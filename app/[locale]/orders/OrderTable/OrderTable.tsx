@@ -23,12 +23,6 @@ const statusRank: Record<Enums<'order_status'>, number> = {
   canceled: 3,
 };
 
-const statusPermissions: Enums<'order_permission'>[] = [
-  'mark_received',
-  'mark_completed',
-  'mark_canceled',
-];
-
 export function OrderTable() {
   const t = useTranslations('OrderTable');
   const locale = useLocale();
@@ -37,13 +31,13 @@ export function OrderTable() {
   const [records, setRecords] = useState(orders);
   const [selectedRow, setSelectedRow] = useState<OrderData | null>(null);
 
-  const permissions = orderPermissions.map(
-    (permission) => permission.order_permission
-  );
-
-  const canChangeOrderStatus = permissions.some((permission) =>
-    statusPermissions.includes(permission)
-  );
+  const canEditOrder = (order: OrderData) =>
+    orderPermissions.some(
+      (permission) =>
+        permission.order_permission === 'edit' &&
+        order.sender.business_id === permission.sender.business_id &&
+        order.receiver.business_id === permission.receiver.business_id
+    );
 
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
     useDisclosure(false);
@@ -100,7 +94,7 @@ export function OrderTable() {
       render: (orderRow) => (
         <OrderStatusSelect
           orderRow={orderRow}
-          disabled={canChangeOrderStatus}
+          disabled={!canEditOrder(orderRow)}
         />
       ),
       sortable: true,
@@ -112,7 +106,7 @@ export function OrderTable() {
         <Center>
           <ActionIcon
             variant="subtle"
-            disabled={orderRow.status !== 'received'}
+            disabled={orderRow.status !== 'received' || !canEditOrder(orderRow)}
             onClick={() => {
               setSelectedRow(orderRow);
               openAssignModal();
@@ -129,7 +123,7 @@ export function OrderTable() {
         <Center>
           <ActionIcon
             variant="subtle"
-            disabled={orderRow.status === 'canceled'}
+            disabled={!canEditOrder(orderRow)}
             onClick={() => {
               setSelectedRow(orderRow);
               openEditModal();

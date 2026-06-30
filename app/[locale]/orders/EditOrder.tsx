@@ -99,7 +99,7 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
     const deleteServicesQuery = servicesToDelete.length
       ? supabase
           .from('common_service_order')
-          .delete()
+          .delete({ count: 'exact' })
           .or(
             servicesToDelete
               .map((id) => `and(order.eq.${order.id},common_service.eq.${id})`)
@@ -109,14 +109,26 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
 
     setLoading(true);
 
-    const servicesResponses = await Promise.all([
+    const [insertServicesResponse, deleteServicesResponse] = await Promise.all([
       insertServicesQuery,
       deleteServicesQuery,
     ]);
 
-    for (const response of servicesResponses) {
-      if (response?.error) {
-        showNotification(getErrorNotification(response.status));
+    if (insertServicesResponse?.error) {
+      showNotification(getErrorNotification(insertServicesResponse.status));
+      setLoading(false);
+      return;
+    }
+
+    if (deleteServicesResponse) {
+      if (deleteServicesResponse.error) {
+        showNotification(getErrorNotification(deleteServicesResponse.status));
+        setLoading(false);
+        return;
+      }
+
+      if (!deleteServicesResponse.error && !deleteServicesResponse.count) {
+        showNotification(getErrorNotification(404));
         setLoading(false);
         return;
       }
