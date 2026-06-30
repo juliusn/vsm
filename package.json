@@ -5,7 +5,12 @@
     "build": "next build",
     "start": "next start",
     "prepare": "husky install",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "supabase:types": "supabase gen types typescript --local > lib/types/database.types.ts",
+    "db:dump": "supabase db dump --local --data-only -f supabase/seed.sql",
+    "db:reset": "supabase db reset --local",
+    "db:diff": "supabase db diff --use-migra --schema public",
+    "db:migration": "supabase db diff --use-migra --schema public -f"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
