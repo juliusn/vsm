@@ -37,7 +37,7 @@ export default function OrderStatusSelect({ orderRow, disabled }: Props) {
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
-  const { dispatchOrders } = useOrders();
+  const { dispatch } = useOrders();
 
   const colors: {
     [k in Status]: string;
@@ -86,7 +86,7 @@ export default function OrderStatusSelect({ orderRow, disabled }: Props) {
       return;
     }
 
-    dispatchOrders({ type: 'changed', item: orderData });
+    dispatch({ type: 'orderChanged', item: orderData });
     setValue(orderData.status);
   };
 

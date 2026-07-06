@@ -19,7 +19,7 @@ import classes from './BerthingTable.module.css';
 export function BerthingTable() {
   const t = useTranslations('BerthingTable');
   const format = useFormatter();
-  const { berthings } = useBerthings();
+  const { berthings, dispatchBerthings } = useBerthings();
   const [records, setRecords] = useState(berthings);
 
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<Berthing>>({
@@ -182,7 +182,10 @@ export function BerthingTable() {
             <EditBerthingForm
               initialBerthing={selectedBerthing}
               onCancel={closeEditModal}
-              resultCallback={closeEditModal}
+              onSaved={(data) => {
+                dispatchBerthings({ type: 'changed', item: data });
+                closeEditModal();
+              }}
             />
           </BerthingInputDataProvider>
         )}

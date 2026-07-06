@@ -4,10 +4,10 @@ import { EditBerthingForm } from '@/app/components/BerthingForms/EditBerthingFor
 import { NewBerthingForm } from '@/app/components/BerthingForms/NewBerthingForm';
 import { BerthingPreview } from '@/app/components/BerthingPreview';
 import { FormButtons } from '@/app/components/FormButtons';
-import { useBerthings } from '@/app/context/BerthingContext';
 import { BerthingInputDataProvider } from '@/app/context/BerthingInputDataContext';
 import { useCommonServices } from '@/app/context/CommonServiceContext';
 import { useCounterparties } from '@/app/context/CounterpartyContext';
+import { useOrders } from '@/app/context/OrderContext';
 import { useOrderFormContext } from '@/app/context/OrderFormContext';
 import {
   ActionIcon,
@@ -48,7 +48,7 @@ export function OrderForm({
   const form = useOrderFormContext();
   const t = useTranslations('OrderForm');
   const counterParties = useCounterparties();
-  const { berthings } = useBerthings();
+  const { berthings, dispatch } = useOrders();
   const { commonServices } = useCommonServices();
   const locale = useLocale();
   const initialBerthingId = form.getInitialValues().berthing;
@@ -146,10 +146,9 @@ export function OrderForm({
         <BerthingInputDataProvider>
           <NewBerthingForm
             close={closeNewBerthing}
-            resultCallback={(newBerthingId) => {
+            onSaved={(newBerthingId) => {
               setSelectedBerthingId(newBerthingId);
               form.setFieldValue('berthing', newBerthingId);
-              /* form.setFieldValue('services', []); */
               closeNewBerthing();
             }}
           />
@@ -165,7 +164,10 @@ export function OrderForm({
             <EditBerthingForm
               initialBerthing={selectedBerthing}
               onCancel={closeEditBerthing}
-              resultCallback={closeEditBerthing}
+              onSaved={(data) => {
+                dispatch({ type: 'berthingChanged', item: data });
+                closeEditBerthing();
+              }}
             />
           </BerthingInputDataProvider>
         )}

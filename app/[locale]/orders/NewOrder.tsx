@@ -22,14 +22,14 @@ import { OrderForm } from './OrderForm';
 
 interface Props {
   onCancel(): void;
-  resultCallback?(data: Order): void;
+  onSaved?(data: Order): void;
 }
 
-export function NewOrder({ onCancel, resultCallback }: Props) {
+export function NewOrder({ onCancel, onSaved }: Props) {
   const t = useTranslations('NewOrder');
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
-  const { dispatchOrders, orderPermissions } = useOrders();
+  const { dispatch, orderPermissions } = useOrders();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSentNotification = useOrderSentNotification();
 
@@ -134,14 +134,14 @@ export function NewOrder({ onCancel, resultCallback }: Props) {
       return;
     }
 
-    dispatchOrders({
-      type: 'added',
+    dispatch({
+      type: 'orderAdded',
       item: order,
     });
 
     setLoading(false);
     showNotification(getOrderSentNotification());
-    resultCallback?.(orderResponse.data);
+    onSaved?.(orderResponse.data);
   };
 
   return (

@@ -45,10 +45,10 @@ const initialValues: BerthingFormValues = {
 
 export function NewBerthingForm({
   close,
-  resultCallback,
+  onSaved,
 }: {
   close(): void;
-  resultCallback(newBerthingId: string): void;
+  onSaved(newBerthingId: string): void;
 }) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
@@ -166,7 +166,7 @@ export function NewBerthingForm({
       }
 
       dispatchBerthings({ type: 'added', item: berthingsResponse.data });
-      resultCallback(berthingsResponse.data.id);
+      onSaved(berthingsResponse.data.id);
       showNotification(getBerthingSavedNotification());
     } catch {
       showNotification(getErrorNotification(500));

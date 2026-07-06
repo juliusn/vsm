@@ -1,7 +1,5 @@
 'use client';
 
-import { useBerthings } from '@/app/context/BerthingContext';
-
 import {
   BerthingFormProvider,
   useBerthingForm,
@@ -32,18 +30,17 @@ import { BerthingFormFields } from './BerthingFormFields';
 interface EditBerthingFormProps {
   initialBerthing: Berthing;
   onCancel(): void;
-  resultCallback(data: Berthing): void;
+  onSaved(data: Berthing): void;
 }
 
 export function EditBerthingForm({
   initialBerthing,
   onCancel,
-  resultCallback,
+  onSaved,
 }: EditBerthingFormProps) {
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
   const getBerthingSavedNotification = useBerthingSavedNotification();
-  const { dispatchBerthings } = useBerthings();
   const [loading, setLoading] = useState(false);
   const validate = useBerthingFormValidation();
 
@@ -256,8 +253,7 @@ export function EditBerthingForm({
       return;
     }
 
-    dispatchBerthings({ type: 'changed', item: berthingsResponse.data });
-    resultCallback(berthingsResponse.data);
+    onSaved(berthingsResponse.data);
     showNotification(getBerthingSavedNotification());
   };
 

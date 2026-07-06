@@ -24,7 +24,7 @@ export function NewOrderContent() {
           opened={opened}
           onClose={close}
           title={t('modalTitle')}>
-          <NewOrder onCancel={close} resultCallback={close} />
+          <NewOrder onCancel={close} onSaved={close} />
         </Modal>
       )}
       <Group justify="space-between">

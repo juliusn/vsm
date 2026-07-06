@@ -161,11 +161,7 @@ export function OrderTable() {
         onClose={closeEditModal}
         title={t('editOrder')}>
         {selectedRow && (
-          <EditOrder
-            order={selectedRow}
-            onCancel={closeEditModal}
-            resultCallback={closeEditModal}
-          />
+          <EditOrder order={selectedRow} onClose={closeEditModal} />
         )}
       </Modal>
       <Modal

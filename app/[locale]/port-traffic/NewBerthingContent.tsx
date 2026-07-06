@@ -19,7 +19,7 @@ export function NewBerthingContent() {
       </Button>
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
         <BerthingInputDataProvider>
-          <NewBerthingForm close={close} resultCallback={close} />
+          <NewBerthingForm close={close} onSaved={close} />
         </BerthingInputDataProvider>
       </Modal>
     </>

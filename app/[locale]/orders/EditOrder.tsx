@@ -14,7 +14,6 @@ import { ordersSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
 import { TablesUpdate } from '@/lib/types/database.types';
 import { OrderData } from '@/lib/types/order';
-import { Order } from '@/lib/types/query-types';
 import { isNotEmpty, TransformedValues } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { useTranslations } from 'next-intl';
@@ -23,15 +22,14 @@ import { OrderForm } from './OrderForm';
 
 interface Props {
   order: OrderData;
-  onCancel(): void;
-  resultCallback?(data: Order): void;
+  onClose(): void;
 }
 
-export function EditOrder({ order, onCancel, resultCallback }: Props) {
+export function EditOrder({ order, onClose }: Props) {
   const t = useTranslations('EditOrder');
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
-  const { dispatchOrders } = useOrders();
+  const { dispatch } = useOrders();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSavedNotification = useOrderSavedNotification();
   const existingServices = order.common_services.map((service) => service.id);
@@ -143,15 +141,21 @@ export function EditOrder({ order, onCancel, resultCallback }: Props) {
     }
 
     const normalized = normalizeOrder(ordersResponse.data);
-    if (normalized) dispatchOrders({ type: 'changed', item: normalized });
-    resultCallback?.(ordersResponse.data);
+
+    if (!normalized) {
+      showNotification(getErrorNotification(400));
+      return;
+    }
+
+    dispatch({ type: 'orderChanged', item: normalized });
+    onClose();
     showNotification(getOrderSavedNotification());
   };
 
   return (
     <OrderFormProvider form={form}>
       <OrderForm
-        onClose={onCancel}
+        onClose={onClose}
         onSubmit={form.onSubmit(handleSubmit)}
         loading={loading}
         submitButtonLabel={t('saveChanges')}
