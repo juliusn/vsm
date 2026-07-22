@@ -1,10 +1,6 @@
 import { useLocations } from '@/app/context/LocationContext';
 import { getLocationInputItems } from '@/lib/getLocationInputItems';
-import { Button, Collapse, Flex, Stack } from '@mantine/core';
 import { GetInputPropsReturnType } from '@mantine/form/lib/types';
-import { useDisclosure } from '@mantine/hooks';
-import { IconCaretDownFilled, IconCaretRightFilled } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import { BerthInput } from './BerthInput';
 import { LocodeInput } from './LocodeInput';
@@ -31,9 +27,6 @@ export function LocationInputs({
   berthInputProps,
   berthInputKey,
 }: Props) {
-  const t = useTranslations('LocationInputs');
-  const [opened, { toggle }] = useDisclosure(false);
-
   const {
     state: { locations, portAreas, berths },
   } = useLocations();
@@ -45,33 +38,16 @@ export function LocationInputs({
 
   return (
     <>
-      <Flex>
-        <Button
-          size="compact-sm"
-          variant="transparent"
-          onClick={toggle}
-          leftSection={
-            opened ? (
-              <IconCaretDownFilled size={14} />
-            ) : (
-              <IconCaretRightFilled size={14} />
-            )
-          }>
-          {t('locationAndPortArea')}
-        </Button>
-      </Flex>
-      <Collapse in={opened} component={Stack}>
-        <LocodeInput
-          locations={locations}
-          {...locodeInputProps}
-          key={locodeInputKey}
-        />
-        <PortAreaInput
-          data={portAreaItems}
-          {...portAreaInputProps}
-          key={portAreaInputKey}
-        />
-      </Collapse>
+      <LocodeInput
+        locations={locations}
+        {...locodeInputProps}
+        key={locodeInputKey}
+      />
+      <PortAreaInput
+        data={portAreaItems}
+        {...portAreaInputProps}
+        key={portAreaInputKey}
+      />
       <BerthInput data={berthsItems} {...berthInputProps} key={berthInputKey} />
     </>
   );

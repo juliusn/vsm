@@ -70,6 +70,8 @@ export type Database = {
           id: string
           locode: string
           port_area_code: string
+          port_event: Database["public"]["Enums"]["port_event"] | null
+          sort_order: number
         }
         Insert: {
           berth_code: string
@@ -77,6 +79,8 @@ export type Database = {
           id?: string
           locode: string
           port_area_code: string
+          port_event?: Database["public"]["Enums"]["port_event"] | null
+          sort_order?: number
         }
         Update: {
           berth_code?: string
@@ -84,6 +88,8 @@ export type Database = {
           id?: string
           locode?: string
           port_area_code?: string
+          port_event?: Database["public"]["Enums"]["port_event"] | null
+          sort_order?: number
         }
         Relationships: [
           {
@@ -92,6 +98,39 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "berths"
             referencedColumns: ["locode", "port_area_code", "berth_code"]
+          },
+        ]
+      }
+      berthing_shiftings: {
+        Row: {
+          berthing: string
+          id: string
+          port_event: string
+        }
+        Insert: {
+          berthing: string
+          id?: string
+          port_event: string
+        }
+        Update: {
+          berthing?: string
+          id?: string
+          port_event?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "berthing_shiftings_berthing_fkey"
+            columns: ["berthing"]
+            isOneToOne: false
+            referencedRelation: "berthings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "berthing_shiftings_port_event_fkey"
+            columns: ["port_event"]
+            isOneToOne: true
+            referencedRelation: "port_events"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -244,14 +283,17 @@ export type Database = {
       common_services: {
         Row: {
           id: string
+          port_event: Database["public"]["Enums"]["port_event"] | null
           sort_order: number | null
         }
         Insert: {
           id?: string
+          port_event?: Database["public"]["Enums"]["port_event"] | null
           sort_order?: number | null
         }
         Update: {
           id?: string
+          port_event?: Database["public"]["Enums"]["port_event"] | null
           sort_order?: number | null
         }
         Relationships: []
@@ -882,12 +924,6 @@ export type Database = {
       install_available_extensions_and_test: { Args: never; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
       longtransactionsenabled: { Args: never; Returns: boolean }
-      orders_mark_canceled: { Args: { p_order_id: string }; Returns: undefined }
-      orders_mark_completed: {
-        Args: { p_order_id: string }
-        Returns: undefined
-      }
-      orders_mark_received: { Args: { p_order_id: string }; Returns: undefined }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
@@ -1673,4 +1709,3 @@ export const Constants = {
     },
   },
 } as const
-

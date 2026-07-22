@@ -36,6 +36,13 @@ export const fetchPortTrafficData = async (): Promise<
     supabase
       .from('berthings')
       .select(berthingsSelector)
+      .order('port_event(estimated_date)', {
+        referencedTable: 'shiftings',
+      })
+      .order('port_event(estimated_time)', {
+        referencedTable: 'shiftings',
+        nullsFirst: true,
+      })
       .order('created_at', { ascending: false }),
   ]);
 

@@ -1,18 +1,31 @@
-export interface BerthingFormValues {
+export type PortEvent = {
+  formKey: string;
+  id: string | null;
+  date: string | null;
+  time: string | null;
+  locode: string | null;
+  portAreaCode: string | null;
+  berthCode: string | null;
+  position: string | null;
+};
+
+export type PortEventWithDate = Omit<PortEvent, 'date'> & { date: string };
+
+export type BerthingFormValues = {
   imo: number | null;
   vesselName: string | null;
-  arrivalDate: string | null;
-  arrivalTime: string | null;
-  arrivalLocode: string | null;
-  arrivalPortArea: string | null;
-  arrivalBerth: string | null;
-  arrivalPosition: string | null;
-  departureDate: string | null;
-  departureTime: string | null;
-  departureLocode: string | null;
-  departurePortArea: string | null;
-  departureBerth: string | null;
-}
+  arrival: PortEvent | null;
+  shiftings: PortEvent[];
+  departure: PortEvent | null;
+};
+
+export type BerthingSubmitValues = {
+  imo: number | null;
+  vesselName: string | null;
+  arrival: PortEventWithDate | null;
+  shiftings: PortEventWithDate[];
+  departure: PortEventWithDate | null;
+};
 
 export type PortAreaIdentifier = {
   locode: string;

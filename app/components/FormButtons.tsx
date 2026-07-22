@@ -10,6 +10,7 @@ interface Props {
   resetButtonDisabled: boolean;
   submitButtonDisabled: boolean;
   submitButtonLoading: boolean;
+  closeButtonLabel?: string;
   submitButtonLabel?: string;
 }
 
@@ -19,13 +20,14 @@ export function FormButtons({
   resetButtonDisabled,
   submitButtonDisabled,
   submitButtonLoading,
+  closeButtonLabel,
   submitButtonLabel,
 }: Props) {
   const t = useTranslations('FormButtons');
   return (
     <>
       <Button variant="outline" onClick={closeButtonClickHandler}>
-        {t('close')}
+        {closeButtonLabel || t('close')}
       </Button>
       <Button
         variant="outline"

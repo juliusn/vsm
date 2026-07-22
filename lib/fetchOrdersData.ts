@@ -59,14 +59,32 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
       .eq('enabled', true)
       .order('port_area_name'),
     supabase.from('berths').select().eq('enabled', true).order('berth_name'),
-    supabase.from('berthings').select(berthingsSelector),
+    supabase
+      .from('berthings')
+      .select(berthingsSelector)
+      .order('port_event(estimated_date)', {
+        referencedTable: 'shiftings',
+      })
+      .order('port_event(estimated_time)', {
+        referencedTable: 'shiftings',
+        nullsFirst: true,
+      }),
     supabase.from('port_events').select(),
     supabase.from('berth_services').select(berthServicesSelector),
     supabase
       .from('common_services')
       .select(commonServicesSelector)
       .order('sort_order'),
-    supabase.from('orders').select(ordersSelector),
+    supabase
+      .from('orders')
+      .select(ordersSelector)
+      .order('port_event(estimated_date)', {
+        referencedTable: 'berthing.shiftings',
+      })
+      .order('port_event(estimated_time)', {
+        referencedTable: 'berthing.shiftings',
+        nullsFirst: true,
+      }),
     supabase
       .from('order_permissions')
       .select(orderPermissionsSelector)

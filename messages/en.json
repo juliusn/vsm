@@ -364,7 +364,11 @@
     "edit": "Edit",
     "editModalTitle": "Edit service",
     "titleEn": "Title in English",
-    "titleFi": "Title in Finnish"
+    "titleFi": "Title in Finnish",
+    "portEvent": "Port event",
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "shifting": "Shifting"
   },
   "NewBerthServiceButton": {
     "buttonLabel": "New berth service",
@@ -379,10 +383,14 @@
     "successMessage": "Service has been deleted."
   },
   "EditServiceModalProvider": {
-    "titleEnInputLabel": "Service title in English",
-    "abbrvEnInputLabel": "Service title abbreviation in English",
-    "titleFiInputLabel": "Service title in Finnish",
-    "abbrvFiInputLabel": "Service title abbreviation in Finnish",
+    "titleEnInputLabel": "Title in English",
+    "abbrvEnInputLabel": "Abbreviation in English",
+    "titleFiInputLabel": "Title in Finnish",
+    "abbrvFiInputLabel": "Abbreviation in Finnish",
+    "portEventInputLabel": "Port event",
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "shifting": "Shifting",
     "saveButtonLabel": "Save",
     "cancelButtonLabel": "Cancel"
   },
@@ -393,8 +401,8 @@
     "fieldRequiredError": "This field is required.",
     "selectDescription": "Select from common service titles",
     "selectPlaceholder": "Select title",
-    "titleInputLabelEn": "Service title in English",
-    "titleInputLabelFi": "Service title in Finnish",
+    "titleInputLabelEn": "Title in English",
+    "titleInputLabelFi": "Title in Finnish",
     "saveButtonLabel": "Save",
     "cancelButtonLabel": "Cancel",
     "successTitle": "Done!",
@@ -413,7 +421,11 @@
     "titleEn": "Title in English",
     "abbrvEn": "Abbreviation in English",
     "titleFi": "Title in Finnish",
-    "abbrvFi": "Abbreviation in Finnish"
+    "abbrvFi": "Abbreviation in Finnish",
+    "portEvent": "Port event",
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "shifting": "Shifting"
   },
   "NewCommonServiceButton": {
     "buttonLabel": "New service",
@@ -438,11 +450,22 @@
     "date": "Date",
     "selectDate": "Select date",
     "time": "Time",
+    "shifting": "Shifting",
+    "addArrival": "Add arrival",
+    "addShifting": "Add shifting",
+    "addDeparture": "Add departure",
+    "removeArrival": "Remove arrival",
+    "removeShifting": "Remove shifting",
+    "removeDeparture": "Remove departure",
+    "cancel": "Cancel",
+    "saveChanges": "Save changes",
     "departure": "Departure"
   },
   "useBerthingFormValidation": {
     "imoRequiredError": "Vessel IMO number is required.",
     "imoLengthError": "Vessel IMO number must be 7 digits.",
+    "portEventDateRequiredError": "Port event date is required.",
+    "portEventChronologyError": "Port event cannot be before the previous event.",
     "enterDateOrRemoveTimeError": "Enter date or remove time.",
     "arrivalDateAfterDepartureDateError": "ETA date after ETD date.",
     "timeWithoutDateError": "Time without date.",
@@ -483,9 +506,6 @@
   "ImoInput": {
     "imo": "IMO",
     "enterImo": "Enter IMO"
-  },
-  "LocationInputs": {
-    "locationAndPortArea": "Location and port area"
   },
   "LocodeInput": {
     "location": "Location",
@@ -639,5 +659,19 @@
   "RestrictedContentAlert": {
     "title": "Restricted content",
     "message": "You don't have the user privileges to view this content."
+  },
+  "Resource": {
+    "event": "Event",
+    "estimate": "Estimate",
+    "standby": "Standby",
+    "duration": "Duration",
+    "schedule": "Schedule",
+    "assignees": "Assignees"
+  },
+  "ResourceRow": {
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "shifting": "Shifting",
+    "assign": "Assign"
   }
 }

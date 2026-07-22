@@ -1,7 +1,53 @@
-import { BerthingFormValues } from '@/lib/types/berthing';
-import { FormValidateInput, isNotEmpty } from '@mantine/form';
-import dayjs from 'dayjs';
+import { BerthingFormValues, PortEvent } from '@/lib/types/berthing';
+import { FormErrors, FormValidateInput, isNotEmpty } from '@mantine/form';
 import { useTranslations } from 'next-intl';
+
+type PortEventInSequence = {
+  event: PortEvent;
+  path: string;
+};
+
+function isAfter(previous: PortEvent, next: PortEvent) {
+  if (!previous.date || !next.date) return false;
+
+  if (previous.date !== next.date) {
+    return previous.date > next.date;
+  }
+
+  return Boolean(
+    previous.time && next.time && previous.time > next.time
+  );
+}
+
+export function useBerthingChronologyValidation() {
+  const t = useTranslations('useBerthingFormValidation');
+
+  return (values: BerthingFormValues): FormErrors => {
+    const events: PortEventInSequence[] = [];
+
+    if (values.arrival) {
+      events.push({ event: values.arrival, path: 'arrival' });
+    }
+
+    values.shiftings.forEach((event, index) => {
+      events.push({ event, path: `shiftings.${index}` });
+    });
+
+    if (values.departure) {
+      events.push({ event: values.departure, path: 'departure' });
+    }
+
+    return events.slice(1).reduce<FormErrors>((errors, current, index) => {
+      const previous = events[index];
+
+      if (isAfter(previous.event, current.event)) {
+        errors[`${current.path}.date`] = t('portEventChronologyError');
+      }
+
+      return errors;
+    }, {});
+  };
+}
 
 export default function useBerthingFormValidation(): FormValidateInput<BerthingFormValues> {
   const t = useTranslations('useBerthingFormValidation');
@@ -13,115 +59,56 @@ export default function useBerthingFormValidation(): FormValidateInput<BerthingF
       isNotEmpty(t('imoRequiredError'))(value) ||
       isSevenDigits(t('imoLengthError'))(value),
 
-    arrivalDate: (value, values) => {
-      if (!value && values.arrivalTime) return t('enterDateOrRemoveTimeError');
+    arrival: {
+      date: (value) => (!value ? t('portEventDateRequiredError') : null),
 
-      if (value && values.departureDate) {
-        const arrivalDate = dayjs(value);
-        const departureDate = dayjs(values.departureDate);
-        if (arrivalDate.isAfter(departureDate))
-          return t('arrivalDateAfterDepartureDateError');
-      }
+      time: (value, values) => {
+        if (value && !values.arrival?.date) return t('timeWithoutDateError');
+        return null;
+      },
 
-      return null;
+      locode: (value, values) =>
+        value !== null && values.arrival?.date === null
+          ? t('arrivalDateMissingError')
+          : null,
+
+      portAreaCode: (value, values) =>
+        value !== null && values.arrival?.date === null
+          ? t('arrivalDateMissingError')
+          : null,
+
+      berthCode: (value, values) =>
+        value !== null && values.arrival?.date === null
+          ? t('arrivalDateMissingError')
+          : null,
     },
 
-    arrivalTime: (value, values) => {
-      if (value && !values.arrivalDate) return t('timeWithoutDateError');
-
-      if (
-        value &&
-        values.arrivalDate &&
-        values.departureDate &&
-        values.departureTime
-      ) {
-        const arrivalDateTime = dayjs(
-          `${dayjs(values.arrivalDate).format('YYYY-MM-DD')}T${value}`,
-          'YYYY-MM-DDTHH:mm',
-          true
-        );
-
-        const departureDateTime = dayjs(
-          `${dayjs(values.departureDate).format('YYYY-MM-DD')}T${values.departureTime}`,
-          'YYYY-MM-DDTHH:mm',
-          true
-        );
-
-        if (arrivalDateTime.isAfter(departureDateTime))
-          return t('etaAfterEtdError');
-      }
-
-      return null;
+    shiftings: {
+      date: (value) => (!value ? t('portEventDateRequiredError') : null),
     },
 
-    arrivalLocode: (value, values) =>
-      value !== null && values.arrivalDate === null
-        ? t('arrivalDateMissingError')
-        : null,
+    departure: {
+      date: (value) => (!value ? t('portEventDateRequiredError') : null),
 
-    arrivalPortArea: (value, values) =>
-      value !== null && values.arrivalDate === null
-        ? t('arrivalDateMissingError')
-        : null,
+      time: (value, values) => {
+        if (value && !values.departure?.date) return t('timeWithoutDateError');
+        return null;
+      },
 
-    arrivalBerth: (value, values) =>
-      value !== null && values.arrivalDate === null
-        ? t('arrivalDateMissingError')
-        : null,
+      locode: (value, values) =>
+        value !== null && values.departure?.date === null
+          ? t('departureDateMissingError')
+          : null,
 
-    departureDate: (value, values) => {
-      if (!value && values.departureTime)
-        return t('enterDateOrRemoveTimeError');
+      portAreaCode: (value, values) =>
+        value !== null && values.departure?.date === null
+          ? t('departureDateMissingError')
+          : null,
 
-      if (value && values.arrivalDate) {
-        const arrivalDate = dayjs(values.arrivalDate);
-        const departureDate = dayjs(value);
-        if (departureDate.isBefore(arrivalDate))
-          return t('departureDateBeforeArrivalDateError');
-      }
-
-      return null;
+      berthCode: (value, values) =>
+        value !== null && values.departure?.date === null
+          ? t('departureDateMissingError')
+          : null,
     },
-
-    departureTime: (value, values) => {
-      if (value && !values.departureDate) return t('timeWithoutDateError');
-
-      if (
-        value &&
-        values.departureDate &&
-        values.arrivalDate &&
-        values.arrivalTime
-      ) {
-        const arrivalDateTime = dayjs(
-          `${dayjs(values.arrivalDate).format('YYYY-MM-DD')}T${values.arrivalTime}`,
-          'YYYY-MM-DDTHH:mm',
-          true
-        );
-        const departureDateTime = dayjs(
-          `${dayjs(values.departureDate).format('YYYY-MM-DD')}T${value}`,
-          'YYYY-MM-DDTHH:mm',
-          true
-        );
-        if (departureDateTime.isBefore(arrivalDateTime))
-          return t('etdBeforeEtaError');
-      }
-
-      return null;
-    },
-
-    departureLocode: (value, values) =>
-      value !== null && values.departureDate === null
-        ? t('departureDateMissingError')
-        : null,
-
-    departurePortArea: (value, values) =>
-      value !== null && values.departureDate === null
-        ? t('departureDateMissingError')
-        : null,
-
-    departureBerth: (value, values) =>
-      value !== null && values.departureDate === null
-        ? t('departureDateMissingError')
-        : null,
   };
 }

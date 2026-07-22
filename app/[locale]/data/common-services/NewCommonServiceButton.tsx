@@ -7,6 +7,7 @@ import {
 } from '@/app/hooks/notifications';
 import { commonServicesSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
+import { Tables } from '@/lib/types/database.types';
 import { TranslationWithAbbreviation } from '@/lib/types/translation';
 import { Button } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
@@ -24,11 +25,12 @@ export function NewCommonServiceButton() {
 
   const onSave = async (
     translationEn: TranslationWithAbbreviation,
-    translationFi: TranslationWithAbbreviation
+    translationFi: TranslationWithAbbreviation,
+    portEvent: Tables<'common_services'>['port_event']
   ) => {
     const newServiceResponse = await supabase
       .from('common_services')
-      .insert({})
+      .insert({ port_event: portEvent })
       .select()
       .single();
 
@@ -94,6 +96,7 @@ export function NewCommonServiceButton() {
       title: t('modalTitle'),
       translationEn: { locale: 'en', title: '', abbreviation: '' },
       translationFi: { locale: 'fi', title: '', abbreviation: '' },
+      portEvent: null,
       onSave,
     });
 

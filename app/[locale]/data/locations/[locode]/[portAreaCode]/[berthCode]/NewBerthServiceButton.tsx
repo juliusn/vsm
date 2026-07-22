@@ -8,6 +8,7 @@ import {
 } from '@/app/hooks/notifications';
 import { berthServicesSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
+import { Tables } from '@/lib/types/database.types';
 import { TranslationWithAbbreviation } from '@/lib/types/translation';
 import { Button } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
@@ -28,7 +29,8 @@ export function NewBerthServiceButton() {
 
   const onSave = async (
     translationEn: TranslationWithAbbreviation,
-    translationFi: TranslationWithAbbreviation
+    translationFi: TranslationWithAbbreviation,
+    portEvent: Tables<'berth_services'>['port_event']
   ) => {
     const newServiceResponse = await supabase
       .from('berth_services')
@@ -37,6 +39,7 @@ export function NewBerthServiceButton() {
         port_area_code: portAreaCode,
         berth_code: berthCode,
         enabled: true,
+        port_event: portEvent,
       })
       .select()
       .single();
@@ -97,6 +100,7 @@ export function NewBerthServiceButton() {
       title: t('modalTitle'),
       translationEn: { locale: 'en', title: '', abbreviation: '' },
       translationFi: { locale: 'fi', title: '', abbreviation: '' },
+      portEvent: null,
       onSave,
     });
   };

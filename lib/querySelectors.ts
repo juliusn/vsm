@@ -1,34 +1,30 @@
 export const commonServicesSelector = `
 id,
 sort_order,
+port_event,
 translations:common_service_translations!inner(locale, title, abbreviation)`;
+
+const portEventsSelector = `
+id,
+created_at,
+type,
+estimated_date,
+estimated_time,
+locode,
+port_area_code,
+berth_code,
+position
+`;
 
 const baseBerthingsSelector = `
 id, 
 created_at, 
 vessel_imo, 
 vessel_name, 
-arrival:port_events!arrival (
-  id, 
-  created_at, 
-  type, 
-  estimated_date, 
-  estimated_time, 
-  locode, 
-  port_area_code, 
-  berth_code,
-  position
-),
-departure:port_events!departure (
-  id, 
-  created_at, 
-  type, 
-  estimated_date, 
-  estimated_time, 
-  locode, 
-  port_area_code, 
-  berth_code,
-  position
+arrival:port_events!arrival (${portEventsSelector}),
+departure:port_events!departure (${portEventsSelector}),
+shiftings:berthing_shiftings (
+  port_event:port_events (${portEventsSelector})
 )
 `;
 
@@ -78,6 +74,8 @@ locode,
 port_area_code,
 berth_code,
 enabled,
+sort_order,
+port_event,
 translations:berth_service_translations!inner(locale, title, abbreviation)
 `;
 

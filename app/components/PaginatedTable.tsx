@@ -5,17 +5,24 @@ import { BaseTable, BaseTableProps } from './BaseTable';
 
 type Props<T> = BaseTableProps<T> & {
   allRecords: T[];
+  onPageChanged?(page: number): void;
 };
 
-const PAGE_SIZE = 15;
+export const PAGINATED_TABLE_PAGE_SIZE = 15;
 
-export function PaginatedTable<T>({ allRecords, ...props }: Props<T>) {
+export function PaginatedTable<T>({
+  allRecords,
+  onPageChanged,
+  ...props
+}: Props<T>) {
   const [page, setPage] = useState(1);
-  const [records, setRecords] = useState<T[]>(allRecords.slice(0, PAGE_SIZE));
+  const [records, setRecords] = useState<T[]>(
+    allRecords.slice(0, PAGINATED_TABLE_PAGE_SIZE)
+  );
 
   useEffect(() => {
-    const from = (page - 1) * PAGE_SIZE;
-    const to = from + PAGE_SIZE;
+    const from = (page - 1) * PAGINATED_TABLE_PAGE_SIZE;
+    const to = from + PAGINATED_TABLE_PAGE_SIZE;
     setRecords(allRecords.slice(from, to));
   }, [page, allRecords]);
 
@@ -24,8 +31,11 @@ export function PaginatedTable<T>({ allRecords, ...props }: Props<T>) {
       records={records}
       totalRecords={allRecords.length}
       page={page}
-      onPageChange={setPage}
-      recordsPerPage={PAGE_SIZE}
+      onPageChange={(nextPage) => {
+        setPage(nextPage);
+        onPageChanged?.(nextPage);
+      }}
+      recordsPerPage={PAGINATED_TABLE_PAGE_SIZE}
       {...props}
     />
   );

@@ -1,6 +1,9 @@
 'use client';
 
-import { PaginatedTable } from '@/app/components/PaginatedTable';
+import {
+  PAGINATED_TABLE_PAGE_SIZE,
+  PaginatedTable,
+} from '@/app/components/PaginatedTable';
 import { ServicePreview } from '@/app/components/ServicePreview';
 import {
   SortableCommonService,
@@ -14,6 +17,7 @@ import {
 import { normalizeSortables, normalizeTranslations } from '@/lib/normalizers';
 import { commonServicesSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
+import { Enums } from '@/lib/types/database.types';
 import { WithDictionary } from '@/lib/types/translation';
 import {
   DragDropContext,
@@ -26,6 +30,7 @@ import { showNotification } from '@mantine/notifications';
 import { IconGripHorizontal, IconPencil, IconTrash } from '@tabler/icons-react';
 import { DataTableColumn, DataTableDraggableRow } from 'mantine-datatable';
 import { useTranslations } from 'next-intl';
+import { useMemo, useState } from 'react';
 import { useEditServiceModal } from '../../../context/EditServiceModalContext';
 import { useDeleteServiceModal } from '../DeleteServiceModalContext';
 
@@ -38,13 +43,24 @@ export function CommonServiceTable() {
   const { openDeleteModal, closeDeleteModal } = useDeleteServiceModal();
   const { openEditModal, closeEditModal } = useEditServiceModal();
   const { commonServices, dispatch } = useCommonServices();
+  const [page, setPage] = useState(1);
+
+  const portEventLabels: Record<Enums<'port_event'>, string> = useMemo(
+    () => ({
+      arrival: t('arrival'),
+      departure: t('departure'),
+      shifting: t('shifting'),
+    }),
+    [t]
+  );
 
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
     const items = Array.from(commonServices);
-    const sourceIndex = result.source.index;
-    const destinationIndex = result.destination.index;
+    const pageOffset = (page - 1) * PAGINATED_TABLE_PAGE_SIZE;
+    const sourceIndex = pageOffset + result.source.index;
+    const destinationIndex = pageOffset + result.destination.index;
     const [reorderedItem] = items.splice(sourceIndex, 1);
     items.splice(destinationIndex, 0, reorderedItem);
     const updatedServices = items.map((service, index) => ({
@@ -92,6 +108,13 @@ export function CommonServiceTable() {
       accessor: 'dictionary.fi.abbreviation',
       title: t('abbrvFi'),
       render: ({ dictionary }) => <Text>{dictionary.fi.abbreviation}</Text>,
+    },
+    {
+      accessor: 'port_event',
+      title: t('portEvent'),
+      render: ({ port_event }) => (
+        <Text>{port_event ? portEventLabels[port_event] : ''}</Text>
+      ),
     },
     {
       accessor: 'delete',
@@ -143,7 +166,8 @@ export function CommonServiceTable() {
               title: t('editModalTitle'),
               translationEn: service.dictionary.en,
               translationFi: service.dictionary.fi,
-              onSave: async (translationEn, translationFi) => {
+              portEvent: service.port_event,
+              onSave: async (translationEn, translationFi, portEvent) => {
                 const queryEn = supabase
                   .from('common_service_translations')
                   .update({
@@ -162,12 +186,18 @@ export function CommonServiceTable() {
                   .eq('locale', 'fi')
                   .eq('common_service', service.id);
 
-                const translationResponses = await Promise.all([
+                const commonServiceQuery = supabase
+                  .from('common_services')
+                  .update({ port_event: portEvent })
+                  .eq('id', service.id);
+
+                const responses = await Promise.all([
                   queryEn,
                   queryFi,
+                  commonServiceQuery,
                 ]);
 
-                for (const response of translationResponses) {
+                for (const response of responses) {
                   if (response.error) {
                     showNotification(getErrorNotification(response.status));
                     return;
@@ -178,6 +208,7 @@ export function CommonServiceTable() {
                   type: 'changed',
                   item: {
                     ...service,
+                    port_event: portEvent,
                     dictionary: { en: translationEn, fi: translationFi },
                   },
                 });
@@ -198,6 +229,7 @@ export function CommonServiceTable() {
       <PaginatedTable<WithDictionary<SortableCommonService>>
         allRecords={commonServices}
         columns={columns}
+        onPageChanged={setPage}
         tableWrapper={({ children }) => (
           <Droppable droppableId="datatable">
             {(provided) => (

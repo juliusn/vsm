@@ -1,20 +1,44 @@
 'use client';
 
+import { Enums, Tables } from '@/lib/types/database.types';
 import { TranslationWithAbbreviation } from '@/lib/types/translation';
-import { Button, Group, Modal, Stack, TextInput } from '@mantine/core';
+import {
+  Button,
+  ComboboxItem,
+  Group,
+  Modal,
+  Select,
+  Stack,
+  TextInput,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useTranslations } from 'next-intl';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
+
+const PORT_EVENTS_MODEL: Record<Enums<'port_event'>, number> = {
+  arrival: 0,
+  departure: 1,
+  shifting: 2,
+};
+
+const PORT_EVENTS = (
+  Object.keys(PORT_EVENTS_MODEL) as Enums<'port_event'>[]
+).sort((a, b) => PORT_EVENTS_MODEL[a] - PORT_EVENTS_MODEL[b]);
+
+const isPortEvent = (value: string | null): value is Enums<'port_event'> =>
+  value !== null && (PORT_EVENTS as readonly string[]).includes(value);
 
 type OnSave = (
   translationEn: TranslationWithAbbreviation,
-  translationFi: TranslationWithAbbreviation
+  translationFi: TranslationWithAbbreviation,
+  portEvent: Tables<'common_services'>['port_event']
 ) => Promise<void>;
 
 interface ModalProps {
   title: string;
   translationEn: TranslationWithAbbreviation;
   translationFi: TranslationWithAbbreviation;
+  portEvent: Tables<'common_services'>['port_event'];
   onSave: OnSave;
 }
 
@@ -40,6 +64,23 @@ export function EditServiceModalProvider({
   const [titleFi, setTitleFi] = useState<string>('');
   const [abbrvFi, setAbbrvFi] = useState<string>('');
 
+  const [portEvent, setPortEvent] =
+    useState<Tables<'common_services'>['port_event']>(null);
+
+  const portEventLabels: Record<Enums<'port_event'>, string> = useMemo(
+    () => ({
+      arrival: t('arrival'),
+      departure: t('departure'),
+      shifting: t('shifting'),
+    }),
+    [t]
+  );
+
+  const portEventSelectData: ComboboxItem[] = PORT_EVENTS.map((portEvent) => ({
+    value: portEvent,
+    label: portEventLabels[portEvent],
+  }));
+
   const translationEn: TranslationWithAbbreviation = {
     locale: 'en',
     title: titleEn,
@@ -56,6 +97,7 @@ export function EditServiceModalProvider({
     title,
     translationEn,
     translationFi,
+    portEvent,
     onSave,
   }: ModalProps) => {
     setModalTitle(title);
@@ -63,6 +105,7 @@ export function EditServiceModalProvider({
     setAbbrvEn(translationEn.abbreviation);
     setTitleFi(translationFi.title);
     setAbbrvFi(translationFi.abbreviation);
+    setPortEvent(portEvent);
     setOnSave(() => onSave);
     open();
   };
@@ -85,9 +128,11 @@ export function EditServiceModalProvider({
 
             setLoading(true);
 
-            await onSave(translationEn, translationFi);
-
-            setLoading(false);
+            try {
+              await onSave(translationEn, translationFi, portEvent);
+            } finally {
+              setLoading(false);
+            }
           }}>
           <Stack>
             <TextInput
@@ -117,6 +162,22 @@ export function EditServiceModalProvider({
               onChange={(event) =>
                 setAbbrvFi(event.currentTarget.value.slice(0, 3).toUpperCase())
               }
+            />
+            <Select
+              label={t('portEventInputLabel')}
+              data={portEventSelectData}
+              value={portEvent}
+              onChange={(value) => {
+                if (value === null) {
+                  setPortEvent(null);
+                  return;
+                }
+
+                if (!isPortEvent(value)) return;
+
+                setPortEvent(value);
+              }}
+              clearable
             />
             <Group grow>
               <Button variant="outline" onClick={close}>

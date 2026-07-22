@@ -364,7 +364,11 @@
     "edit": "Muokkaa",
     "editModalTitle": "Muokkaa palvelua",
     "titleEn": "Nimike englanniksi",
-    "titleFi": "Nimike suomeksi"
+    "titleFi": "Nimike suomeksi",
+    "portEvent": "Alustapahtuma",
+    "arrival": "Tulo",
+    "departure": "Lähtö",
+    "shifting": "Siftaus"
   },
   "NewBerthServiceButton": {
     "buttonLabel": "Uusi laituripalvelu",
@@ -379,10 +383,14 @@
     "successMessage": "Palvelu on poistettu."
   },
   "EditServiceModalProvider": {
-    "titleEnInputLabel": "Palvelun nimike englanniksi",
-    "abbrvEnInputLabel": "Palvelunimikkeen lyhenne englanniksi",
-    "titleFiInputLabel": "Palvelun nimike suomeksi",
-    "abbrvFiInputLabel": "Palvelunimikkeen lyhenne suomeksi",
+    "titleEnInputLabel": "Nimike englanniksi",
+    "abbrvEnInputLabel": "Lyhenne englanniksi",
+    "titleFiInputLabel": "Nimike suomeksi",
+    "abbrvFiInputLabel": "Lyhenne suomeksi",
+    "portEventInputLabel": "Alustapahtuma",
+    "arrival": "Tulo",
+    "departure": "Lähtö",
+    "shifting": "Siftaus",
     "saveButtonLabel": "Tallenna",
     "cancelButtonLabel": "Peru"
   },
@@ -393,8 +401,8 @@
     "fieldRequiredError": "Tämä kenttä vaaditaan.",
     "selectDescription": "Valitse yleisistä palvelunimikkeistä",
     "selectPlaceholder": "Valitse nimike",
-    "titleInputLabelEn": "Palvelun nimike englanniksi",
-    "titleInputLabelFi": "Palvelun nimike suomeksi",
+    "titleInputLabelEn": "Nimike englanniksi",
+    "titleInputLabelFi": "Nimike suomeksi",
     "saveButtonLabel": "Tallenna",
     "cancelButtonLabel": "Peru",
     "successTitle": "Valmis!",
@@ -413,7 +421,11 @@
     "titleEn": "Nimike englanniksi",
     "abbrvEn": "Lyhenne englanniksi",
     "titleFi": "Nimike suomeksi",
-    "abbrvFi": "Lyhenne suomeksi"
+    "abbrvFi": "Lyhenne suomeksi",
+    "portEvent": "Alustapahtuma",
+    "arrival": "Tulo",
+    "departure": "Lähtö",
+    "shifting": "Siftaus"
   },
   "NewCommonServiceButton": {
     "buttonLabel": "Uusi palvelu",
@@ -438,11 +450,22 @@
     "date": "Päivämäärä",
     "selectDate": "Valitse päivämäärä",
     "time": "Aika",
+    "shifting": "Siftaus",
+    "addArrival": "Lisää saapuminen",
+    "addShifting": "Lisää siftaus",
+    "addDeparture": "Lisää lähtö",
+    "removeArrival": "Poista saapuminen",
+    "removeShifting": "Poista siftaus",
+    "removeDeparture": "Poista lähtö",
+    "cancel": "Peruuta",
+    "saveChanges": "Tallenna muutokset",
     "departure": "Lähtö"
   },
   "useBerthingFormValidation": {
     "imoRequiredError": "Aluksen IMO-tunnus vaaditaan.",
     "imoLengthError": "Aluksen IMO-tunnus täytyy olla 7 numeroa pitkä.",
+    "portEventDateRequiredError": "Satamatapahtuman päivämäärä vaaditaan.",
+    "portEventChronologyError": "Satamatapahtuma ei voi olla ennen edellistä tapahtumaa.",
     "enterDateOrRemoveTimeError": "Syötä päivämäärä tai poista aika.",
     "arrivalDateAfterDepartureDateError": "Saapumispäivä lähtöpäivän jälkeen.",
     "timeWithoutDateError": "Aika ilman päivämäärää.",
@@ -483,9 +506,6 @@
   "ImoInput": {
     "imo": "IMO",
     "enterImo": "Syötä IMO"
-  },
-  "LocationInputs": {
-    "locationAndPortArea": "Sijainti ja satama-alue"
   },
   "LocodeInput": {
     "location": "Sijainti",
@@ -639,5 +659,19 @@
   "RestrictedContentAlert": {
     "title": "Rajoitettu sisältö",
     "message": "Sinulla ei ole käyttäjäoikeuksia tämän sisällön katsomiseen."
+  },
+  "Resource": {
+    "event": "Tapahtuma",
+    "estimate": "Arvio",
+    "standby": "Valmius",
+    "duration": "Kesto",
+    "schedule": "Aikataulu",
+    "assignees": "Toteuttajat"
+  },
+  "ResourceRow": {
+    "arrival": "Tulo",
+    "departure": "Lähtö",
+    "shifting": "Siftaus",
+    "assign": "Lisää toteuttaja"
   }
 }

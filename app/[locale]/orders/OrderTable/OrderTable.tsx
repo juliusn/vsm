@@ -11,7 +11,7 @@ import { IconEdit, IconUserPlus } from '@tabler/icons-react';
 import { sortBy } from 'lodash';
 import { DataTableColumn, DataTableSortStatus } from 'mantine-datatable';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { EditOrder } from '../EditOrder';
 import OrderStatusSelect from '../OrderStatusSelect';
 import classes from './OrderTable.module.css';
@@ -28,7 +28,6 @@ export function OrderTable() {
   const locale = useLocale();
   const format = useFormatter();
   const { orders, orderPermissions } = useOrders();
-  const [records, setRecords] = useState(orders);
   const [selectedRow, setSelectedRow] = useState<OrderData | null>(null);
 
   const canEditOrder = (order: OrderData) =>
@@ -74,7 +73,7 @@ export function OrderTable() {
       title: t('services'),
       render: (orderRow) => (
         <Group gap={4}>
-          {orderRow.common_services
+          {[...orderRow.common_services]
             .sort((a, b) => a.sort_order - b.sort_order)
             .map((service) => (
               <Badge
@@ -135,23 +134,27 @@ export function OrderTable() {
     },
   ];
 
-  useEffect(() => {
+  const records = useMemo(() => {
     let data: OrderData[];
+
     switch (sortStatus.columnAccessor) {
       case 'created_at': {
         data = sortBy(orders, (order) => new Date(order.created_at));
         break;
       }
+
       case 'status': {
         data = sortBy(orders, (order) => statusRank[order.status]);
         break;
       }
+
       default: {
         data = sortBy(orders, sortStatus.columnAccessor);
       }
     }
-    setRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
-  }, [sortStatus, orders]);
+
+    return sortStatus.direction === 'desc' ? data.reverse() : data;
+  }, [orders, sortStatus]);
 
   return (
     <>
