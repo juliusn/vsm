@@ -1,17 +1,19 @@
 'use client';
 
 import { PaginatedTable } from '@/app/components/PaginatedTable';
+import ServicesGroup from '@/app/components/ServicesGroup';
 import { useOrders } from '@/app/context/OrderContext';
 import { dateTimeFormatOptions } from '@/lib/formatOptions';
 import { Enums } from '@/lib/types/database.types';
 import { OrderData } from '@/lib/types/order';
-import { ActionIcon, Badge, Center, Group, Modal, Text } from '@mantine/core';
+import { ActionIcon, Center, Modal, ScrollArea, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconEdit, IconUserPlus } from '@tabler/icons-react';
 import { sortBy } from 'lodash';
 import { DataTableColumn, DataTableSortStatus } from 'mantine-datatable';
-import { useFormatter, useLocale, useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
+import AssignmentsTable from '../AssignmentsTable';
 import { EditOrder } from '../EditOrder';
 import OrderStatusSelect from '../OrderStatusSelect';
 import classes from './OrderTable.module.css';
@@ -25,10 +27,14 @@ const statusRank: Record<Enums<'order_status'>, number> = {
 
 export function OrderTable() {
   const t = useTranslations('OrderTable');
-  const locale = useLocale();
   const format = useFormatter();
   const { orders, orderPermissions } = useOrders();
-  const [selectedRow, setSelectedRow] = useState<OrderData | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<
+    OrderData['id'] | null
+  >(null);
+  const selectedRow = selectedOrderId
+    ? (orders.find((order) => order.id === selectedOrderId) ?? null)
+    : null;
 
   const canEditOrder = (order: OrderData) =>
     orderPermissions.some(
@@ -42,8 +48,8 @@ export function OrderTable() {
     useDisclosure(false);
 
   const [
-    assignModalOpened,
-    { open: openAssignModal, close: closeAssignModal },
+    assignmentsModalOpened,
+    { open: openAssignmentsModal, close: closeAssignmentsModal },
   ] = useDisclosure(false);
 
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<OrderData>>({
@@ -72,18 +78,7 @@ export function OrderTable() {
       accessor: 'services',
       title: t('services'),
       render: (orderRow) => (
-        <Group gap={4}>
-          {[...orderRow.common_services]
-            .sort((a, b) => a.sort_order - b.sort_order)
-            .map((service) => (
-              <Badge
-                key={service.id}
-                variant="default"
-                styles={{ root: { flexShrink: 0 } }}>
-                {service.dictionary[locale].abbreviation}
-              </Badge>
-            ))}
-        </Group>
+        <ServicesGroup services={orderRow.common_services} />
       ),
       width: '0%',
     },
@@ -99,16 +94,16 @@ export function OrderTable() {
       sortable: true,
     },
     {
-      accessor: 'assign',
-      title: t('resource'),
+      accessor: 'assignments',
+      title: t('assignments'),
       render: (orderRow) => (
         <Center>
           <ActionIcon
             variant="subtle"
             disabled={orderRow.status !== 'received' || !canEditOrder(orderRow)}
             onClick={() => {
-              setSelectedRow(orderRow);
-              openAssignModal();
+              setSelectedOrderId(orderRow.id);
+              openAssignmentsModal();
             }}>
             <IconUserPlus stroke={1.5} />
           </ActionIcon>
@@ -124,7 +119,7 @@ export function OrderTable() {
             variant="subtle"
             disabled={!canEditOrder(orderRow)}
             onClick={() => {
-              setSelectedRow(orderRow);
+              setSelectedOrderId(orderRow.id);
               openEditModal();
             }}>
             <IconEdit stroke={1.5} />
@@ -168,10 +163,19 @@ export function OrderTable() {
         )}
       </Modal>
       <Modal
-        size="lg"
-        opened={assignModalOpened}
-        onClose={closeAssignModal}
-        title={t('resource')}></Modal>
+        size="xxl"
+        opened={assignmentsModalOpened}
+        onClose={closeAssignmentsModal}
+        title={
+          selectedRow?.berthing.vessel_name ??
+          selectedRow?.berthing.vessel_imo.toString()
+        }>
+        {selectedRow && (
+          <ScrollArea>
+            <AssignmentsTable order={selectedRow} />
+          </ScrollArea>
+        )}
+      </Modal>
       <PaginatedTable<OrderData>
         allRecords={records}
         columns={columns}

@@ -146,9 +146,10 @@ export function OrderForm({
         <BerthingInputDataProvider>
           <NewBerthingForm
             close={closeNewBerthing}
-            onSaved={(newBerthingId) => {
-              setSelectedBerthingId(newBerthingId);
-              form.setFieldValue('berthing', newBerthingId);
+            onSaved={(data) => {
+              dispatch({ type: 'berthingAdded', item: data });
+              setSelectedBerthingId(data.id);
+              form.setFieldValue('berthing', data.id);
               closeNewBerthing();
             }}
           />

@@ -531,7 +531,7 @@
     "berthing": "Berthing",
     "created": "Created",
     "services": "Services",
-    "resource": "Resource",
+    "assignments": "Assignments",
     "status": "Status",
     "orderedServices": "Ordered services",
     "edit": "Edit",
@@ -550,7 +550,7 @@
     "removeSelection": "Remove selection",
     "editBerthing": "Edit berthing",
     "services": "Services",
-    "servicesTooltip": "Select a berthing in order to select services."
+    "servicesTooltip": "Select or create a berthing in order to select services."
   },
   "EditOrder": {
     "editOrder": "Edit order",
@@ -660,18 +660,38 @@
     "title": "Restricted content",
     "message": "You don't have the user privileges to view this content."
   },
-  "Resource": {
+  "AssignmentsTable": {
     "event": "Event",
-    "estimate": "Estimate",
+    "assignees": "Assignees",
     "standby": "Standby",
     "duration": "Duration",
-    "schedule": "Schedule",
-    "assignees": "Assignees"
+    "invite": "Invite",
+    "publish": "Publish"
   },
-  "ResourceRow": {
+  "AssignmentRow": {
+    "estimate": "Estimate",
+    "schedule": "Schedule",
+    "services": "Services",
+    "inviteAssignees": "Invite assignees"
+  },
+  "InviteAssigneeTable": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "status": "Status",
+    "notInvited": "Not invited",
+    "sent": "Sent",
+    "viewed": "Viewed",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "invite": "Invite",
+    "cancelInvite": "Cancel invite"
+  },
+  "useSchedule": {
+    "unknown": "Unknown"
+  },
+  "PortEventIndicator": {
     "arrival": "Arrival",
     "departure": "Departure",
-    "shifting": "Shifting",
-    "assign": "Assign"
+    "shifting": "Shifting"
   }
 }

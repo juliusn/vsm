@@ -13,3 +13,8 @@ export const dateFormatOptions: DateTimeFormatOptions = {
   month: 'numeric',
   day: 'numeric',
 };
+
+export const timeFormatOptions: DateTimeFormatOptions = {
+  hour: 'numeric',
+  minute: 'numeric',
+};

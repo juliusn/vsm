@@ -154,7 +154,7 @@
   "NewOrder": {
     "selectClientError": "Valitse tilaaja.",
     "selectRecipientError": "Valitse vastaanottaja.",
-    "selectBerthingError": "Valitse laiturointi, johon haluat lisätä palveluja.",
+    "selectBerthingError": "Valitse tai luo laiturointi, johon haluat lisätä palveluja.",
     "selectServicesError": "Valitse palvelut, jotka haluat lisätä laiturointiin.",
     "sendOrder": "Lähetä tilaus"
   },
@@ -531,7 +531,7 @@
     "berthing": "Laiturointi",
     "created": "Luotu",
     "services": "Palvelut",
-    "resource": "Resursoi",
+    "assignments": "Tehtävät",
     "status": "Tila",
     "orderedServices": "Tilatut palvelut",
     "edit": "Muokkaa",
@@ -660,18 +660,36 @@
     "title": "Rajoitettu sisältö",
     "message": "Sinulla ei ole käyttäjäoikeuksia tämän sisällön katsomiseen."
   },
-  "Resource": {
+  "AssignmentsTable": {
     "event": "Tapahtuma",
-    "estimate": "Arvio",
+    "assignees": "Toteuttajat",
     "standby": "Valmius",
     "duration": "Kesto",
-    "schedule": "Aikataulu",
-    "assignees": "Toteuttajat"
+    "invite": "Kutsu",
+    "publish": "Julkaise"
   },
-  "ResourceRow": {
+  "AssignmentRow": {
+    "estimate": "Arvio",
+    "schedule": "Aikataulu",
+    "services": "Palvelut",
+    "inviteAssignees": "Kutsu toteuttajia"
+  },
+  "InviteAssigneeTable": {
+    "firstName": "Etunimi",
+    "lastName": "Sukunimi",
+    "status": "Tila",
+    "notInvited": "Ei kutsuttu",
+    "sent": "Lähetetty",
+    "viewed": "Avattu",
+    "accepted": "Hyväksytty",
+    "declined": "Hylätty",
+    "invite": "Kutsu",
+    "cancelInvite": "Peru kutsu"
+  },
+  "useSchedule": { "unknown": "Ei tiedossa" },
+  "PortEventIndicator": {
     "arrival": "Tulo",
     "departure": "Lähtö",
-    "shifting": "Siftaus",
-    "assign": "Lisää toteuttaja"
+    "shifting": "Siftaus"
   }
 }

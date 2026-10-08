@@ -1,11 +1,13 @@
 import { QueryData, SupabaseClient } from '@supabase/supabase-js';
 import {
+  assignmentProfileSelector,
   berthingsSelector,
   berthServicesSelector,
   commonServicesSelector,
   counterpartiesSelector,
   orderPermissionsSelector,
   ordersSelector,
+  portEventsSelector,
   profileSelector,
 } from '../querySelectors';
 import { Database } from './database.types';
@@ -51,6 +53,18 @@ const _profileQuery = supabase
   .select(profileSelector)
   .single();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _assignmentProfileQuery = supabase
+  .from('profiles')
+  .select(assignmentProfileSelector)
+  .single();
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _portEventsQuery = supabase
+  .from('port_events')
+  .select(portEventsSelector)
+  .single();
+
 export type Berthing = QueryData<typeof _berthingsQuery>;
 export type Counterparty = QueryData<typeof _counterpartiesQuery>;
 export type Order = QueryData<typeof _ordersQuery>;
@@ -58,3 +72,5 @@ export type CommonService = QueryData<typeof _commonServicesQuery>;
 export type BerthService = QueryData<typeof _berthServicesQuery>;
 export type OrderPermission = QueryData<typeof _orderPermissionsQuery>;
 export type Profile = QueryData<typeof _profileQuery>;
+export type AssignmentProfile = QueryData<typeof _assignmentProfileQuery>;
+export type PortEvent = QueryData<typeof _portEventsQuery>;

@@ -1,33 +1,59 @@
 import {
   BerthIdentifier,
   PortAreaIdentifier,
-  PortEvent,
+  PortEventFormValues,
   PortEventWithDate,
-} from '@/lib/types/berthing';
+} from '@/lib/types/berthing-form-types';
 import { Tables, TablesInsert } from '@/lib/types/database.types';
 import dayjs from 'dayjs';
 
-export function createEmptyPortEvent(): PortEvent {
-  return {
-    formKey: `new-${crypto.randomUUID()}`,
-    id: null,
-    date: null,
-    time: null,
-    locode: null,
-    portAreaCode: null,
-    berthCode: null,
-    position: null,
-  };
-}
+const emptyPortEventSharedValues: Omit<
+  PortEventFormValues,
+  'formKey' | 'max_assignees'
+> = {
+  id: null,
+  date: null,
+  time: null,
+  locode: null,
+  portAreaCode: null,
+  berthCode: null,
+  position: null,
+  default_standby_minutes: 30,
+  default_duration_minutes: 120,
+  is_public: false,
+};
 
-export function createPortEventFormValue(event: Tables<'port_events'>): PortEvent;
+export const createEmptyArrival = (): PortEventFormValues => ({
+  ...emptyPortEventSharedValues,
+  formKey: `new-${crypto.randomUUID()}`,
+  max_assignees: 3,
+});
+
+export const createEmptyDeparture = (): PortEventFormValues => ({
+  ...emptyPortEventSharedValues,
+  formKey: `new-${crypto.randomUUID()}`,
+  max_assignees: 2,
+});
+
+export const createEmptyShifting = (): PortEventFormValues => ({
+  ...emptyPortEventSharedValues,
+  formKey: `new-${crypto.randomUUID()}`,
+  max_assignees: 3,
+});
+
+export function createPortEventFormValue(
+  event: Tables<'port_events'>
+): PortEventFormValues;
+
 export function createPortEventFormValue(event: null): null;
+
 export function createPortEventFormValue(
   event: Tables<'port_events'> | null
-): PortEvent | null;
+): PortEventFormValues | null;
+
 export function createPortEventFormValue(
   event: Tables<'port_events'> | null
-): PortEvent | null {
+): PortEventFormValues | null {
   if (!event) return null;
 
   const portArea: PortAreaIdentifier | null =
@@ -53,6 +79,10 @@ export function createPortEventFormValue(
     portAreaCode: portArea ? JSON.stringify(portArea) : null,
     berthCode: berth ? JSON.stringify(berth) : null,
     position: event.position,
+    default_standby_minutes: event.default_standby_minutes,
+    default_duration_minutes: event.default_duration_minutes,
+    max_assignees: event.max_assignees,
+    is_public: event.is_public,
   };
 }
 
@@ -76,9 +106,15 @@ export function createPortEventInsert(
     port_area_code: berth?.port_area_code ?? portArea?.port_area_code ?? null,
     berth_code: berth?.berth_code ?? null,
     position: event.position,
+    default_standby_minutes: event.default_standby_minutes,
+    default_duration_minutes: event.default_duration_minutes,
+    max_assignees: event.max_assignees,
+    is_public: event.is_public,
   };
 }
 
-export function hasPortEventDate(event: PortEvent): event is PortEventWithDate {
+export function hasPortEventDate(
+  event: PortEventFormValues
+): event is PortEventWithDate {
   return typeof event.date === 'string' && event.date.length > 0;
 }

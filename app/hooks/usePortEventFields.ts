@@ -4,7 +4,7 @@ import {
   BerthIdentifier,
   BerthingFormValues,
   PortAreaIdentifier,
-} from '@/lib/types/berthing';
+} from '@/lib/types/berthing-form-types';
 import { useState } from 'react';
 import { useBerthingFormContext } from '../context/BerthingFormContext';
 
@@ -28,6 +28,7 @@ export function usePortEventFields(path: PortEventPath) {
   const portAreaPath = `${path}.portAreaCode`;
   const berthPath = `${path}.berthCode`;
   const positionPath = `${path}.position`;
+
   const form = useBerthingFormContext();
   const initialEvent = getEvent(path, form.getValues());
   const [locode, setLocode] = useState(initialEvent?.locode ?? null);

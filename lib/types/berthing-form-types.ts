@@ -1,4 +1,4 @@
-export type PortEvent = {
+export type PortEventFormValues = {
   formKey: string;
   id: string | null;
   date: string | null;
@@ -7,16 +7,22 @@ export type PortEvent = {
   portAreaCode: string | null;
   berthCode: string | null;
   position: string | null;
+  default_standby_minutes: number;
+  default_duration_minutes: number;
+  max_assignees: number;
+  is_public: boolean;
 };
 
-export type PortEventWithDate = Omit<PortEvent, 'date'> & { date: string };
+export type PortEventWithDate = Omit<PortEventFormValues, 'date'> & {
+  date: string;
+};
 
 export type BerthingFormValues = {
   imo: number | null;
   vesselName: string | null;
-  arrival: PortEvent | null;
-  shiftings: PortEvent[];
-  departure: PortEvent | null;
+  arrival: PortEventFormValues | null;
+  shiftings: PortEventFormValues[];
+  departure: PortEventFormValues | null;
 };
 
 export type BerthingSubmitValues = {

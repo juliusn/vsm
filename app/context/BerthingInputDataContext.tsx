@@ -1,6 +1,9 @@
 'use client';
 
-import { BerthIdentifier, PortAreaIdentifier } from '@/lib/types/berthing';
+import {
+  BerthIdentifier,
+  PortAreaIdentifier,
+} from '@/lib/types/berthing-form-types';
 import { Berthing } from '@/lib/types/query-types';
 import { Vessel } from '@/lib/types/vessel';
 import {

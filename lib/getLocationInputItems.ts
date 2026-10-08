@@ -1,5 +1,5 @@
 import { ComboboxItem, ComboboxItemGroup } from '@mantine/core';
-import { PortAreaIdentifier } from './types/berthing';
+import { PortAreaIdentifier } from './types/berthing-form-types';
 import { Tables } from './types/database.types';
 
 export function getLocationInputItems(

@@ -21,6 +21,7 @@ import {
 } from '@/lib/types/query-types';
 import { Stack } from '@mantine/core';
 import { NewOrderContent } from './NewOrderContent';
+import { AssignmentProvider } from './AssignmentContext';
 
 export default async function OrdersLayout({
   children,
@@ -53,10 +54,12 @@ export default async function OrdersLayout({
                 counterparties={normalizeTranslations<Counterparty>(
                   data.counterparties
                 )}>
-                <Stack>
-                  <NewOrderContent />
-                  {children}
-                </Stack>
+                <AssignmentProvider profiles={data.profiles}>
+                  <Stack>
+                    <NewOrderContent />
+                    {children}
+                  </Stack>
+                </AssignmentProvider>
               </CounterpartyProvider>
             </OrderProvider>
           </CommonServiceProvider>

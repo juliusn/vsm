@@ -12,8 +12,12 @@ import {
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { Fragment } from 'react';
+import {
+  createEmptyArrival,
+  createEmptyDeparture,
+  createEmptyShifting,
+} from '../../../lib/portEventForm';
 import PortEventFields from './PortEventFields';
-import { createEmptyPortEvent } from '../../../lib/portEventForm';
 
 export function BerthingFormFields() {
   const t = useTranslations('BerthingFormFields');
@@ -52,7 +56,7 @@ export function BerthingFormFields() {
         </Fieldset>
       ) : (
         <Button
-          onClick={() => form.setFieldValue('arrival', createEmptyPortEvent())}
+          onClick={() => form.setFieldValue('arrival', createEmptyArrival())}
           leftSection={<IconPlus size={18} stroke={1.5} />}
           variant="transparent">
           {t('addArrival')}
@@ -87,7 +91,7 @@ export function BerthingFormFields() {
 
       <Button
         onClick={() => {
-          form.insertListItem('shiftings', createEmptyPortEvent());
+          form.insertListItem('shiftings', createEmptyShifting());
         }}
         leftSection={<IconPlus size={18} stroke={1.5} />}
         variant="transparent">
@@ -113,7 +117,7 @@ export function BerthingFormFields() {
       ) : (
         <Button
           onClick={() =>
-            form.setFieldValue('departure', createEmptyPortEvent())
+            form.setFieldValue('departure', createEmptyDeparture())
           }
           leftSection={<IconPlus size={18} stroke={1.5} />}
           variant="transparent">

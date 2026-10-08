@@ -1,7 +1,6 @@
 'use client';
 
 import { FormButtons } from '@/app/components/FormButtons';
-import { useBerthings } from '@/app/context/BerthingContext';
 import {
   BerthingFormProvider,
   useBerthingForm,
@@ -14,20 +13,24 @@ import {
 } from '@/app/hooks/notifications';
 import { berthingsSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
-import { BerthingFormValues, BerthingSubmitValues } from '@/lib/types/berthing';
+import {
+  BerthingFormValues,
+  BerthingSubmitValues,
+} from '@/lib/types/berthing-form-types';
+import { Berthing } from '@/lib/types/query-types';
 import { Group, Space } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import useBerthingFormValidation, {
-  useBerthingChronologyValidation,
-} from '../../hooks/useBerthingFormValidation';
-import { BerthingFormFields } from './BerthingFormFields';
 import {
   createPortEventInsert,
   hasPortEventDate,
 } from '../../../lib/portEventForm';
+import useBerthingFormValidation, {
+  useBerthingChronologyValidation,
+} from '../../hooks/useBerthingFormValidation';
+import { BerthingFormFields } from './BerthingFormFields';
 
 const initialValues: BerthingFormValues = {
   imo: null,
@@ -42,13 +45,12 @@ export function NewBerthingForm({
   onSaved,
 }: {
   close(): void;
-  onSaved(newBerthingId: string): void;
+  onSaved(data: Berthing): void;
 }) {
   const t = useTranslations('BerthingFormFields');
   const supabase = createClient();
   const getErrorNotification = usePostgresErrorNotification();
   const getBerthingSavedNotification = useBerthingSavedNotification();
-  const { dispatchBerthings } = useBerthings();
   const vessels = useVessels();
   const { setSelectedVessel } = useBerthingInputData();
   const validate = useBerthingFormValidation();
@@ -189,8 +191,7 @@ export function NewBerthingForm({
         return;
       }
 
-      dispatchBerthings({ type: 'added', item: berthingsResponse.data });
-      onSaved(berthingsResponse.data.id);
+      onSaved(berthingsResponse.data);
       showNotification(getBerthingSavedNotification());
     } catch {
       showNotification(getErrorNotification(500));

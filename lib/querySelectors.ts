@@ -4,7 +4,7 @@ sort_order,
 port_event,
 translations:common_service_translations!inner(locale, title, abbreviation)`;
 
-const portEventsSelector = `
+export const portEventsSelector = `
 id,
 created_at,
 type,
@@ -13,7 +13,11 @@ estimated_time,
 locode,
 port_area_code,
 berth_code,
-position
+position,
+default_standby_minutes,
+default_duration_minutes,
+max_assignees,
+is_public
 `;
 
 const baseBerthingsSelector = `
@@ -96,4 +100,10 @@ export const profileSelector = `
   approval_status_set_by,
   admin,
   order_permissions:order_permissions (${orderPermissionsSelector})
+`;
+
+export const assignmentProfileSelector = `
+  id,
+  first_name,
+  last_name
 `;

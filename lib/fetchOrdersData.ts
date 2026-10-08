@@ -9,6 +9,7 @@ import {
 } from './querySelectors';
 import { createClient } from './supabase/server';
 import {
+  AssignmentProfile,
   Berthing,
   BerthService,
   CommonService,
@@ -27,6 +28,7 @@ type Result = {
   orders: Order[];
   orderPermissions: OrderPermission[];
   counterparties: Counterparty[];
+  profiles: AssignmentProfile[];
 };
 
 export const fetchOrdersData = async (): Promise<Result | undefined> => {
@@ -46,6 +48,7 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     ordersResponse,
     orderPermissionsResponse,
     counterpartiesResponse,
+    profilesResponse,
   ] = await Promise.all([
     fetch('https://meri.digitraffic.fi/api/ais/v1/vessels'),
     supabase
@@ -90,6 +93,12 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
       .select(orderPermissionsSelector)
       .eq('user_id', data.user.id),
     supabase.from('counterparties').select(counterpartiesSelector),
+    supabase
+      .from('profiles')
+      .select('id, first_name, last_name')
+      .eq('approval_status', 'approved')
+      .order('first_name')
+      .order('last_name'),
   ]);
 
   const success =
@@ -103,7 +112,8 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
     commonServicesResponse.data &&
     ordersResponse.data &&
     orderPermissionsResponse.data &&
-    counterpartiesResponse.data;
+    counterpartiesResponse.data &&
+    profilesResponse.data;
 
   if (success) {
     const vesselsData = (await vesselsResponse.json()) as Vessel[];
@@ -177,6 +187,7 @@ export const fetchOrdersData = async (): Promise<Result | undefined> => {
       orders: ordersResponse.data,
       orderPermissions: orderPermissionsResponse.data,
       counterparties: counterpartiesResponse.data,
+      profiles: profilesResponse.data,
     };
   }
 };

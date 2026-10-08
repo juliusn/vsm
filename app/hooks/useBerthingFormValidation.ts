@@ -1,22 +1,23 @@
-import { BerthingFormValues, PortEvent } from '@/lib/types/berthing';
+import {
+  BerthingFormValues,
+  PortEventFormValues,
+} from '@/lib/types/berthing-form-types';
 import { FormErrors, FormValidateInput, isNotEmpty } from '@mantine/form';
 import { useTranslations } from 'next-intl';
 
 type PortEventInSequence = {
-  event: PortEvent;
+  event: PortEventFormValues;
   path: string;
 };
 
-function isAfter(previous: PortEvent, next: PortEvent) {
+function isAfter(previous: PortEventFormValues, next: PortEventFormValues) {
   if (!previous.date || !next.date) return false;
 
   if (previous.date !== next.date) {
     return previous.date > next.date;
   }
 
-  return Boolean(
-    previous.time && next.time && previous.time > next.time
-  );
+  return Boolean(previous.time && next.time && previous.time > next.time);
 }
 
 export function useBerthingChronologyValidation() {

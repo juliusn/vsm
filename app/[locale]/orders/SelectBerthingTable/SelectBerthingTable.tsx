@@ -1,7 +1,6 @@
 'use client';
 
 import { PaginatedTable } from '@/app/components/PaginatedTable';
-import { useBerthings } from '@/app/context/BerthingContext';
 import { useOrders } from '@/app/context/OrderContext';
 import { dateFormatOptions, dateTimeFormatOptions } from '@/lib/formatOptions';
 import { Berthing } from '@/lib/types/query-types';
@@ -20,8 +19,7 @@ interface Props {
 export function SelectBerthingTable({ initial, selected, onSelect }: Props) {
   const t = useTranslations('BerthingTable');
   const format = useFormatter();
-  const { berthings } = useBerthings();
-  const { orders } = useOrders();
+  const { berthings, orders } = useOrders();
   const [records, setRecords] = useState(berthings);
 
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<Berthing>>({

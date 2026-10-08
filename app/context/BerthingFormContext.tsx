@@ -1,6 +1,9 @@
 'use client';
 
-import { BerthingFormValues, BerthingSubmitValues } from '@/lib/types/berthing';
+import {
+  BerthingFormValues,
+  BerthingSubmitValues,
+} from '@/lib/types/berthing-form-types';
 import { createFormContext } from '@mantine/form';
 
 type BerthingTransform = (values: BerthingFormValues) => BerthingSubmitValues;

@@ -34,6 +34,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      assignments: {
+        Row: {
+          assignee: string
+          created_at: string
+          duration_minutes: number
+          id: number
+          port_event: string
+          standby_minutes: number
+        }
+        Insert: {
+          assignee: string
+          created_at?: string
+          duration_minutes: number
+          id?: number
+          port_event: string
+          standby_minutes: number
+        }
+        Update: {
+          assignee?: string
+          created_at?: string
+          duration_minutes?: number
+          id?: number
+          port_event?: string
+          standby_minutes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_assignee_fkey"
+            columns: ["assignee"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assignments_port_event_fkey"
+            columns: ["port_event"]
+            isOneToOne: false
+            referencedRelation: "port_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       berth_service_translations: {
         Row: {
           abbreviation: string
@@ -512,10 +554,14 @@ export type Database = {
         Row: {
           berth_code: string | null
           created_at: string
+          default_duration_minutes: number
+          default_standby_minutes: number
           estimated_date: string
           estimated_time: string | null
           id: string
+          is_public: boolean
           locode: string | null
+          max_assignees: number
           port_area_code: string | null
           position: string | null
           type: Database["public"]["Enums"]["port_event"]
@@ -523,10 +569,14 @@ export type Database = {
         Insert: {
           berth_code?: string | null
           created_at?: string
+          default_duration_minutes?: number
+          default_standby_minutes?: number
           estimated_date: string
           estimated_time?: string | null
           id?: string
+          is_public?: boolean
           locode?: string | null
+          max_assignees: number
           port_area_code?: string | null
           position?: string | null
           type: Database["public"]["Enums"]["port_event"]
@@ -534,10 +584,14 @@ export type Database = {
         Update: {
           berth_code?: string | null
           created_at?: string
+          default_duration_minutes?: number
+          default_standby_minutes?: number
           estimated_date?: string
           estimated_time?: string | null
           id?: string
+          is_public?: boolean
           locode?: string | null
+          max_assignees?: number
           port_area_code?: string | null
           position?: string | null
           type?: Database["public"]["Enums"]["port_event"]
@@ -1709,3 +1763,4 @@ export const Constants = {
     },
   },
 } as const
+

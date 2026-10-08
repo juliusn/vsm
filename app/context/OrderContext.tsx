@@ -1,7 +1,7 @@
 'use client';
 
 import { OrderData } from '@/lib/types/order';
-import { Berthing, OrderPermission } from '@/lib/types/query-types';
+import { Berthing, OrderPermission, PortEvent } from '@/lib/types/query-types';
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 
 type OrderState = {
@@ -10,13 +10,28 @@ type OrderState = {
   berthings: Berthing[];
 };
 
+export type PortEventChanges = Partial<
+  Pick<
+    PortEvent,
+    | 'default_duration_minutes'
+    | 'default_standby_minutes'
+    | 'max_assignees'
+    | 'is_public'
+  >
+>;
+
 type OrderAction =
   | { type: 'orderAdded'; item: OrderData }
   | { type: 'orderChanged'; item: OrderData }
   | { type: 'orderDeleted'; id: OrderData['id'] }
   | { type: 'berthingAdded'; item: Berthing }
   | { type: 'berthingChanged'; item: Berthing }
-  | { type: 'berthingDeleted'; id: Berthing['id'] };
+  | { type: 'berthingDeleted'; id: Berthing['id'] }
+  | {
+      type: 'portEventChanged';
+      id: PortEvent['id'];
+      changes: PortEventChanges;
+    };
 
 type ContextType = OrderState & {
   dispatch: Dispatch<OrderAction>;
@@ -29,7 +44,37 @@ type Props = {
   initialBerthings: Berthing[];
 };
 
+type PortEventFields = Pick<
+  OrderData['berthing'],
+  'arrival' | 'shiftings' | 'departure'
+>;
+
 const Context = createContext<ContextType | null>(null);
+
+function updatePortEventFields(
+  berthing: PortEventFields,
+  id: PortEvent['id'],
+  changes: PortEventChanges
+): PortEventFields {
+  return {
+    arrival:
+      berthing.arrival?.id === id
+        ? { ...berthing.arrival, ...changes }
+        : berthing.arrival,
+    shiftings: berthing.shiftings.map((shifting) =>
+      shifting.port_event.id === id
+        ? {
+            ...shifting,
+            port_event: { ...shifting.port_event, ...changes },
+          }
+        : shifting
+    ),
+    departure:
+      berthing.departure?.id === id
+        ? { ...berthing.departure, ...changes }
+        : berthing.departure,
+  };
+}
 
 export const OrderProvider = ({
   children,
@@ -94,7 +139,9 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
         berthings: [...state.berthings, action.item],
       };
 
-    case 'berthingChanged':
+    case 'berthingChanged': {
+      const { order: _relatedOrder, ...nestedBerthing } = action.item;
+
       return {
         ...state,
         berthings: state.berthings.map((berthing) =>
@@ -102,10 +149,11 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
         ),
         orders: state.orders.map((order) =>
           order.berthing.id === action.item.id
-            ? { ...order, berthing: action.item }
+            ? { ...order, berthing: nestedBerthing }
             : order
         ),
       };
+    }
 
     case 'berthingDeleted':
       return {
@@ -113,6 +161,22 @@ function orderReducer(state: OrderState, action: OrderAction): OrderState {
         berthings: state.berthings.filter(
           (berthing) => berthing.id !== action.id
         ),
+      };
+
+    case 'portEventChanged':
+      return {
+        ...state,
+        berthings: state.berthings.map((berthing) => ({
+          ...berthing,
+          ...updatePortEventFields(berthing, action.id, action.changes),
+        })),
+        orders: state.orders.map((order) => ({
+          ...order,
+          berthing: {
+            ...order.berthing,
+            ...updatePortEventFields(order.berthing, action.id, action.changes),
+          },
+        })),
       };
 
     default:

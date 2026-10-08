@@ -15,7 +15,7 @@ import {
   BerthingFormValues,
   BerthingSubmitValues,
   PortEventWithDate,
-} from '@/lib/types/berthing';
+} from '@/lib/types/berthing-form-types';
 import { TablesInsert } from '@/lib/types/database.types';
 import { Berthing } from '@/lib/types/query-types';
 import { Group, Space } from '@mantine/core';
@@ -23,16 +23,16 @@ import { showNotification } from '@mantine/notifications';
 import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import useBerthingFormValidation, {
-  useBerthingChronologyValidation,
-} from '../../hooks/useBerthingFormValidation';
-import { FormButtons } from '../FormButtons';
-import { BerthingFormFields } from './BerthingFormFields';
 import {
   createPortEventFormValue,
   createPortEventInsert,
   hasPortEventDate,
 } from '../../../lib/portEventForm';
+import useBerthingFormValidation, {
+  useBerthingChronologyValidation,
+} from '../../hooks/useBerthingFormValidation';
+import { FormButtons } from '../FormButtons';
+import { BerthingFormFields } from './BerthingFormFields';
 
 interface EditBerthingFormProps {
   initialBerthing: Berthing;

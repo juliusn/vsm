@@ -7,9 +7,11 @@ import 'dayjs/locale/fi';
 import { useTranslations } from 'next-intl';
 import { NewBerthingForm } from '@/app/components/BerthingForms/NewBerthingForm';
 import { BerthingInputDataProvider } from '@/app/context/BerthingInputDataContext';
+import { useBerthings } from '@/app/context/BerthingContext';
 
 export function NewBerthingContent() {
   const t = useTranslations('NewBerthingContent');
+  const { dispatchBerthings } = useBerthings();
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -19,7 +21,13 @@ export function NewBerthingContent() {
       </Button>
       <Modal opened={opened} onClose={close} title={t('modalTitle')}>
         <BerthingInputDataProvider>
-          <NewBerthingForm close={close} onSaved={close} />
+          <NewBerthingForm
+            close={close}
+            onSaved={(data) => {
+              dispatchBerthings({ type: 'added', item: data });
+              close();
+            }}
+          />
         </BerthingInputDataProvider>
       </Modal>
     </>
