@@ -205,7 +205,7 @@ alter table "public"."berth_services" add constraint "berth_services_locode_port
 
 alter table "public"."berth_services" validate constraint "berth_services_locode_port_area_code_berth_code_fkey";
 
-alter table "public"."berth_services" add constraint "check_titles" CHECK (jsonb_matches_schema('{
+alter table "public"."berth_services" add constraint "check_titles" CHECK (extensions.jsonb_matches_schema('{
       "type": "object",
       "properties": {
         "en": {
@@ -229,7 +229,7 @@ alter table "public"."berths" add constraint "berths_locode_port_area_code_fkey"
 
 alter table "public"."berths" validate constraint "berths_locode_port_area_code_fkey";
 
-alter table "public"."common_services" add constraint "check_titles" CHECK (jsonb_matches_schema('{
+alter table "public"."common_services" add constraint "check_titles" CHECK (extensions.jsonb_matches_schema('{
       "type": "object",
       "properties": {
         "en": {
