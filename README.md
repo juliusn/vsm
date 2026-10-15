@@ -1,22 +1,49 @@
-# VSM - Vanaheim Service Management
+# VSM — Vanaheim Service Management
 
-This is a dedicated platform for managing Vanaheim services.
+A Next.js application for managing Vanaheim services.
 
-## Requirements
+## Scripts
 
-- Node.js 22
-- A [Supabase](https://supabase.com) project
-- An email service
+Run scripts with `npm run <script>`. Definitions are in `package.json`.
 
-## How to use
+### Application
 
-1. Configure these values in `.env.local`:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `SMTP_HOST`
-   - `SMTP_PORT`
-   - `SMTP_USER`
-   - `SMTP_PASS`
-1. Use `cd` to change into the app's directory.
-1. Run `npm install` to install dependencies.
-1. Run `npm run dev` to start the local development server.
+| Script    | Purpose                                                            |
+| --------- | ------------------------------------------------------------------ |
+| `dev`     | Start the development server with Turbopack.                       |
+| `build`   | Build the production application.                                  |
+| `start`   | Serve the built production application.                            |
+| `lint`    | Run ESLint.                                                        |
+| `prepare` | Install Husky Git hooks; also runs during dependency installation. |
+
+### Local database
+
+| Script           | Purpose                                                         |
+| ---------------- | --------------------------------------------------------------- |
+| `supabase:types` | Generate local database types in `lib/types/database.types.ts`. |
+| `db:dump`        | Dump local data to `supabase/seed.sql`, replacing the file.     |
+| `db:reset`       | Rebuild the local database from migrations and seed data.       |
+| `db:diff`        | Compare the local public schema against migrations using migra. |
+| `db:migration`   | Generate a migration from the local public-schema diff.         |
+
+Pass a name when generating a migration:
+
+```sh
+npm run db:migration -- migration_name
+```
+
+### Remote database and configuration
+
+These scripts target the staging or production project references defined in
+`package.json`.
+
+| Script                   | Purpose                                                      |
+| ------------------------ | ------------------------------------------------------------ |
+| `db:plan:staging`        | Preview pending staging migrations without applying them.    |
+| `db:push:staging`        | Apply pending migrations to staging.                         |
+| `db:plan:production`     | Preview pending production migrations without applying them. |
+| `db:push:production`     | Apply pending migrations to production.                      |
+| `config:diff:staging`    | Show configuration differences for staging.                  |
+| `config:push:staging`    | Apply configuration changes to staging.                      |
+| `config:diff:production` | Show configuration differences for production.               |
+| `config:push:production` | Apply configuration changes to production.                   |

@@ -10,7 +10,15 @@
     "db:dump": "supabase db dump --local --data-only -f supabase/seed.sql",
     "db:reset": "supabase db reset --local",
     "db:diff": "supabase db diff --use-migra --schema public",
-    "db:migration": "supabase db diff --use-migra --schema public -f"
+    "db:migration": "supabase db diff --use-migra --schema public -f",
+    "db:plan:staging": "supabase db push --project-ref ygctbiyqlnifbrlrgyys --dry-run",
+    "db:push:staging": "supabase db push --project-ref ygctbiyqlnifbrlrgyys",
+    "db:plan:production": "supabase db push --project-ref olvhrfdisktsblhknnmc --dry-run",
+    "db:push:production": "supabase db push --project-ref olvhrfdisktsblhknnmc",
+    "config:diff:staging": "supabase config diff --project-ref ygctbiyqlnifbrlrgyys",
+    "config:push:staging": "supabase config push --project-ref ygctbiyqlnifbrlrgyys",
+    "config:diff:production": "supabase config diff --project-ref olvhrfdisktsblhknnmc",
+    "config:push:production": "supabase config push --project-ref olvhrfdisktsblhknnmc"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
