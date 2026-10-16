@@ -1,9 +1,18 @@
 'use client';
 
+import { useApprovalStatus } from '@/app/hooks/approvalStatus';
 import { AuthUser } from '@/app/store';
 import { useRouter } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
-import { Avatar, Group, Menu, Text, UnstyledButton, rem } from '@mantine/core';
+import {
+  Avatar,
+  Group,
+  Indicator,
+  Menu,
+  Text,
+  UnstyledButton,
+  rem,
+} from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import {
   IconCheck,
@@ -19,6 +28,7 @@ import { useTranslations } from 'next-intl';
 import { ReactNode, startTransition, useState } from 'react';
 import { useProgressBar } from '../ProgressBar';
 import classes from './UserMenu.module.css';
+
 type MenuItem = { label: string; icon: ReactNode; handler: () => void };
 
 export function UserMenu({ user }: { user: AuthUser }) {
@@ -27,6 +37,8 @@ export function UserMenu({ user }: { user: AuthUser }) {
   const router = useRouter();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const progress = useProgressBar();
+  const { approvalStatusColors } = useApprovalStatus();
+
   const items: MenuItem[] = [
     {
       label: t('settings'),
@@ -124,12 +136,13 @@ export function UserMenu({ user }: { user: AuthUser }) {
             [classes.userActive]: userMenuOpened,
           })}>
           <Group gap={7}>
-            <Avatar
-              src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
-              alt={`${user.userMetadata.first_name}`}
-              radius="xl"
-              size={20}
-            />
+            <Indicator
+              disabled={user.approvalStatus === 'approved'}
+              color={approvalStatusColors[user.approvalStatus]}
+              size={12}
+              label={user.approvalStatus !== 'approved' ? '!' : ''}>
+              <Avatar size={28} />
+            </Indicator>
             <Text fw={500} size="sm" lh={1} mr={3}>
               {user.userMetadata.first_name}
               <span className="hidden sm:inline">

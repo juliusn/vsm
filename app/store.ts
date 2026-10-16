@@ -1,3 +1,4 @@
+import { Enums } from '@/lib/types/database.types';
 import { Session } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
@@ -17,6 +18,7 @@ type UserMetadata = Session['user']['user_metadata'];
 
 export type AuthUser = {
   userMetadata: UserMetadata;
+  approvalStatus: Enums<'approval_status'>;
   admin: boolean;
 };
 

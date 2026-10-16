@@ -95,7 +95,7 @@ export default function InviteAssigneesTable({
       sortable: true,
       render: (profile) => (
         <Group gap="xs" wrap="nowrap">
-          <Avatar radius="xl" size={28} />
+          <Avatar size={28} />
           <Text size="sm">{profile.first_name}</Text>
         </Group>
       ),
