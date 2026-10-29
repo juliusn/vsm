@@ -38,10 +38,10 @@ export function OrderTable() {
 
   const canEditOrder = (order: OrderData) =>
     orderPermissions.some(
-      (permission) =>
-        permission.order_permission === 'edit' &&
-        order.sender.business_id === permission.sender.business_id &&
-        order.receiver.business_id === permission.receiver.business_id
+      (orderPermission) =>
+        orderPermission.permission === 'edit' &&
+        order.sender.business_id === orderPermission.sender.business_id &&
+        order.receiver.business_id === orderPermission.receiver.business_id
     );
 
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] =

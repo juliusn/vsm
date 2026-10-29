@@ -309,6 +309,10 @@
     "title": "Valmis!",
     "message": "Tilaus on lähetetty."
   },
+  "OrderRefreshErrorNotification": {
+    "title": "Tilaus tallennettu",
+    "message": "Tilaus tallennettiin, mutta päivitettyjä tietoja ei voitu ladata. Päivitä sivu ennen uusien muutosten tekemistä."
+  },
   "OrderSavedNotification": {
     "title": "Valmis!",
     "message": "Tilaus on tallennettu."
@@ -639,16 +643,24 @@
     "grant": "Myönnä oikeudet",
     "revoke": "Poista oikeudet"
   },
-  "useOrderPermissions": {
-    "read": "Voi lukea tilauksia",
-    "create": "Voi luoda tilauksia",
-    "edit": "Voi muokata tilauksia",
-    "delete": "Voi poistaa tilauksia"
+  "PermissionLabels": {
+    "actions": {
+      "read": "Voi lukea {resource}",
+      "create": "Voi luoda {resource}",
+      "edit": "Voi muokata {resource}",
+      "delete": "Voi poistaa {resource}"
+    },
+    "resources": {
+      "orders": "tilauksia",
+      "portEvents": "alustapahtumia"
+    }
   },
   "ManagePermissions": {
-    "title": "Tilausten käsittely",
+    "orderHandling": "Tilausten käsittely",
+    "portEventsHandling": "Alustapahtumien käsittely"
+  },
+  "ManagePermissionsSection": {
     "user": "Käyttäjä",
-    "close": "Sulje",
     "reset": "Palauta",
     "save": "Tallenna"
   },

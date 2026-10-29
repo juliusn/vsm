@@ -8,6 +8,7 @@ import {
 import {
   useOrderSentNotification,
   usePostgresErrorNotification,
+  useOrderRefreshErrorNotification,
 } from '@/app/hooks/notifications';
 import { normalizeOrder } from '@/lib/normalizers';
 import { ordersSelector } from '@/lib/querySelectors';
@@ -32,9 +33,10 @@ export function NewOrder({ onCancel, onSaved }: Props) {
   const { dispatch, orderPermissions } = useOrders();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSentNotification = useOrderSentNotification();
+  const getRefreshErrorNotification = useOrderRefreshErrorNotification();
 
   const createOrderPermissions = orderPermissions.filter(
-    (permission) => permission.order_permission === 'create'
+    (orderPermission) => orderPermission.permission === 'create'
   );
 
   const initialValues = {
@@ -78,19 +80,15 @@ export function NewOrder({ onCancel, onSaved }: Props) {
     setLoading(true);
 
     const {
-      data: newOrder,
+      data: orderId,
       error,
       status,
-    } = await supabase
-      .from('orders')
-      .insert({
-        sender_counterparty_business_id,
-        receiver_counterparty_business_id,
-        berthing,
-        status: 'submitted',
-      })
-      .select('id')
-      .single();
+    } = await supabase.rpc('create_order', {
+      p_sender_business_id: sender_counterparty_business_id,
+      p_receiver_business_id: receiver_counterparty_business_id,
+      p_berthing: berthing,
+      p_service_ids: services,
+    });
 
     if (error) {
       showNotification(getErrorNotification(status));
@@ -98,39 +96,25 @@ export function NewOrder({ onCancel, onSaved }: Props) {
       return;
     }
 
-    const serviceQueries = services.map((service) =>
-      supabase
-        .from('common_service_order')
-        .insert({ common_service: service, order: newOrder.id })
-    );
-
-    const responses = await Promise.all(serviceQueries);
-
-    for (const response of responses) {
-      if (response.error) {
-        showNotification(getErrorNotification(response.status));
-        setLoading(false);
-        return;
-      }
-    }
-
     const orderResponse = await supabase
       .from('orders')
       .select(ordersSelector)
-      .eq('id', newOrder.id)
+      .eq('id', orderId)
       .single();
 
     if (orderResponse.error) {
-      showNotification(getErrorNotification(orderResponse.status));
+      showNotification(getRefreshErrorNotification());
       setLoading(false);
+      onCancel();
       return;
     }
 
     const order = normalizeOrder(orderResponse.data);
 
     if (!order) {
-      showNotification(getErrorNotification(400));
+      showNotification(getRefreshErrorNotification());
       setLoading(false);
+      onCancel();
       return;
     }
 

@@ -309,6 +309,10 @@
     "title": "Done!",
     "message": "Order has been sent."
   },
+  "OrderRefreshErrorNotification": {
+    "title": "Order saved",
+    "message": "Your order was saved, but the updated data could not be loaded. Refresh the page before making further changes."
+  },
   "OrderSavedNotification": {
     "title": "Done!",
     "message": "Order has been saved."
@@ -639,16 +643,24 @@
     "grant": "Grant privileges",
     "revoke": "Revoke privileges"
   },
-  "useOrderPermissions": {
-    "read": "Can read orders",
-    "create": "Can create orders",
-    "edit": "Can edit orders",
-    "delete": "Can delete orders"
+  "PermissionLabels": {
+    "actions": {
+      "read": "Can read {resource}",
+      "create": "Can create {resource}",
+      "edit": "Can edit {resource}",
+      "delete": "Can delete {resource}"
+    },
+    "resources": {
+      "orders": "orders",
+      "portEvents": "port events"
+    }
   },
   "ManagePermissions": {
-    "title": "Order handling",
+    "orderHandling": "Order handling",
+    "portEventsHandling": "Port events handling"
+  },
+  "ManagePermissionsSection": {
     "user": "User",
-    "close": "Close",
     "reset": "Reset",
     "save": "Save"
   },

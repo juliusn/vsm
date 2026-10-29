@@ -1,7 +1,7 @@
 import { DataUnavailableAlert } from '@/app/components/DataUnavailableAlert';
 import { orderPermissionsSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/server';
-import PermissionsTable from './PermissionsTable';
+import { OrderPermissionsTable } from './OrderPermissionsTable';
 import { Stack, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
 
@@ -17,7 +17,7 @@ export default async function PermissionsPage() {
     <Stack>
       <Title size="h3">{t('orderHandling')}</Title>
       {data ? (
-        <PermissionsTable orderPermissions={data} />
+        <OrderPermissionsTable orderPermissions={data} />
       ) : (
         <DataUnavailableAlert />
       )}

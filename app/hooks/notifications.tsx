@@ -108,3 +108,16 @@ export const useUserPermissionsUpdatedNotification = () => {
     [t]
   );
 };
+
+export const useOrderRefreshErrorNotification = () => {
+  const t = useTranslations('OrderRefreshErrorNotification');
+  return useCallback(
+    (): NotificationData => ({
+      title: t('title'),
+      message: t('message'),
+      icon: <IconExclamationMark stroke={1.5} />,
+      color: 'yellow',
+    }),
+    [t]
+  );
+};

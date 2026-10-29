@@ -230,12 +230,7 @@ export default function UserTable() {
         opened={managePermissionsModalOpened}
         onClose={closeManagePermissionsModal}
         size="auto">
-        {selectedProfile && (
-          <ManagePermissions
-            profile={selectedProfile}
-            onClose={closeManagePermissionsModal}
-          />
-        )}
+        {selectedProfile && <ManagePermissions profile={selectedProfile} />}
       </Modal>
       <Modal
         title={t('confirmAdminStatusChange')}

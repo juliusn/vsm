@@ -7,6 +7,7 @@ import {
   counterpartiesSelector,
   orderPermissionsSelector,
   ordersSelector,
+  portEventPermissionsSelector,
   portEventsSelector,
   profileSelector,
 } from '../querySelectors';
@@ -48,6 +49,12 @@ const _orderPermissionsQuery = supabase
   .single();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _portEventPermissionsQuery = supabase
+  .from('port_event_permissions')
+  .select(portEventPermissionsSelector)
+  .single();
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _profileQuery = supabase
   .from('profiles')
   .select(profileSelector)
@@ -71,6 +78,7 @@ export type Order = QueryData<typeof _ordersQuery>;
 export type CommonService = QueryData<typeof _commonServicesQuery>;
 export type BerthService = QueryData<typeof _berthServicesQuery>;
 export type OrderPermission = QueryData<typeof _orderPermissionsQuery>;
+export type PortEventPermission = QueryData<typeof _portEventPermissionsQuery>;
 export type Profile = QueryData<typeof _profileQuery>;
 export type AssignmentProfile = QueryData<typeof _assignmentProfileQuery>;
 export type PortEvent = QueryData<typeof _portEventsQuery>;

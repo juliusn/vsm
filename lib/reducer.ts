@@ -22,5 +22,10 @@ export function reducer<T extends IdObject>(
     case 'replaced': {
       return action.items;
     }
+    case 'patched': {
+      return items.map((item) =>
+        item.id === action.id ? { ...item, ...action.changes } : item
+      );
+    }
   }
 }

@@ -13,7 +13,7 @@ export function NewOrderContent() {
   const t = useTranslations('NewOrderContent');
 
   const canCreate = orderPermissions
-    .map((permission) => permission.order_permission)
+    .map((orderPermission) => orderPermission.permission)
     .includes('create');
 
   return (

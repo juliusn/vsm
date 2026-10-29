@@ -86,9 +86,15 @@ translations:berth_service_translations!inner(locale, title, abbreviation)
 export const orderPermissionsSelector = `
 id,
 user_id,
-order_permission,
+permission,
 sender:counterparties!order_permissions_sender_counterparty_business_id_fkey (${counterpartiesSelector}),
 receiver:counterparties!order_permissions_receiver_counterparty_business_id_fkey (${counterpartiesSelector})
+`;
+
+export const portEventPermissionsSelector = `
+id,
+user_id,
+permission
 `;
 
 export const profileSelector = `
@@ -99,7 +105,8 @@ export const profileSelector = `
   approval_status,
   approval_status_set_by,
   admin,
-  order_permissions:order_permissions (${orderPermissionsSelector})
+  order_permissions:order_permissions (${orderPermissionsSelector}),
+  port_event_permissions:port_event_permissions (${portEventPermissionsSelector})
 `;
 
 export const assignmentProfileSelector = `

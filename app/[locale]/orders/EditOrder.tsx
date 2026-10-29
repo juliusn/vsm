@@ -8,11 +8,11 @@ import {
 import {
   useOrderSavedNotification,
   usePostgresErrorNotification,
+  useOrderRefreshErrorNotification,
 } from '@/app/hooks/notifications';
 import { normalizeOrder } from '@/lib/normalizers';
 import { ordersSelector } from '@/lib/querySelectors';
 import { createClient } from '@/lib/supabase/client';
-import { TablesUpdate } from '@/lib/types/database.types';
 import { OrderData } from '@/lib/types/order';
 import { isNotEmpty, TransformedValues } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
@@ -32,7 +32,7 @@ export function EditOrder({ order, onClose }: Props) {
   const { dispatch } = useOrders();
   const getErrorNotification = usePostgresErrorNotification();
   const getOrderSavedNotification = useOrderSavedNotification();
-  const existingServices = order.common_services.map((service) => service.id);
+  const getRefreshErrorNotification = useOrderRefreshErrorNotification();
 
   const initialValues = {
     sender_counterparty_business_id: order.sender.business_id,
@@ -58,92 +58,39 @@ export function EditOrder({ order, onClose }: Props) {
   });
 
   const handleSubmit = async (formValues: TransformedValues<typeof form>) => {
-    const { services, ...ordersFormValues } = formValues;
-    const ordersFields = Object.keys(ordersFormValues) as Array<
-      keyof typeof ordersFormValues
-    >;
-
-    const ordersPayload = ordersFields
-      .filter((key) => initialValues[key] !== formValues[key])
-      .reduce<
-        TablesUpdate<'orders'>
-      >((payload, key) => ({ ...payload, [key]: formValues[key] }), {});
-
-    const ordersQuery = Object.keys(ordersPayload).length
-      ? supabase
-          .from('orders')
-          .update(ordersPayload)
-          .eq('id', order.id)
-          .select(ordersSelector)
-          .single()
-      : supabase
-          .from('orders')
-          .select(ordersSelector)
-          .eq('id', order.id)
-          .single();
-
-    const servicesToInsert = formValues.services
-      .filter((service) => !existingServices.includes(service))
-      .map((service) => ({ order: order.id, common_service: service }));
-
-    const servicesToDelete = existingServices.filter(
-      (service) => !formValues.services.includes(service)
-    );
-
-    const insertServicesQuery = servicesToInsert.length
-      ? supabase.from('common_service_order').insert(servicesToInsert)
-      : null;
-
-    const deleteServicesQuery = servicesToDelete.length
-      ? supabase
-          .from('common_service_order')
-          .delete({ count: 'exact' })
-          .or(
-            servicesToDelete
-              .map((id) => `and(order.eq.${order.id},common_service.eq.${id})`)
-              .join(',')
-          )
-      : null;
-
     setLoading(true);
+    const { error, status } = await supabase.rpc('edit_order', {
+      p_order_id: order.id,
+      p_sender_business_id: formValues.sender_counterparty_business_id,
+      p_receiver_business_id: formValues.receiver_counterparty_business_id,
+      p_berthing: formValues.berthing,
+      p_service_ids: formValues.services,
+    });
 
-    const [insertServicesResponse, deleteServicesResponse] = await Promise.all([
-      insertServicesQuery,
-      deleteServicesQuery,
-    ]);
-
-    if (insertServicesResponse?.error) {
-      showNotification(getErrorNotification(insertServicesResponse.status));
+    if (error) {
+      showNotification(getErrorNotification(status));
       setLoading(false);
       return;
     }
 
-    if (deleteServicesResponse) {
-      if (deleteServicesResponse.error) {
-        showNotification(getErrorNotification(deleteServicesResponse.status));
-        setLoading(false);
-        return;
-      }
-
-      if (!deleteServicesResponse.error && !deleteServicesResponse.count) {
-        showNotification(getErrorNotification(404));
-        setLoading(false);
-        return;
-      }
-    }
-
-    const ordersResponse = await ordersQuery;
+    const ordersResponse = await supabase
+      .from('orders')
+      .select(ordersSelector)
+      .eq('id', order.id)
+      .single();
     setLoading(false);
 
     if (ordersResponse.error) {
-      showNotification(getErrorNotification(ordersResponse.status));
+      showNotification(getRefreshErrorNotification());
+      onClose();
       return;
     }
 
     const normalized = normalizeOrder(ordersResponse.data);
 
     if (!normalized) {
-      showNotification(getErrorNotification(400));
+      showNotification(getRefreshErrorNotification());
+      onClose();
       return;
     }
 

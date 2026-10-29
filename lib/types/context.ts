@@ -5,4 +5,5 @@ export type Action<T extends IdObject> =
   | { type: 'changed'; item: T }
   | { type: 'deleted'; id: T['id'] }
   | { type: 'cascade-deleted'; id: T['id']; foreignKey: keyof T }
-  | { type: 'replaced'; items: T[] };
+  | { type: 'replaced'; items: T[] }
+  | { type: 'patched'; id: T['id']; changes: Partial<Omit<T, 'id'>> };
