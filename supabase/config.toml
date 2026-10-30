@@ -256,6 +256,10 @@ s3_access_key = "env(S3_ACCESS_KEY)"
 # Configures AWS_SECRET_ACCESS_KEY for S3 bucket
 s3_secret_key = "env(S3_SECRET_KEY)"
 
+# Diff engine
+[experimental.pgdelta]
+enabled = true
+
 # Hosted projects inherit shared settings above and override their app URLs here.
 [remotes.staging]
 project_id = "ygctbiyqlnifbrlrgyys"
